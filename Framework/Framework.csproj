@@ -1,0 +1,81 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{BE8F4EFB-458E-431A-A763-5988804DC0ED}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>UvsChess</RootNamespace>
+    <AssemblyName>UvsChess</AssemblyName>
+    <StartupObject>
+    </StartupObject>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;Console</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;Console</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="atk-sharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="gdk-sharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="glib-sharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="gtk-dotnet, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="gtk-sharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ChessBoard.cs" />
+    <Compile Include="ChessState.cs" />
+    <Compile Include="ChessEnums.cs" />
+    <Compile Include="ChessLocation.cs" />
+    <Compile Include="ChessMove.cs" />
+    <Compile Include="GtkChessBoard.cs" />
+    <Compile Include="IChessAI.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\ChessPiece_BlackBishop.png" />
+    <EmbeddedResource Include="Images\ChessPiece_BlackKing.png" />
+    <EmbeddedResource Include="Images\ChessPiece_BlackKnight.png" />
+    <EmbeddedResource Include="Images\ChessPiece_BlackPawn.png" />
+    <EmbeddedResource Include="Images\ChessPiece_BlackQueen.png" />
+    <EmbeddedResource Include="Images\ChessPiece_BlackRook.png" />
+    <EmbeddedResource Include="Images\ChessPiece_WhiteBishop.png" />
+    <EmbeddedResource Include="Images\ChessPiece_WhiteKing.png" />
+    <EmbeddedResource Include="Images\ChessPiece_WhiteKnight.png" />
+    <EmbeddedResource Include="Images\ChessPiece_WhitePawn.png" />
+    <EmbeddedResource Include="Images\ChessPiece_WhiteQueen.png" />
+    <EmbeddedResource Include="Images\ChessPiece_WhiteRook.png" />
+    <EmbeddedResource Include="Images\Chess_DarkBackground.png" />
+    <EmbeddedResource Include="Images\Chess_LightBackground.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Empty_1x1_Mouse_Cursor.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
