@@ -1,0 +1,15 @@
+#summary How to get UvsChess, and how to compile it on your computer
+
+= Introduction =
+
+You should check out the project from subversion. You can get the source from http://code.google.com/p/uvschess/source
+
+You'll need to install the latest Mono release before you can compile the project.
+You can get that from http://www.mono-project.com
+
+
+= Details =
+
+For Windows:
+After Mono is installed, add the Mono 'bin' directory to the system path. The bin directory path should look similar to "C:\Program Files\Mono-1.2.3.1\bin"
+
