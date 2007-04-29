@@ -2,7 +2,7 @@
 
 = Introduction =
 
-You should check out the project from subversion. Go to the Source tab for instructions on how to check out the project.
+You should check out the project from subversion. Go to the "Source" tab for instructions on how to check out the project.
 
 You'll need to install the latest Mono release before you can compile the project.
 You can get that from http://www.mono-project.com
