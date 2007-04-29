@@ -206,7 +206,7 @@ namespace UvsChess.Gui
                 // Set the cursor back to normal
                 args.Event.Window.Cursor = null;
 
-                Console.WriteLine(args.Event.Device.HasCursor);
+                //Log(args.Event.Device.HasCursor);
                 pieceStartLocation = new ChessLocation(-1, -1);
                 mouseLocation = new Point(-1, -1);
 

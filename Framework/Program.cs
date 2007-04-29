@@ -166,7 +166,7 @@ namespace UvsChess.Gui
             }
 
             window.Visible = !window.Visible;
-            Console.WriteLine("Toggling " + color.ToString() + " log window: " + window.Visible.ToString());
+            Log("Toggling " + color.ToString() + " log window: " + window.Visible.ToString());
 
         }
         #endregion
@@ -344,12 +344,12 @@ namespace UvsChess.Gui
         void Selection_Changed(object sender, EventArgs e)
         {
             TreeSelection sel = (TreeSelection)sender;
-            //Console.WriteLine("Selection_Changed");
+            //Log("Selection_Changed");
             
             TreeIter iter;
             if (sel.GetSelected(out iter))
             {
-                //Console.WriteLine(iter.ToString());
+                //Log(iter.ToString());
                 _history_Select_Row(iter);
             }            
         }
@@ -360,17 +360,17 @@ namespace UvsChess.Gui
         /// </summary>
         /// <param name="o"></param>
         /// <param name="args"></param>
-        void _history_RowActivated(object o, RowActivatedArgs args)
-        {
-            if (!IsRunning)
-            {
-                TreeIter iter;
-                if (_store.GetIter(out iter, args.Path))
-                {
-                    _history_Select_Row(iter);
-                }
-            }
-        }
+        //void _history_RowActivated(object o, RowActivatedArgs args)
+        //{
+        //    if (!IsRunning)
+        //    {
+        //        TreeIter iter;
+        //        if (_store.GetIter(out iter, args.Path))
+        //        {
+        //            _history_Select_Row(iter);
+        //        }
+        //    }
+        //}
 
         void _history_Select_Row(TreeIter iter)
         {
@@ -452,13 +452,13 @@ namespace UvsChess.Gui
 
         void new_item_Activated(object sender, EventArgs e)
         {
-            Console.WriteLine("New game...");
+            Log("New game...");
             ResetBoard(ChessState.StartState);
         }
 
         void stop_item_Activated(object sender, EventArgs e)
         {
-            Console.WriteLine("Stopping game...");
+            Log("Stopping game...");
             statusLabel.Text = "Game has been stopped.";
             eventBox.ModifyBg(StateType.Normal);
             chessBoardControl.IsLocked = false;
@@ -467,7 +467,7 @@ namespace UvsChess.Gui
 
         void start_item_Activated(object sender, EventArgs e)
         {
-            Console.WriteLine("Starting game...");
+            Log("Starting game...");
             Color c = new Color(0xff,0x00,0x00);
 
             statusLabel.Text = "Game is running.";
@@ -478,7 +478,7 @@ namespace UvsChess.Gui
         void save_item_Activated(object sender, EventArgs e)
         {
 
-            Console.WriteLine("Saving game...");
+            Log("Saving game...");
             FileChooserDialog dialog = new FileChooserDialog("Save game", this, FileChooserAction.Save);
 
             dialog.AddButton(Stock.Cancel, ResponseType.Cancel);
@@ -508,7 +508,7 @@ namespace UvsChess.Gui
         void load_item_Activated(object sender, EventArgs e)
         {
 
-            Console.WriteLine("Loading game...");
+            Log("Loading game...");
             FileChooserDialog dialog = new FileChooserDialog("Load game", this, FileChooserAction.Open);
 
             dialog.AddButton(Stock.Open, ResponseType.Ok);
@@ -536,11 +536,11 @@ namespace UvsChess.Gui
             dialog.Destroy();
         }
 
-        void exit_item_Activated(object o, ClientEventArgs args)
-        {
-            Console.WriteLine("Exiting game...");
-            Application.Quit();
-        }
+        //void exit_item_Activated(object o, ClientEventArgs args)
+        //{
+        //    Log("Exiting game...");
+        //    Application.Quit();
+        //}
 
         #endregion
 
@@ -587,6 +587,7 @@ namespace UvsChess.Gui
             if (player.IsComputer)
             {
                 nextMove = player.AI.GetNextMove(mainChessState.CurrentBoard.Clone(), player.Color);
+                
 
                 newstate = mainChessState.Clone();
                 newstate.MakeMove(nextMove);
@@ -633,6 +634,8 @@ namespace UvsChess.Gui
             }
 
             
+
+            
             AddToHistory(player.Color.ToString() + ": " + nextMove.ToString(), newstate.ToFenBoard());
 
             //Check time
@@ -648,13 +651,26 @@ namespace UvsChess.Gui
 
             if (isValidMove) 
             {
+
                 //update mainChessState for valid 
                 mainChessState = newstate;
 
                 if (player.Color == ChessColor.Black)
                 {
-                   mainChessState.FullMoves++;//Increment fullmoves after black's turn
+                    mainChessState.FullMoves++;//Increment fullmoves after black's turn
                 }
+
+                //Determine if a pawn was moved or a kill was made.
+                if (ResetHalfMove())
+                {
+                    mainChessState.HalfMoves = 0;
+                }
+                else
+                {
+                    mainChessState.HalfMoves++;
+                }
+                Log(mainChessState.ToFenBoard());
+
             }
             else
             {
@@ -662,6 +678,27 @@ namespace UvsChess.Gui
                 Log(String.Format("Invalid move returned, {0} loses!", (player.Color == ChessColor.Black) ? "Black" : "White"));
                 
             }
+        }
+
+        //This method checks if a pawn was moved or a kill was made.
+        private bool ResetHalfMove()
+        {
+            ChessMove move = mainChessState.PreviousMove;
+            //Check for a pawn move
+            ChessPiece piece = mainChessState.PreviousBoard[move.From.Row, move.From.Column];
+            if ((piece == ChessPiece.WhitePawn) || (piece == ChessPiece.BlackPawn))
+            {
+                return true;
+            }
+
+            //Check for a kill
+            piece = mainChessState.PreviousBoard[move.To.Row, move.To.Column];
+            if (piece != ChessPiece.Empty)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         #region Threading stuff
@@ -711,7 +748,6 @@ namespace UvsChess.Gui
             if (IsRunning)
             {
                 Log("Human move:");
-                Log(mainChessState.CurrentBoard.ToFenBoard());
                 humanMove = move;
                 pieceMovedEvent.Set();
             }
@@ -856,7 +892,7 @@ namespace UvsChess.Gui
         void showErrorMsg(string message)
         {
             MessageDialog md = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, message);
-            int r = md.Run();
+            md.Run();
             md.Destroy();
         }
 

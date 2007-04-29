@@ -161,6 +161,9 @@ namespace UvsChess
 
             newState.CurrentPlayerColor = this.CurrentPlayerColor;
 
+            newState.HalfMoves = this.HalfMoves;
+            newState.FullMoves = this.FullMoves;
+
             return newState;
         }
 
