@@ -33,13 +33,16 @@ namespace UvsChess
     public class ChessState
     {
         #region Members
-        public const string StartState = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+        //public const string StartState = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+        public const string StartState = "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2";
         private ChessBoard _currentBoard;
         private ChessBoard _previousBoard;
         private ChessMove _previousMove;
         private ChessColor _yourColor;
         private int _fullMoves = 0;
         private int _halfMoves = 0;
+        private ChessLocation _enPassant = null;
+        //private string _castling = "-";
         #endregion
 
         #region Constructors
@@ -110,12 +113,23 @@ namespace UvsChess
         public int  HalfMoves
         {
             get { return _halfMoves; }
-            set
-            {
-                _halfMoves = value;
-                //Program.Log("HalfMoves: " + _halfMoves);
-            }
+            set { _halfMoves = value; }
         }
+        /// <summary>
+        /// Returns the ChessLocation of the available En passant move. If no En passant move is available,
+        /// null is returned.
+        /// See: http://en.wikipedia.org/wiki/En_passant
+        /// </summary>
+        public ChessLocation EnPassant
+        {
+            get { return _enPassant; }
+            set { _enPassant = value; }
+        }
+
+        
+        #endregion
+
+        #region Methods and Operators
 
         public void MakeMove(ChessMove move)
         {
@@ -133,9 +147,6 @@ namespace UvsChess
             }
         }
 
-        #endregion
-
-        #region Methods and Operators
         /// <summary>
         /// Creates a deep copy of ChessState
         /// </summary>
@@ -161,6 +172,7 @@ namespace UvsChess
 
             newState.CurrentPlayerColor = this.CurrentPlayerColor;
 
+            newState.EnPassant = this.EnPassant;
             newState.HalfMoves = this.HalfMoves;
             newState.FullMoves = this.FullMoves;
 
@@ -186,9 +198,16 @@ namespace UvsChess
                 strBuild.Append(" b");
             }
 
-            //the two dashes are place holders for castling and en passant info respectively, (neither are currently supported)
-            strBuild.Append(" - - " + HalfMoves.ToString() + " " + FullMoves.ToString());
+            //place holder for castling (not currently supported)
+            strBuild.Append(" -");
 
+            //place holder for en passant (not currently supported)
+            strBuild.Append(EnPassantToFen());
+            
+            //half and full moves
+            strBuild.Append(" " + HalfMoves.ToString() + " " + FullMoves.ToString());
+
+            
             return strBuild.ToString();
         }
 
@@ -214,11 +233,39 @@ namespace UvsChess
             {
                 throw new Exception("Missing active color in FEN board");
             }
+
+            //en passant is lines[3]
+            EnPassant = EnPassantFromFen(lines[3].ToLower());            
             
             HalfMoves = Convert.ToInt32(lines[4]);
             FullMoves = Convert.ToInt32(lines[5]);
 
             return;
+        }
+
+        private ChessLocation EnPassantFromFen(string fen)
+        {
+            if (fen == "-")
+            {
+                return null;
+            }
+
+            int row = Convert.ToInt32(fen[0]) - 97;
+            int col = Convert.ToInt32(fen[1]) - 48;
+            return new ChessLocation(row, col);            
+        }
+
+        private string EnPassantToFen()
+        {
+            if (EnPassant == null)
+            {
+                return " -";
+            }
+
+            char c = Convert.ToChar(EnPassant.Row + 97);
+            string enp = " " + c + EnPassant.Column.ToString();
+
+            return enp;           
         }
 
         #endregion
