@@ -32,5 +32,6 @@ then
 	echo "Build complete"
 else
 	echo "Build failed"
+	exit 5
 fi
 echo
