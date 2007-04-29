@@ -159,6 +159,8 @@ namespace ExampleAI
             // I'll just create an empty move.
             newMove = new ChessMove();
 
+            this.Log("ExampleAI just moved");
+
             return newMove;
         }
         #endregion
