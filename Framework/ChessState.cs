@@ -33,8 +33,8 @@ namespace UvsChess
     public class ChessState
     {
         #region Members
-        //public const string StartState = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-        public const string StartState = "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2";
+        public const string StartState = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+        //public const string StartState = "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2";
         private ChessBoard _currentBoard;
         private ChessBoard _previousBoard;
         private ChessMove _previousMove;
