@@ -55,6 +55,9 @@ namespace UvsChess.Gui
         Label statusLabel = null;
         EventBox eventBox = null;
 
+        LogWindow whiteLogWindow = null;
+        LogWindow blackLogWindow = null;
+
 
         public delegate void PlayCompletedHandler();
         public event PlayCompletedHandler PlayCompleted;
@@ -129,6 +132,7 @@ namespace UvsChess.Gui
 
             //-------------------------------------------------------
             CreateTreeView();
+            CreateLogs();
 
             ScrolledWindow swindow = new ScrolledWindow();
             swindow.Add(_history);
@@ -138,8 +142,33 @@ namespace UvsChess.Gui
             BlackPlayer = new ChessPlayer(ChessColor.Black);
             this.ShowAll();
 
+
+
         }
 
+        #endregion
+
+        #region Log windows
+        private void CreateLogs()
+        {
+            this.blackLogWindow = new LogWindow(ChessColor.Black);
+            this.whiteLogWindow = new LogWindow(ChessColor.White);
+
+        }
+
+        void toggleLogWindow(ChessColor color)
+        {
+            //TODO
+            LogWindow window = this.whiteLogWindow;
+            if (color == ChessColor.Black)
+            {
+                window = this.blackLogWindow;
+            }
+
+            window.Visible = !window.Visible;
+            Console.WriteLine("Toggling " + color.ToString() + " log window: " + window.Visible.ToString());
+
+        }
         #endregion
 
         #region Gui Control Creators
@@ -177,10 +206,10 @@ namespace UvsChess.Gui
 
             //AccelGroup group = new AccelGroup();
             Button btnWhite = Button.NewWithMnemonic("Show _white log");
-            btnWhite.Clicked += new EventHandler(btnWhite_Activated);
+            btnWhite.Clicked += new EventHandler(btnLog_Activated);
 
             Button btnBlack = Button.NewWithMnemonic("Show _black log");
-            btnBlack.Clicked += new EventHandler(btnBlack_Activated);
+            btnBlack.Clicked += new EventHandler(btnLog_Activated);
 
             main.Attach(btnWhite, 2, 3, 0, 1, AttachOptions.Shrink, AttachOptions.Shrink, 5, 0);
             main.Attach(btnBlack, 2, 3, 1, 2, AttachOptions.Shrink, AttachOptions.Shrink, 5, 0);
@@ -395,25 +424,27 @@ namespace UvsChess.Gui
             {
                 mainChessState.CurrentPlayerColor = ChessColor.Black;
             }
+        }        
+
+        void btnLog_Activated(object sender, EventArgs e)
+        {
+            Button btn = (Gtk.Button)sender;
+            if (btn.Label.ToLower().Contains("white"))
+            {
+                toggleLogWindow(ChessColor.White);
+            }
+            else if (btn.Label.ToLower().Contains("black"))
+            {
+                toggleLogWindow(ChessColor.Black);
+            }
+            else
+            {
+                showErrorMsg("Can't find chess color");
+            }
+            
         }
 
-        void btnBlack_Activated(object sender, EventArgs e)
-        {
-            //TODO
-            showErrorMsg("'Show black log' not yet implemented");
-        }
-
-        void btnWhite_Activated(object sender, EventArgs e)
-        {
-            //TODO
-            showErrorMsg("'Show white log' not yet implemented");
-        }
-        void showErrorMsg(string message)
-        {
-            MessageDialog md = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, message);
-            int r = md.Run();
-            md.Destroy();
-        }
+        
 
         #endregion
 
@@ -820,6 +851,13 @@ namespace UvsChess.Gui
                 TreePath path = _store.GetPath(iter);
                 _history.ScrollToCell(path, null, false, 0.0f, 0.0f);
             });
+        }
+
+        void showErrorMsg(string message)
+        {
+            MessageDialog md = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, message);
+            int r = md.Run();
+            md.Destroy();
         }
 
         

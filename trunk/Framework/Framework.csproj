@@ -48,6 +48,7 @@
     <Compile Include="ChessMove.cs" />
     <Compile Include="GtkChessBoard.cs" />
     <Compile Include="IChessAI.cs" />
+    <Compile Include="LogWindow.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
