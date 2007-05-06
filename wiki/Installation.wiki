@@ -2,11 +2,11 @@
 
 = Introduction =
 
-Google Code uses Suversion as it's source code control server. You will need a subersion (svn) client in order to get the code. For windows, we recommend TortoiseSVN (http://tortoisesvn.tigris.org/).
+Google Code uses Subversion as its source code control server. You will need a subversion (svn) client in order to get the code. For windows, we recommend TortoiseSVN (http://tortoisesvn.tigris.org/).
 
-You should check out the project from subversion. Go to the "Source" tab for instructions on how to check out the project.
+Once you have an svn client, you should check out the project code from svn. Go to the "Source" tab for instructions on how to check out the project.
 
-You'll also need to install the latest Mono release before you can compile the project.
+You will also need to install the latest Mono release before you can compile the project.
 You can get that from http://www.mono-project.com
 
 
