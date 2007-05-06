@@ -299,6 +299,44 @@ namespace UvsChess.Gui
             return fileItem;
         }
 
+		MenuItem CreateHistoryMenu()
+		{
+			
+            MenuItem fileItem = new MenuItem("History");
+
+            Menu mnuHistory = new Menu();
+            mnuHistory.SetAccelPath("<UvsChess>/History", mainGroup);
+            
+            MenuItem open_item = new MenuItem("Open History");
+            MenuItem save_item = new MenuItem("Save History");
+            MenuItem clear_item = new MenuItem("Clear History");
+            open_item.WidthRequest = 100;
+            this.AddAccelGroup(mainGroup);
+
+            //TODO: What hot-keys should we use for this menu?
+            // Open     Ctrl+o
+            // Save     Ctrl+s
+            // Exit     Ctrl+q
+
+            //AccelMap.AddEntry("<UvsChess>/History/Open", (uint)Gdk.Key.o, ModifierType.ControlMask);
+            //AccelMap.AddEntry("<UvsChess>/History/Save", (uint)Gdk.Key.s, ModifierType.ControlMask);
+            
+
+            mnuHistory.Append(open_item);
+            mnuHistory.Append(save_item);
+            mnuHistory.Append(clear_item);
+
+            open_item.Activated += new EventHandler(load_history_item_Activated);
+            save_item.Activated += new EventHandler(save_history_item_Activated);
+            clear_item.Activated += new EventHandler(clear_history_item_Activated);
+
+            //open_item.SetAccelPath("<UvsChess>/History/Open", mainGroup);
+            //save_item.SetAccelPath("<UvsChess>/History/Save", mainGroup);
+
+
+            fileItem.Submenu = mnuHistory; 
+            return fileItem;
+		}
         MenuBar CreateMenus()
         {
             Gtk.MenuBar menuBar = new MenuBar();
@@ -306,6 +344,8 @@ namespace UvsChess.Gui
             menuBar.Append(fileMenu);
             MenuItem gameMenu = CreateGameMenu();
             menuBar.Append(gameMenu);
+            MenuItem historyMenu = CreateHistoryMenu();
+            menuBar.Append(historyMenu);
 
             return menuBar;
         }
@@ -536,6 +576,24 @@ namespace UvsChess.Gui
             dialog.Destroy();
         }
 
+        void load_history_item_Activated(object sender, EventArgs e)
+		{
+			Console.WriteLine("Loading history");
+		}
+
+        void save_history_item_Activated(object sender, EventArgs e)
+		{
+			Console.WriteLine("Saving history");
+			
+						
+		}
+		
+        void clear_history_item_Activated(object sender, EventArgs e)
+		{
+			Console.WriteLine("Clearing history");
+			ClearHistory();
+		}
+		
         //void exit_item_Activated(object o, ClientEventArgs args)
         //{
         //    Log("Exiting game...");
@@ -886,6 +944,15 @@ namespace UvsChess.Gui
                 //scroll history down to latest entry
                 TreePath path = _store.GetPath(iter);
                 _history.ScrollToCell(path, null, false, 0.0f, 0.0f);
+            });
+        }
+
+        public void ClearHistory()
+        {
+            
+            Gtk.Application.Invoke(delegate
+            {
+					_store.Clear();
             });
         }
 
