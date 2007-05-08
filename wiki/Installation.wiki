@@ -12,5 +12,10 @@ You can get that from http://www.mono-project.com
 
 = Details =
 
-For Windows:
+==For Windows==
 After Mono is installed, add the Mono 'bin' directory to the system path. The bin directory path should look similar to "C:\Program Files\Mono-1.2.3.1\bin"
+
+Open the UvsChess.sln solution file in MS Visual Studio. You may have to refresh the References in the Framework project (atk-sharp,gdk-sharp,glib-sharp,gtk-sharp,gtk-dotnet).
+
+==For Linux==
+Run the build.sh script to compile the project from the command line. You can also use tools like Mono Develop.
