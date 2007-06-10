@@ -534,11 +534,11 @@ namespace UvsChess.Gui
             {
                 string filename = dialog.Filename;
                 Log("Saving file: " + filename);
-                StreamWriter outfile = new StreamWriter(filename);
+//                StreamWriter outfile = new StreamWriter(filename);
 
-                string fenboard = mainChessState.ToFenBoard();
-                outfile.WriteLine(fenboard);
-                outfile.Close();
+//                string fenboard = mainChessState.ToFenBoard();
+//                outfile.WriteLine(fenboard);
+//                outfile.Close();
             }
 
             dialog.Destroy();
