@@ -534,11 +534,11 @@ namespace UvsChess.Gui
             {
                 string filename = dialog.Filename;
                 Log("Saving file: " + filename);
-//                StreamWriter outfile = new StreamWriter(filename);
-
-//                string fenboard = mainChessState.ToFenBoard();
-//                outfile.WriteLine(fenboard);
-//                outfile.Close();
+                StreamWriter outfile = new StreamWriter(filename);
+				
+                string fenboard = mainChessState.ToFenBoard();
+                outfile.WriteLine(fenboard);
+                outfile.Close();
             }
 
             dialog.Destroy();
@@ -578,19 +578,52 @@ namespace UvsChess.Gui
 
         void load_history_item_Activated(object sender, EventArgs e)
 		{
-			Console.WriteLine("Loading history");
+			Log("Loading history");
 		}
 
         void save_history_item_Activated(object sender, EventArgs e)
 		{
-			Console.WriteLine("Saving history");
-			
+			Log("Saving history");
+            FileChooserDialog dialog = new FileChooserDialog("Save history", this, FileChooserAction.Save);
+
+            dialog.AddButton(Stock.Cancel, ResponseType.Cancel);
+            dialog.AddButton(Stock.Save, ResponseType.Ok);
+
+//            FileFilter filter = new FileFilter();
+//            filter.AddPattern("*.fen");
+//            filter.Name = "*.fen";
+//            dialog.AddFilter(filter);
+
+            int result = dialog.Run();
+            if ((ResponseType)result == ResponseType.Ok)
+            {
+                string filename = dialog.Filename;
+                Log("Saving history to " + filename);
+                StreamWriter outfile = new StreamWriter(filename);
+
+				TreeIter iter = new TreeIter();
+				if (_store.GetIterFirst(out iter))
+				do 
+				{
+					string line = (string)_store.GetValue(iter,0);
+					string fenboard = (string)_store.GetValue(iter,1);
+					
+					line += ":" + fenboard;
+					
+					Log(line);
+					outfile.WriteLine(line);
+				
+				}
+				while(_store.IterNext(ref iter));
+                outfile.Close();
+			}
+            dialog.Destroy();		
 						
 		}
 		
         void clear_history_item_Activated(object sender, EventArgs e)
 		{
-			Console.WriteLine("Clearing history");
+			Log("Clearing history");
 			ClearHistory();
 		}
 		
