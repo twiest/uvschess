@@ -63,6 +63,7 @@ namespace UvsChess.Gui
         ChessPlayer thread_player = null;
         ChessMove thread_move = null;
         ChessBoard thread_board = null;
+        TimeSpan thread_time = TimeSpan.MinValue;
 
         public delegate void PlayCompletedHandler();
         public event PlayCompletedHandler PlayCompleted;
@@ -679,7 +680,8 @@ namespace UvsChess.Gui
             ChessMove nextMove = null;
             DateTime start = DateTime.Now;
             bool isValidMove = false;
-            ChessState newstate = null;            
+            ChessState newstate = null;
+
 
             if (player.IsComputer)
             {
@@ -696,7 +698,8 @@ namespace UvsChess.Gui
                     isValidMove = true;
                 }
 
-                chessBoardControl.ResetBoard(newstate.CurrentBoard);
+                isValidMove = isValidMove && !isOverTime(player, thread_time, TurnWaitTime);
+
             }
             else //player is human
             {
@@ -711,27 +714,20 @@ namespace UvsChess.Gui
                     newstate = mainChessState.Clone();
                     newstate.MakeMove(nextMove);
                     isValidMove = opponent.AI.IsValidMove(newstate);
-
-                    if (!isValidMove)//reset the board
-                    {
-                        chessBoardControl.ResetBoard(mainChessState.CurrentBoard);                      
-                    }
                 }              
-            }        
+            }
+
+            if (isValidMove)//update the board
+            {
+                chessBoardControl.ResetBoard(newstate.CurrentBoard);
+            }
+            else //or reset the board
+            {
+                chessBoardControl.ResetBoard(mainChessState.CurrentBoard);
+            }
 
             
             AddToHistory(player.Color.ToString() + ": " + nextMove.ToString(), newstate.ToFenBoard());
-
-            //Check time
-            TimeSpan time = DateTime.Now - start;
-
-            time = new TimeSpan(0); //Don't check time yet
-            if ((time.Seconds > 5) && (player.IsComputer))
-            {
-                IsRunning = false;
-                Log("Too Much Time: Move timeout occurred!");
-            }
-
 
             if (isValidMove) 
             {
@@ -753,6 +749,7 @@ namespace UvsChess.Gui
                 {
                     mainChessState.HalfMoves++;
                 }
+
                 Log(mainChessState.ToFenBoard());
 
             }
@@ -834,6 +831,8 @@ namespace UvsChess.Gui
             //Add threading here. Wait n seconds then call ChessAI.EndTurn()
             ThreadStart job = new ThreadStart(threadedNextMove);
             Thread thread = new Thread(job);
+
+            DateTime startTime = DateTime.Now;
             thread.Start();
 
             Thread.Sleep(TurnWaitTime);//Time of turn
@@ -841,9 +840,8 @@ namespace UvsChess.Gui
             player.AI.EndTurn();
             thread.Join();
 
-            Console.WriteLine("{0} stopped",player.AIName);
-
-            //ChessMove nextMove = player.AI.GetNextMove(board, player.Color);
+            thread_time = DateTime.Now - startTime;
+            thread_time = DateTime.Now.Subtract(startTime);
 
             return thread_move;
         }
@@ -856,6 +854,22 @@ namespace UvsChess.Gui
 
         }
 
+        private bool isOverTime(ChessPlayer player, TimeSpan time,int limit)
+        {
+            bool isovertime = false;
+            Console.WriteLine("{0} stopped after {1:0} ms", player.AIName, time.TotalMilliseconds);
+
+            //do we need/want a buffer ?
+            limit += 1000;  //time buffer
+
+            if ((time.TotalMilliseconds > (double)limit) && (player.IsComputer))
+            {
+                isovertime = true;
+                Log("Too Much Time: Move timeout occurred!");
+            }
+            return isovertime;
+        }
+        
         void HumanMovedPieceEvent(ChessMove move)
         {
 
