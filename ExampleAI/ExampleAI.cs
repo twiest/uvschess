@@ -82,11 +82,12 @@ namespace ExampleAI
                     //myNextMove.To.Row = myNextMove.To.Row - 7;
                 //}
 
-                myNextMove = FindAMove(board, myColor);
+                //myNextMove = FindAMove(board, myColor);
 
-                if (myNextMove != null)
+                if (myNextMove == null)
                 {
-                    running = false;
+                    //running = false;
+                    myNextMove = FindAMove(board, myColor);
                 }
 
                 

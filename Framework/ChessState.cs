@@ -259,7 +259,7 @@ namespace UvsChess
         {
             if (EnPassant == null)
             {
-                return " -";
+                return " -"; //preceding space is important
             }
 
             char c = Convert.ToChar(EnPassant.Row + 97);

@@ -58,6 +58,11 @@ namespace UvsChess.Gui
         LogWindow whiteLogWindow = null;
         LogWindow blackLogWindow = null;
 
+        //These are for the threading involved with telling the AI to EndTurn
+        int TurnWaitTime = 5000;// time in milliseconds for each turn. 
+        ChessPlayer thread_player = null;
+        ChessMove thread_move = null;
+        ChessBoard thread_board = null;
 
         public delegate void PlayCompletedHandler();
         public event PlayCompletedHandler PlayCompleted;
@@ -76,7 +81,7 @@ namespace UvsChess.Gui
             Application.Run();
         }
 
-        public Program():base("UvsChess AI Framework --- http://uvschess.sourceforge.net/")
+        public Program():base("UvsChess AI Framework --- http://code.google.com/p/uvschess")
         {
            // Application.Init();
 
@@ -492,6 +497,8 @@ namespace UvsChess.Gui
 
         void new_item_Activated(object sender, EventArgs e)
         {
+            stop_item_Activated(null, null);
+            clear_history_item_Activated(null, null);
             Log("New game...");
             ResetBoard(ChessState.StartState);
         }
@@ -672,13 +679,11 @@ namespace UvsChess.Gui
             ChessMove nextMove = null;
             DateTime start = DateTime.Now;
             bool isValidMove = false;
-            ChessState newstate = null;
-            
+            ChessState newstate = null;            
 
             if (player.IsComputer)
             {
-                nextMove = player.AI.GetNextMove(mainChessState.CurrentBoard.Clone(), player.Color);
-                
+                nextMove = GetNextAIMove(player, mainChessState.CurrentBoard.Clone());                
 
                 newstate = mainChessState.Clone();
                 newstate.MakeMove(nextMove);
@@ -691,21 +696,12 @@ namespace UvsChess.Gui
                     isValidMove = true;
                 }
 
-                //update the gtk control
-
-                //chessBoardControl.MakeMove(nextMove);
-
-                //Gtk.Application.Invoke(delegate
-                //{
-                    //chessBoardControl.MakeMove(nextMove);
-                    chessBoardControl.ResetBoard(newstate.CurrentBoard);
-                //});
+                chessBoardControl.ResetBoard(newstate.CurrentBoard);
             }
             else //player is human
             {
                 while (!isValidMove)
                 {
-                    //chessBoardControl.IsLocked = false;
                     chessBoardControl.IsLocked = false;
                     
                     nextMove = GetNextHumanMove();
@@ -718,13 +714,10 @@ namespace UvsChess.Gui
 
                     if (!isValidMove)//reset the board
                     {
-                        chessBoardControl.ResetBoard(mainChessState.CurrentBoard);
-                      
+                        chessBoardControl.ResetBoard(mainChessState.CurrentBoard);                      
                     }
                 }              
-            }
-
-            
+            }        
 
             
             AddToHistory(player.Color.ToString() + ": " + nextMove.ToString(), newstate.ToFenBoard());
@@ -831,6 +824,36 @@ namespace UvsChess.Gui
             pieceMovedEvent.WaitOne();
 
             return humanMove;
+        }
+
+        ChessMove GetNextAIMove(ChessPlayer player, ChessBoard board)
+        {
+            thread_player = player;
+            thread_board = board;
+
+            //Add threading here. Wait n seconds then call ChessAI.EndTurn()
+            ThreadStart job = new ThreadStart(threadedNextMove);
+            Thread thread = new Thread(job);
+            thread.Start();
+
+            Thread.Sleep(TurnWaitTime);//Time of turn
+
+            player.AI.EndTurn();
+            thread.Join();
+
+            Console.WriteLine("{0} stopped",player.AIName);
+
+            //ChessMove nextMove = player.AI.GetNextMove(board, player.Color);
+
+            return thread_move;
+        }
+        private void threadedNextMove()
+        {
+            ChessPlayer player = thread_player;
+            ChessMove nextMove = player.AI.GetNextMove(thread_board, player.Color);
+
+            thread_move = nextMove;
+
         }
 
         void HumanMovedPieceEvent(ChessMove move)
