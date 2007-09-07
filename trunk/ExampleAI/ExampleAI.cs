@@ -86,8 +86,8 @@ namespace ExampleAI
 
                 if (myNextMove == null)
                 {
-                    //running = false;
                     myNextMove = FindAMove(board, myColor);
+                    running = false;
                 }
 
                 
