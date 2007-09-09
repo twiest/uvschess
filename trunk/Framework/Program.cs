@@ -991,7 +991,7 @@ namespace UvsChess.Gui
         }
 
         #endregion
-
+        
         #region Helpers
 
         void OnUserQuit(object o, EventArgs args)
