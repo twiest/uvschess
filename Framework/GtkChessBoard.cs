@@ -42,6 +42,7 @@ namespace UvsChess.Gui
         Pixbuf[] piecePixbufs;
         ChessBoard _currentBoard;
         Gdk.Size tileSize = new Size(-1, -1);
+        Gdk.Size borderSize = new Size(80, 80);
         ChessLocation pieceStartLocation = new ChessLocation(-1, -1);
         Gdk.Point mouseLocation = new Point(-1, -1);
         bool isButtonDepressed = false;
@@ -109,7 +110,8 @@ namespace UvsChess.Gui
             this.Events |= Gdk.EventMask.ExposureMask | Gdk.EventMask.ButtonPressMask |
                            Gdk.EventMask.ButtonReleaseMask | Gdk.EventMask.PointerMotionMask;
 
-            this.SetSizeRequest(tileSize.Width * ChessBoard.NumberOfColumns, tileSize.Height * ChessBoard.NumberOfRows);
+            this.SetSizeRequest(borderSize.Width + (tileSize.Width * ChessBoard.NumberOfColumns),
+                                borderSize.Height + (tileSize.Height * ChessBoard.NumberOfRows));
         }
 
         private void OnMotionNotifyEvent(object o, MotionNotifyEventArgs args)
@@ -130,19 +132,23 @@ namespace UvsChess.Gui
 
             if (args.Event.Button == 1)
             {
-                if (((int)args.Event.X > tileSize.Width * ChessBoard.NumberOfColumns)||
-                    ((int)args.Event.Y > tileSize.Height * ChessBoard.NumberOfRows))
+                if (((int)args.Event.X <= borderSize.Width) ||
+                    ((int)args.Event.Y <= borderSize.Height) ||
+                    ((int)args.Event.X >= borderSize.Width + (tileSize.Width * ChessBoard.NumberOfColumns)) ||
+                    ((int)args.Event.Y >= borderSize.Height + (tileSize.Height * ChessBoard.NumberOfRows)))
                 {
                     return;
                 }
-                pieceStartLocation = new ChessLocation((int)args.Event.X, (int)args.Event.Y, tileSize.Width, tileSize.Height);
+                pieceStartLocation = new ChessLocation(((int)args.Event.X) - borderSize.Width, 
+                                                       ((int)args.Event.Y) - borderSize.Height, 
+                                                       tileSize.Width, tileSize.Height);
 
                 if (! _currentBoard.IsTileEmpty(pieceStartLocation))
                 {
                     isButtonDepressed = true;
 
-                    int x = pieceStartLocation.Column * tileSize.Width;
-                    int y = pieceStartLocation.Row * tileSize.Height;
+                    int x = borderSize.Width + (pieceStartLocation.Column * tileSize.Width);
+                    int y = borderSize.Height + (pieceStartLocation.Row * tileSize.Height);
                     Pixbuf tile;
 
                     if (isLightBackground[pieceStartLocation.Row, pieceStartLocation.Column])
@@ -160,8 +166,9 @@ namespace UvsChess.Gui
                                             Gdk.RgbDither.None, 0, 0);
 
                     //take snapshot of current board with out the active piece
-                    savedChessBoardImage = this.GdkWindow.GetImage(0, 0, tileSize.Width * ChessBoard.NumberOfColumns, 
-                                                                 tileSize.Height * ChessBoard.NumberOfRows);
+                    savedChessBoardImage = this.GdkWindow.GetImage(borderSize.Width, borderSize.Height,
+                                                                   tileSize.Width * ChessBoard.NumberOfColumns,
+                                                                   tileSize.Height * ChessBoard.NumberOfRows);
 
                     // Make the mouse ptr invisible
                     args.Event.Window.Cursor = new Cursor(this.Display, emptyMousePointer, 0, 0);
@@ -187,7 +194,8 @@ namespace UvsChess.Gui
                 ChessMove newMove = new ChessMove();
 
                 newMove.From = new ChessLocation(pieceStartLocation.Row, pieceStartLocation.Column);
-                newMove.To = new ChessLocation((int)args.Event.X, (int)args.Event.Y, tileSize.Width, tileSize.Height);
+                newMove.To = new ChessLocation(((int)args.Event.X) - borderSize.Width, ((int)args.Event.Y) - borderSize.Width,
+                                               tileSize.Width, tileSize.Height);
                 newMove.Flag = ChessFlag.NoFlag;
 
                 if (newMove.From != newMove.To)
@@ -220,7 +228,7 @@ namespace UvsChess.Gui
             this.GdkWindow.BeginPaintRegion(this.GdkWindow.VisibleRegion);
             if (isButtonDepressed)
             {
-                this.GdkWindow.DrawImage(this.Style.WhiteGC, savedChessBoardImage, 0, 0, 0, 0, 
+                this.GdkWindow.DrawImage(this.Style.WhiteGC, savedChessBoardImage, 0, 0, borderSize.Width, borderSize.Height, 
                                          savedChessBoardImage.Width, savedChessBoardImage.Height);
             }
             else
@@ -235,8 +243,8 @@ namespace UvsChess.Gui
                         {
                             if (_currentBoard[curRow, curCol] != ChessPiece.Empty)
                             {
-                                int x = curCol * tileSize.Width;
-                                int y = curRow * tileSize.Height;
+                                int x = borderSize.Width + (curCol * tileSize.Width);
+                                int y = borderSize.Height + (curRow * tileSize.Height);
 
                                 this.GdkWindow.DrawPixbuf(this.Style.BlackGC, piecePixbufs[(int)_currentBoard[curRow, curCol]],
                                                         0, 0, x, y, tileSize.Width, tileSize.Height,
@@ -278,8 +286,8 @@ namespace UvsChess.Gui
                         {
                             isLightBackground[curRow, curCol] = true;
 
-                            int x = curCol * tileSize.Width;
-                            int y = curRow * tileSize.Height;
+                            int x = borderSize.Width + (curCol * tileSize.Width);
+                            int y = borderSize.Height + (curRow * tileSize.Height);
                             this.GdkWindow.DrawPixbuf(this.Style.WhiteGC, lightBackground, 0, 0, x, y, tileSize.Width,
                                                     tileSize.Height, Gdk.RgbDither.None, 0, 0);
                         }
@@ -287,8 +295,8 @@ namespace UvsChess.Gui
                         {
                             isLightBackground[curRow, curCol] = false;
 
-                            int x = curCol * (int)tileSize.Width;
-                            int y = curRow * (int)tileSize.Height;
+                            int x = borderSize.Width + (curCol * tileSize.Width);
+                            int y = borderSize.Height + (curRow * tileSize.Height);
                             this.GdkWindow.DrawPixbuf(this.Style.BlackGC, darkBackground, 0, 0, x, y, tileSize.Width,
                                                     tileSize.Height, Gdk.RgbDither.None, 0, 0);
                         }
@@ -300,12 +308,13 @@ namespace UvsChess.Gui
                 }
 
                 //take snapshot of chess board after it's drawn
-                chessBoardImage = this.GdkWindow.GetImage(0, 0, tileSize.Width * ChessBoard.NumberOfColumns, 
+                chessBoardImage = this.GdkWindow.GetImage(borderSize.Width, borderSize.Height, tileSize.Width * ChessBoard.NumberOfColumns, 
                                                              tileSize.Height * ChessBoard.NumberOfRows);
             }
             else
             {
-                this.GdkWindow.DrawImage(this.Style.WhiteGC, chessBoardImage, 0, 0, 0, 0, chessBoardImage.Width, chessBoardImage.Height);
+                this.GdkWindow.DrawImage(this.Style.WhiteGC, chessBoardImage, 0, 0, 
+                                         borderSize.Width, borderSize.Height, chessBoardImage.Width, chessBoardImage.Height);
             }
         }
 

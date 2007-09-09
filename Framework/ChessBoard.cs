@@ -40,9 +40,6 @@ namespace UvsChess
         #endregion
 
         #region Constructors
-        // TODO: Have a constructor that can construct off of a FEN board
-        // TODO: Have a .ToFen() method.
-
         public ChessBoard()
         {
             _board = new ChessPiece[NumberOfRows, NumberOfColumns];
@@ -54,6 +51,12 @@ namespace UvsChess
         #endregion
 
         #region Properties and Indexers
+        /// <summary>
+        /// Gets or sets the piece on the board in a specified location; 0,0 is the upper left hand corner of the board.
+        /// </summary>
+        /// <param name="row">Row of the desired piece location</param>
+        /// <param name="col">Column of the desired piece location</param>
+        /// <returns></returns>
         public ChessPiece this[int row, int col]
         {
             get { return _board[row, col]; }
