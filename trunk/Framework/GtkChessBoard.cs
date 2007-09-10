@@ -38,11 +38,13 @@ namespace UvsChess.Gui
         const int numberOfChessPieces = 13;
         Pixbuf lightBackground;
         Pixbuf emptyMousePointer;
+        Pixbuf emptyBorderTile;
         Pixbuf darkBackground;
         Pixbuf[] piecePixbufs;
+        Pixbuf[] borderPixbufs;
         ChessBoard _currentBoard;
         Gdk.Size tileSize = new Size(-1, -1);
-        Gdk.Size borderSize = new Size(80, 80);
+        Gdk.Size borderSize = new Size(-1, -1);
         ChessLocation pieceStartLocation = new ChessLocation(-1, -1);
         Gdk.Point mouseLocation = new Point(-1, -1);
         bool isButtonDepressed = false;
@@ -70,10 +72,32 @@ namespace UvsChess.Gui
 
         public GtkChessBoard(ChessBoard initialBoard)
         {
-            _currentBoard = initialBoard;                        
-           
-            //Load PixBufs
-            piecePixbufs = new Pixbuf[numberOfChessPieces];
+            _currentBoard = initialBoard;
+
+            //Load the border images
+            borderPixbufs = new Pixbuf[ChessBoard.NumberOfRows];
+            for (int curBorderImageNum = 0; curBorderImageNum < ChessBoard.NumberOfRows; curBorderImageNum++ )
+            {
+                string imageName = "UvsChess.Images.Border_" + curBorderImageNum.ToString() + ".png";
+                Program.Log("Loading image: " + imageName);
+
+                borderPixbufs[curBorderImageNum] = new Pixbuf(null, imageName);
+
+                if (borderSize.Width == -1)
+                    borderSize.Width = borderPixbufs[curBorderImageNum].Width;
+
+                if (borderSize.Height == -1)
+                    borderSize.Height = borderPixbufs[curBorderImageNum].Height;
+
+                if ((borderSize.Width != borderPixbufs[curBorderImageNum].Width) ||
+                    (borderSize.Height != borderPixbufs[curBorderImageNum].Height))
+                {
+                    throw new Exception("Not all of the border images have the same dimensions!");
+                }
+            }
+      
+            //Load the piece images
+            piecePixbufs = new Pixbuf[numberOfChessPieces];            
             for (ChessPiece i = 0; (int)i < numberOfChessPieces; ++i)
             {
                 if (i != ChessPiece.Empty)
@@ -93,14 +117,16 @@ namespace UvsChess.Gui
                     if ( (tileSize.Width != piecePixbufs[(int)i].Width) ||
                          (tileSize.Height != piecePixbufs[(int)i].Height))
                     {
-                        throw new Exception("Not all of the images have the same dimensions!");
+                        throw new Exception("Not all of the piece images have the same dimensions!");
                     }
                 }
             }
 
             emptyMousePointer = new Pixbuf(null,"UvsChess.Images.Empty_1x1_Mouse_Cursor.png"); 
             lightBackground = new Pixbuf(null,"UvsChess.Images.Chess_LightBackground.png"); 
-            darkBackground = new Pixbuf(null,"UvsChess.Images.Chess_DarkBackground.png");            
+            darkBackground = new Pixbuf(null,"UvsChess.Images.Chess_DarkBackground.png");
+            emptyBorderTile = new Pixbuf(null, "UvsChess.Images.Border_Empty.png");
+
 
             this.ButtonPressEvent += new ButtonPressEventHandler(OnButtonPressEvent);
             this.ButtonReleaseEvent += new ButtonReleaseEventHandler(OnButtonReleaseEvent);
@@ -166,9 +192,9 @@ namespace UvsChess.Gui
                                             Gdk.RgbDither.None, 0, 0);
 
                     //take snapshot of current board with out the active piece
-                    savedChessBoardImage = this.GdkWindow.GetImage(borderSize.Width, borderSize.Height,
-                                                                   tileSize.Width * ChessBoard.NumberOfColumns,
-                                                                   tileSize.Height * ChessBoard.NumberOfRows);
+                    savedChessBoardImage = this.GdkWindow.GetImage(0, 0,
+                                                                   borderSize.Width + (tileSize.Width * ChessBoard.NumberOfColumns),
+                                                                   borderSize.Height + (tileSize.Height * ChessBoard.NumberOfRows));
 
                     // Make the mouse ptr invisible
                     args.Event.Window.Cursor = new Cursor(this.Display, emptyMousePointer, 0, 0);
@@ -228,7 +254,7 @@ namespace UvsChess.Gui
             this.GdkWindow.BeginPaintRegion(this.GdkWindow.VisibleRegion);
             if (isButtonDepressed)
             {
-                this.GdkWindow.DrawImage(this.Style.WhiteGC, savedChessBoardImage, 0, 0, borderSize.Width, borderSize.Height, 
+                this.GdkWindow.DrawImage(this.Style.WhiteGC, savedChessBoardImage, 0, 0, 0,0, 
                                          savedChessBoardImage.Width, savedChessBoardImage.Height);
             }
             else
@@ -277,6 +303,23 @@ namespace UvsChess.Gui
             //Draw the chess tiles once and save as chessBoardImage
             if (chessBoardImage == null)
             {
+                // draw the border numbers
+
+                this.GdkWindow.DrawPixbuf(this.Style.BlackGC, emptyBorderTile, 0, 0, 0, 0,
+                    borderSize.Width, borderSize.Height, Gdk.RgbDither.None, 0, 0);
+
+                for (int curBorderLabel = 0; curBorderLabel < ChessBoard.NumberOfRows; curBorderLabel++)
+                {
+                    int x = borderSize.Width + (curBorderLabel * borderSize.Width);
+                    int y = borderSize.Height + (curBorderLabel * borderSize.Height);
+
+                    this.GdkWindow.DrawPixbuf(this.Style.BlackGC, borderPixbufs[curBorderLabel], 0, 0, x, 0,
+                                              borderSize.Width, borderSize.Height, Gdk.RgbDither.None, 0, 0);
+
+                    this.GdkWindow.DrawPixbuf(this.Style.BlackGC, borderPixbufs[curBorderLabel], 0, 0, 0, y,
+                                              borderSize.Width, borderSize.Height, Gdk.RgbDither.None, 0, 0);
+                }
+
                 bool drawLightSquare = true;
                 for (int curRow = 0; curRow < ChessBoard.NumberOfRows; curRow++)
                 {
@@ -308,13 +351,14 @@ namespace UvsChess.Gui
                 }
 
                 //take snapshot of chess board after it's drawn
-                chessBoardImage = this.GdkWindow.GetImage(borderSize.Width, borderSize.Height, tileSize.Width * ChessBoard.NumberOfColumns, 
-                                                             tileSize.Height * ChessBoard.NumberOfRows);
+                chessBoardImage = this.GdkWindow.GetImage(0, 0, 
+                                                          borderSize.Width + (tileSize.Width * ChessBoard.NumberOfColumns),
+                                                          borderSize.Height + (tileSize.Height * ChessBoard.NumberOfRows));
             }
             else
             {
                 this.GdkWindow.DrawImage(this.Style.WhiteGC, chessBoardImage, 0, 0, 
-                                         borderSize.Width, borderSize.Height, chessBoardImage.Width, chessBoardImage.Height);
+                                         0,0, chessBoardImage.Width, chessBoardImage.Height);
             }
         }
 
