@@ -59,7 +59,7 @@ namespace UvsChess.Gui
         LogWindow blackLogWindow = null;
 
         //These are for the threading involved with telling the AI to EndTurn
-        int TurnWaitTime = 5000;// time in milliseconds for each turn. 
+        //int TurnWaitTime = 5000;// time in milliseconds for each turn. 
         ChessPlayer thread_player = null;
         ChessMove thread_move = null;
         ChessBoard thread_board = null;
@@ -146,6 +146,7 @@ namespace UvsChess.Gui
 
             WhitePlayer = new ChessPlayer(ChessColor.White);
             BlackPlayer = new ChessPlayer(ChessColor.Black);
+            UserPrefs.Load();
             this.ShowAll();
 
 
@@ -237,15 +238,19 @@ namespace UvsChess.Gui
             MenuItem new_item = new MenuItem("New");
             MenuItem start_item = new MenuItem("Start");
             MenuItem stop_item = new MenuItem("Stop");
+            MenuItem preferences_item = new MenuItem("Preferences");
             new_item.WidthRequest = 100;
 
             mnuGame.Append(new_item);
             mnuGame.Append(start_item);
             mnuGame.Append(stop_item);
+            mnuGame.Append(preferences_item);
             
             start_item.Activated += new EventHandler(start_item_Activated);
             stop_item.Activated += new EventHandler(stop_item_Activated);
             new_item.Activated += new EventHandler(new_item_Activated);
+            preferences_item.Activated += new EventHandler(preferences_item_Activated);
+
 
             //TODO: What hot-keys should we use for this menu? Keys that are close together, I think.
             // New      Ctrl+n
@@ -255,10 +260,12 @@ namespace UvsChess.Gui
             AccelMap.AddEntry("<UvsChess>/Game/New", (uint)Gdk.Key.n, ModifierType.ControlMask);
             AccelMap.AddEntry("<UvsChess>/Game/Start", (uint)Gdk.Key.r, ModifierType.ControlMask);
             AccelMap.AddEntry("<UvsChess>/Game/Stop", (uint)Gdk.Key.t, ModifierType.ControlMask);
+            AccelMap.AddEntry("<UvsChess>/Game/Preferences", (uint)Gdk.Key.p, ModifierType.ControlMask);
 
             new_item.SetAccelPath("<UvsChess>/Game/New", mainGroup);
             start_item.SetAccelPath("<UvsChess>/Game/Start", mainGroup);
-            stop_item.SetAccelPath("<UvsChess>/Game/Stop", mainGroup);  
+            stop_item.SetAccelPath("<UvsChess>/Game/Stop", mainGroup);
+            preferences_item.SetAccelPath("<UvsChess>/Game/Preferences", mainGroup);
 
             gameItem.Submenu = mnuGame;
             return gameItem;
@@ -496,6 +503,7 @@ namespace UvsChess.Gui
 
         #region Menu handlers
 
+        #region Game menu
         void new_item_Activated(object sender, EventArgs e)
         {
             stop_item_Activated(null, null);
@@ -523,6 +531,20 @@ namespace UvsChess.Gui
             StartGame();
         }
 
+        void preferences_item_Activated(object sender, EventArgs e)
+        {
+            PreferencesGUI prefs = new PreferencesGUI();
+            //prefs.Show();
+
+
+            int result = prefs.Run();
+            
+            
+            prefs.Destroy();
+        }
+        #endregion
+
+        #region File menu
         void save_item_Activated(object sender, EventArgs e)
         {
 
@@ -583,7 +605,9 @@ namespace UvsChess.Gui
             }
             dialog.Destroy();
         }
+        #endregion
 
+        #region History menu
         void load_history_item_Activated(object sender, EventArgs e)
 		{
 			Log("Loading history");
@@ -633,13 +657,9 @@ namespace UvsChess.Gui
 		{
 			Log("Clearing history");
 			ClearHistory();
-		}
-		
-        //void exit_item_Activated(object o, ClientEventArgs args)
-        //{
-        //    Log("Exiting game...");
-        //    Application.Quit();
-        //}
+        }
+
+        #endregion
 
         #endregion
 
@@ -698,7 +718,9 @@ namespace UvsChess.Gui
                     isValidMove = true;
                 }
 
-                isValidMove = isValidMove && !isOverTime(player, thread_time, TurnWaitTime);
+                //isValidMove = isValidMove && !isOverTime(player, thread_time, TurnWaitTime);
+                //isValidMove = isValidMove && !isOverTime(player, thread_time, PreferencesGUI.TurnLength);
+                isValidMove = isValidMove && !isOverTime(player, thread_time, UserPrefs.Time);
 
             }
             else //player is human
@@ -835,7 +857,8 @@ namespace UvsChess.Gui
             DateTime startTime = DateTime.Now;
             thread.Start();
 
-            Thread.Sleep(TurnWaitTime);//Time of turn
+            //Thread.Sleep(TurnWaitTime);//Time of turn
+            Thread.Sleep(UserPrefs.Time);
 
             player.AI.EndTurn();
             thread.Join();
