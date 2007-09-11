@@ -77,6 +77,10 @@ namespace UvsChess.Gui
 
         static void Main(string[] args)
         {
+            //object o = "hello";
+            //((string)o) = "goodbye";
+
+
             Application.Init();
             new Program();            
             Application.Run();
@@ -698,7 +702,7 @@ namespace UvsChess.Gui
         {
             
             ChessMove nextMove = null;
-            DateTime start = DateTime.Now;
+            //DateTime start = DateTime.Now;
             bool isValidMove = false;
             ChessState newstate = null;
 

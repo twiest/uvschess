@@ -10,6 +10,8 @@ namespace UvsChess
         private static string TIME = "time";
         private static string GRACEPERIOD = "graceperiod";
 
+        private static int time_default = 5000;
+        private static int grace_default = 1000;
 
         static string _filename;
         static Dictionary<string, string> items = null;
@@ -46,6 +48,12 @@ namespace UvsChess
         {
             FileName = filename;
             items = new Dictionary<string, string>();
+            if (!File.Exists(FileName))
+            {
+                Time = time_default;
+                GracePeriod = grace_default;
+                return;
+            }
             StreamReader infile = new StreamReader(FileName);
 
             string line = infile.ReadLine();

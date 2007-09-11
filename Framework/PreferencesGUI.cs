@@ -29,6 +29,8 @@ namespace UvsChess.Gui
             //TextBuffer time_buffer = new TextBuffer(new TextTagTable());
             time_buffer = new TextBuffer(new TextTagTable());
             TextView time_view = new TextView(time_buffer);
+            time_view.AcceptsTab = false;
+            
             //hbox_time.PackStart(time_view);
 
             table.Attach(lblTime, 0, 1, 0, 1, AttachOptions.Fill, AttachOptions.Fill, 5, 5);
@@ -41,6 +43,7 @@ namespace UvsChess.Gui
             //TextBuffer grace_buffer = new TextBuffer(new TextTagTable());
             grace_buffer = new TextBuffer(new TextTagTable());
             TextView grace_view = new TextView(grace_buffer);
+            grace_view.AcceptsTab = false;
             //hbox_grace.PackStart(grace_view);
             
             table.Attach(lblGrace, 0, 1, 1, 2, AttachOptions.Fill, AttachOptions.Fill, 5, 5);
@@ -67,13 +70,14 @@ namespace UvsChess.Gui
         {
             ResponseType response = args.ResponseId;
             
-            if ((ResponseType)response == ResponseType.Ok)
+            if (response == ResponseType.Ok)
             {
                 Program.Log("OK clicked");
                 string str_time = time_buffer.Text;
                 string str_grace = grace_buffer.Text;
                 try
                 {
+                    //throw new Exception();
                     double time = Convert.ToDouble(str_time);
                     UserPrefs.Time = (int)(time * 1000);
 
@@ -87,7 +91,7 @@ namespace UvsChess.Gui
                 catch
                 {
                     Console.WriteLine("Invalid values for preferences");
-                    (ResponseType)response = ResponseType.Reject;                    
+                    response = ResponseType.Reject;                    
                 }
             }
             else
