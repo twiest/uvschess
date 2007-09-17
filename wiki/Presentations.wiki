@@ -1,0 +1,16 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+On this page you will be able to download the presentation materials for UVSChess.
+
+
+= Presentations =
+
+Computer Chess:
+  * [http://uvschess.googlecode.com/files/Computer_Chess_AI.odp Computer Chess AI]
+
+
+ 
+ 
+ 
