@@ -219,7 +219,7 @@ namespace UvsChess
                             c = 'k';
                             break;
                         case ChessPiece.Empty:
-                            spaces++;
+                            ++spaces;
                             continue;
                         //break;
                         default:
