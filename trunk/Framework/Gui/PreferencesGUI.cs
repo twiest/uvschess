@@ -1,3 +1,4 @@
+#if USE_GTK
 using System;
 using System.Collections.Generic;
 using Gtk;
@@ -10,17 +11,14 @@ namespace UvsChess.Gui
         private TextBuffer grace_buffer = null;
         private TextBuffer time_buffer = null;
 
-        //private static int _graceperiod = 1000;//This is in milliseconds
-        //private static int _turnlength = 5000; // this is the length of each turn (in milliseconds)
-
         public PreferencesGUI()
         {
             this.Title = "UvsChess Preferences";
             this.Modal = true;
 
             Table table = new Table(2, 2, true);
-            VBox vertbox = new VBox();
-            this.Add(vertbox);
+            //VBox vertbox = new VBox();
+            //this.Add(vertbox);
 
             //HBox hbox_time = new HBox();
             Label lblTime = new Label("Length of turn (seconds)");
@@ -101,3 +99,5 @@ namespace UvsChess.Gui
         }
     }
 }
+
+#endif
