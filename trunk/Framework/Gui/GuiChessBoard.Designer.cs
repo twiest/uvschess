@@ -28,18 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GuiChessBoard));
-            this.chessImages = new System.Windows.Forms.ImageList(this.components);
             this.SuspendLayout();
-            // 
-            // chessImages
-            // 
-            this.chessImages.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("chessImages.ImageStream")));
-            this.chessImages.TransparentColor = System.Drawing.Color.Transparent;
-            this.chessImages.Images.SetKeyName(0, "Chess_LightBackground.png");
-            this.chessImages.Images.SetKeyName(1, "Chess_DarkBackground.png");
-            this.chessImages.Images.SetKeyName(2, "ChessPiece_BlackRook.png");
             // 
             // GuiChessBoard
             // 
@@ -53,6 +42,5 @@
 
         #endregion
 
-        private System.Windows.Forms.ImageList chessImages;
     }
 }

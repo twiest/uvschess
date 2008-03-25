@@ -40,12 +40,14 @@ namespace UvsChess
         #endregion
 
         #region Constructors
-        public ChessBoard()
+        public ChessBoard():this(ChessState.StartState)
+        {            
+        }
+
+        public ChessBoard(string fenBoard)
         {
             _board = new ChessPiece[NumberOfRows, NumberOfColumns];
-        }
-        public ChessBoard(string fenBoard):this()
-        {
+
             FromFenBoard(fenBoard);
         }
         #endregion
@@ -99,9 +101,13 @@ namespace UvsChess
             return (_board[location.Row, location.Column] == ChessPiece.Empty);
         }
 
+        /// <summary>
+        /// This function accepts a full fen board and sets the ChessBoard object to that state.
+        /// </summary>
+        /// <param name="fenBoard"></param>
         public void FromFenBoard(string fenBoard)
         {
-            string[] lines = fenBoard.Split('/');
+            string[] lines = fenBoard.Split(' ')[0].Split('/');
             int spaces = 0;
 
             for (int row = 0; row < ChessBoard.NumberOfRows; ++row)

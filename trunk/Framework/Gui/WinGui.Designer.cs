@@ -65,7 +65,7 @@
             this.historyToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(682, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1016, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -166,8 +166,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.guiChessBoard1);
-            this.splitContainer1.Size = new System.Drawing.Size(682, 458);
-            this.splitContainer1.SplitterDistance = 226;
+            this.splitContainer1.Size = new System.Drawing.Size(1016, 647);
+            this.splitContainer1.SplitterDistance = 336;
             this.splitContainer1.TabIndex = 1;
             // 
             // cmbBlack
@@ -177,7 +177,7 @@
             this.cmbBlack.FormattingEnabled = true;
             this.cmbBlack.Location = new System.Drawing.Point(71, 33);
             this.cmbBlack.Name = "cmbBlack";
-            this.cmbBlack.Size = new System.Drawing.Size(152, 21);
+            this.cmbBlack.Size = new System.Drawing.Size(262, 21);
             this.cmbBlack.TabIndex = 4;
             this.cmbBlack.SelectedIndexChanged += new System.EventHandler(this.cmbBlack_SelectedIndexChanged);
             // 
@@ -210,7 +210,7 @@
             this.cmbWhite.FormattingEnabled = true;
             this.cmbWhite.Location = new System.Drawing.Point(71, 6);
             this.cmbWhite.Name = "cmbWhite";
-            this.cmbWhite.Size = new System.Drawing.Size(152, 21);
+            this.cmbWhite.Size = new System.Drawing.Size(262, 21);
             this.cmbWhite.TabIndex = 1;
             // 
             // lstHistory
@@ -221,7 +221,7 @@
             this.lstHistory.FormattingEnabled = true;
             this.lstHistory.Location = new System.Drawing.Point(12, 65);
             this.lstHistory.Name = "lstHistory";
-            this.lstHistory.Size = new System.Drawing.Size(211, 381);
+            this.lstHistory.Size = new System.Drawing.Size(321, 563);
             this.lstHistory.TabIndex = 0;
             // 
             // openFileDialog1
@@ -240,19 +240,22 @@
             this.guiChessBoard1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.guiChessBoard1.Location = new System.Drawing.Point(0, 0);
             this.guiChessBoard1.Name = "guiChessBoard1";
-            this.guiChessBoard1.Size = new System.Drawing.Size(452, 458);
+            this.guiChessBoard1.Size = new System.Drawing.Size(676, 647);
             this.guiChessBoard1.TabIndex = 0;
             // 
             // WinGui
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(682, 482);
+            this.ClientSize = new System.Drawing.Size(1016, 671);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "WinGui";
-            this.Text = "WinGui";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "UvsChess - © Rusty Howell and Thomas Wiest";
+            this.TopMost = true;
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.WinGui_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
