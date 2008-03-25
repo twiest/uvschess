@@ -219,7 +219,8 @@ namespace UvsChess
         public void FromFenBoard(string fenBoard)
         {            
             string[] lines = fenBoard.Split(' ');
-            CurrentBoard = new ChessBoard(lines[0]);
+
+            CurrentBoard = new ChessBoard(fenBoard);
 
             if (lines[1] == "w")
             {
