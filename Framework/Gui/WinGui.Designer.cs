@@ -1,5 +1,4 @@
-﻿#if !USE_GTK
-namespace UvsChess.Gui
+﻿namespace UvsChess.Gui
 {
     partial class WinGui
     {
@@ -282,5 +281,3 @@ namespace UvsChess.Gui
         private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
-
-#endif

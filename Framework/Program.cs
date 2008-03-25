@@ -1,6 +1,6 @@
 /******************************************************************************
 * The MIT License
-* Copyright (c) 2006 Rusty Howell, Thomas Wiest
+* Copyright (c) 2008 Rusty Howell, Thomas Wiest
 *
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
@@ -25,34 +25,18 @@
 // 		Thomas Wiest  twiest@users.sourceforge.net
 //		Rusty Howell  rhowell@users.sourceforge.net
 
+
 using System;
 using UvsChess;
-
 
 namespace UvsChess.Gui
 {
     public class Program
     {
-
+        [STAThread]
         static void Main(string[] args)
         {
-
-#if USE_GTK
-            Gtk.Application.Init();
-            new GtkGui();  
-            Gtk.Application.Run();          
-#else
-
             System.Windows.Forms.Application.Run(new WinGui());
-#endif
-
         }
-        /*
-        public static void Log(string message)
-        {
-            Console.WriteLine(message);
-        }
-        */
-    }
-    
+    }    
 }
