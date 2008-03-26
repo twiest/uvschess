@@ -20,6 +20,7 @@ namespace UvsChess.Gui
         int _verticalBorderWidth;
         bool _boardChanged = true;
         bool _isDraggingPiece = false;
+        bool _isLocked = false;
         int _mouseX;
         int _mouseY;
 
@@ -247,6 +248,12 @@ namespace UvsChess.Gui
             }
         }
 
+        public bool IsLocked
+        {
+            get { return _isLocked; }
+            set { _isLocked = value; }
+        }
+
         private void OnPaint(object sender, PaintEventArgs e)
         {            
             if (_boardChanged)
@@ -266,7 +273,8 @@ namespace UvsChess.Gui
 
         private void OnMouseDown(object sender, MouseEventArgs e)
         {
-            if ( (e.Button == MouseButtons.Left) &&
+            if ( (! IsLocked) &&
+                 (e.Button == MouseButtons.Left) &&
                  (e.X > _verticalBorderWidth) &&
                  (e.Y > _horizontalBorderHeight) &&
                  (e.X < _boardWidth) &&
