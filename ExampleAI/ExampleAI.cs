@@ -158,7 +158,6 @@ namespace ExampleAI
 
             // If I couldn't find a valid move easily, 
             // I'll just create an empty move.
-            throw new Exception();
             newMove = new ChessMove();
 
             this.Log("ExampleAI just moved");
