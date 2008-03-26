@@ -73,7 +73,7 @@ namespace UvsChess
 
         public override string ToString()
         {
-            return "From: [" + this.From.Row + ", " + this.From.Column + "]   To: [" + this.To.Row + ", " + this.To.Column + "]";
+            return "From: [" + this.From.X + ", " + this.From.Y + "]   To: [" + this.To.X + ", " + this.To.Y + "]";
         }
     }
 }

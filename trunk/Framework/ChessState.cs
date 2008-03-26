@@ -263,8 +263,8 @@ namespace UvsChess
                 return " -"; //preceding space is important
             }
 
-            char c = Convert.ToChar(EnPassant.Row + 97);
-            string enp = " " + c + EnPassant.Column.ToString();
+            char c = Convert.ToChar(EnPassant.Y + 97);
+            string enp = " " + c + EnPassant.X.ToString();
 
             return enp;           
         }

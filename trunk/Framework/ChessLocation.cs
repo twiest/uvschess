@@ -35,8 +35,8 @@ namespace UvsChess
     public class ChessLocation
     {
         #region Members
-        private int _row;
-        private int _column;
+        private int _x;
+        private int _y;
         #endregion
 
         #region Constructors
@@ -45,30 +45,30 @@ namespace UvsChess
         {
         }
 
-        public ChessLocation(int row, int column)
+        public ChessLocation(int x, int y)
         {
-            Row = row;
-            Column = column;
+            X = x;
+            Y = y;
         }
         #endregion
 
         #region Properties and Indexers
         /// <summary>
-        /// Row number. Ranges from 0 - 7
+        /// Column number. Ranges from 0 - 7
         /// </summary>
-        public int Row
+        public int X
         {
-            get { return _row; }
-            set { _row = value; }
+            get { return _x; }
+            set { _x = value; }
         }
 
         /// <summary>
-        /// Column number. Ranges from 0 - 7
+        /// Row number. Ranges from 0 - 7
         /// </summary>
-        public int Column
+        public int Y
         {
-            get { return _column; }
-            set { _column = value; }
+            get { return _y; }
+            set { _y = value; }
         }
 
         /// <summary>
@@ -78,8 +78,8 @@ namespace UvsChess
         {
             get
             {
-                return ((Row >= 0) && (Row < ChessBoard.NumberOfRows) &&
-                         (Column >= 0) && (Column < ChessBoard.NumberOfColumns));
+                return ((X >= 0) && (X < ChessBoard.NumberOfColumns) &&
+                         (Y >= 0) && (Y < ChessBoard.NumberOfRows));
             }
         }
         #endregion
@@ -87,7 +87,7 @@ namespace UvsChess
         #region Methods and Operators
         public ChessLocation Clone()
         {
-            return new ChessLocation(this.Row, this.Column);
+            return new ChessLocation(this.X, this.Y);
         }
 
         public override bool Equals(object obj)
@@ -100,8 +100,8 @@ namespace UvsChess
 
             ChessLocation tmpLoc = (ChessLocation)obj;
 
-            if ((this.Row == tmpLoc.Row) &&
-                 (this.Column == tmpLoc.Column))
+            if ((this.X == tmpLoc.X) &&
+                 (this.Y == tmpLoc.Y))
             {
                 return true;
             }
@@ -133,7 +133,7 @@ namespace UvsChess
 	
 	public override int GetHashCode()
 	{
-		return _row * 10 + _column;
+		return _x * 10 + _y;
 	}
         #endregion
     }

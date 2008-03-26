@@ -59,10 +59,10 @@ namespace UvsChess
         /// <param name="row">Row of the desired piece location</param>
         /// <param name="col">Column of the desired piece location</param>
         /// <returns></returns>
-        public ChessPiece this[int row, int col]
+        public ChessPiece this[int x, int y]
         {
-            get { return _board[row, col]; }
-            set { _board[row, col] = value; }
+            get { return _board[x, y]; }
+            set { _board[x, y] = value; }
         }
         #endregion
 
@@ -88,8 +88,8 @@ namespace UvsChess
             {
                 if (move.From != move.To)
                 {
-                    this._board[move.To.Row, move.To.Column] = this._board[move.From.Row, move.From.Column];                            
-                    this._board[move.From.Row, move.From.Column] = ChessPiece.Empty;
+                    this._board[move.To.X, move.To.Y] = this._board[move.From.X, move.From.Y];                            
+                    this._board[move.From.X, move.From.Y] = ChessPiece.Empty;
                 }
 
                 //Program.Log("Piece Moved: " + move.ToString());
@@ -98,7 +98,7 @@ namespace UvsChess
 
         public bool IsTileEmpty(ChessLocation location)
         {
-            return (_board[location.Row, location.Column] == ChessPiece.Empty);
+            return (_board[location.X, location.Y] == ChessPiece.Empty);
         }
 
         /// <summary>
@@ -110,26 +110,26 @@ namespace UvsChess
             string[] lines = fenBoard.Split(' ')[0].Split('/');
             int spaces = 0;
 
-            for (int row = 0; row < ChessBoard.NumberOfRows; ++row)
+            for (int y = 0; y < ChessBoard.NumberOfRows; ++y)
             {
-                for (int col = 0; col < ChessBoard.NumberOfColumns; ++col)
+                for (int x = 0; x < ChessBoard.NumberOfColumns; ++x)
                 {
-                    this[row, col] = ChessPiece.Empty;
+                    this[x, y] = ChessPiece.Empty;
                 }
             }
             ChessPiece piece = ChessPiece.Empty;
-            for (int row = 0; row < ChessBoard.NumberOfRows; ++row)
+            for (int y = 0; y < ChessBoard.NumberOfRows; ++y)
             {
-                for (int col = 0, boardCol = 0; col < lines[row].Length; ++col, ++boardCol)
+                for (int x = 0, boardCol = 0; x < lines[y].Length; ++x, ++boardCol)
                 {
-                    if (Char.IsDigit(lines[row][col]))
+                    if (Char.IsDigit(lines[y][x]))
                     {
-                        spaces = Convert.ToInt32(lines[row][col]) - 48;
+                        spaces = Convert.ToInt32(lines[y][x]) - 48;
                         boardCol += spaces - 1;
                     }
                     else
                     {
-                        switch (lines[row][col])
+                        switch (lines[y][x])
                         {
                             case 'r':
                                 piece = ChessPiece.BlackRook;
@@ -171,7 +171,7 @@ namespace UvsChess
                                 throw new Exception("Invalid FEN board");
 
                         }
-                        this[row, boardCol] = piece;
+                        this[boardCol, y] = piece;
                     }
                 }
             }
@@ -180,13 +180,13 @@ namespace UvsChess
         public string ToFenBoard()
         {
             StringBuilder strBuild = new StringBuilder();
-            for (int row = 0; row < ChessBoard.NumberOfRows; ++row)
+            for (int y = 0; y < ChessBoard.NumberOfRows; ++y)
             {
                 int spaces = 0;
-                for (int col = 0; col < ChessBoard.NumberOfColumns; ++col)
+                for (int x = 0; x < ChessBoard.NumberOfColumns; ++x)
                 {
                     char c = 'x';
-                    switch (this[row, col])
+                    switch (this[y, x])
                     {
                         case ChessPiece.WhitePawn:
                             c = 'P';
@@ -244,7 +244,7 @@ namespace UvsChess
                     strBuild.Append(spaces.ToString());
                     spaces = 0;
                 }
-                if (row < 7)
+                if (y < 7)
                 {
                     strBuild.Append('/');
                 }
