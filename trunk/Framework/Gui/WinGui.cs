@@ -35,7 +35,6 @@ namespace UvsChess.Gui
         {
             InitializeComponent();
 
-
             mainChessState = new ChessState();
 
             WhitePlayer = new ChessPlayer(ChessColor.White);

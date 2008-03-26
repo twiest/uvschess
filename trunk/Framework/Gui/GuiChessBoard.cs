@@ -11,6 +11,10 @@ namespace UvsChess.Gui
 {
     public partial class GuiChessBoard : UserControl
     {
+        public delegate void PieceMovedByHumanDelegate(ChessMove move);
+
+        public PieceMovedByHumanDelegate PieceMovedByHuman = null;
+
         ChessBoard _board;
         int _boardWidth;
         int _boardHeight;
@@ -314,8 +318,19 @@ namespace UvsChess.Gui
                 {
                     ChessLocation newLoc = new ChessLocation((_mouseX - _verticalBorderWidth) / _tileWidth,
                                                              (_mouseY - _horizontalBorderHeight) / _tileHeight);
+
                     _board[newLoc] = _pieceBeingMoved;
                     _boardChanged = true;
+
+                    if ( (_pieceBeingMovedLocation != newLoc) && 
+                         (PieceMovedByHuman != null) )
+                    {
+                        ChessMove humanMove = new ChessMove();
+                        humanMove.From = _pieceBeingMovedLocation;
+                        humanMove.To = newLoc;
+
+                        PieceMovedByHuman(humanMove);
+                    }
                 }
                 else
                 {
