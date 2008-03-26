@@ -28,8 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WinGui));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -47,10 +45,9 @@
             this.radWhite = new System.Windows.Forms.RadioButton();
             this.cmbWhite = new System.Windows.Forms.ComboBox();
             this.lstHistory = new System.Windows.Forms.ListBox();
+            this.guiChessBoard1 = new UvsChess.Gui.GuiChessBoard();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.chessImages = new System.Windows.Forms.ImageList(this.components);
-            this.guiChessBoard1 = new UvsChess.Gui.GuiChessBoard();
             this.menuStrip1.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -224,17 +221,6 @@
             this.lstHistory.Size = new System.Drawing.Size(321, 563);
             this.lstHistory.TabIndex = 0;
             // 
-            // openFileDialog1
-            // 
-            this.openFileDialog1.FileName = "openFileDialog1";
-            // 
-            // chessImages
-            // 
-            this.chessImages.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("chessImages.ImageStream")));
-            this.chessImages.TransparentColor = System.Drawing.Color.Transparent;
-            this.chessImages.Images.SetKeyName(0, "Chess_LightBackground.png");
-            this.chessImages.Images.SetKeyName(1, "Chess_DarkBackground.png");
-            // 
             // guiChessBoard1
             // 
             this.guiChessBoard1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -242,6 +228,10 @@
             this.guiChessBoard1.Name = "guiChessBoard1";
             this.guiChessBoard1.Size = new System.Drawing.Size(676, 647);
             this.guiChessBoard1.TabIndex = 0;
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
             // 
             // WinGui
             // 
@@ -254,7 +244,6 @@
             this.Name = "WinGui";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "UvsChess - © Rusty Howell and Thomas Wiest";
-            this.TopMost = true;
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.WinGui_Load);
             this.menuStrip1.ResumeLayout(false);
@@ -289,7 +278,6 @@
         private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
-        private System.Windows.Forms.ImageList chessImages;
         private GuiChessBoard guiChessBoard1;
     }
 }

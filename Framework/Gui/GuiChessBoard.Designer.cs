@@ -35,7 +35,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Name = "GuiChessBoard";
-            this.Size = new System.Drawing.Size(610, 521);
+            this.Size = new System.Drawing.Size(640, 569);
             this.ResumeLayout(false);
 
         }
