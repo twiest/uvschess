@@ -15,15 +15,17 @@ namespace UvsChess.Gui
         int _boardHeight;
         int _tileWidth;
         int _tileHeight;
+        int _horizontalBorderHeight;
+        int _verticalBorderWidth;
         bool _boardChanged = true;
         Bitmap _boardBitmap;        
 
         Bitmap[] pieceBitmaps;
         Bitmap[] _verticalBorderBitmaps = new Bitmap[ChessBoard.NumberOfRows];
         Bitmap[] _horizontalBorderBitmaps = new Bitmap[ChessBoard.NumberOfColumns];
-        Bitmap darkTile;
-        Bitmap lightTile;
-        Bitmap blackRook;
+        Bitmap _cornerBorder;
+        Bitmap _darkTile;
+        Bitmap _lightTile;
 
         public GuiChessBoard()
         {
@@ -41,19 +43,99 @@ namespace UvsChess.Gui
                 switch (curRes)
                 {
                     case "UvsChess.Images.Chess_DarkBackground.png":
-                        darkTile = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
-                        darkTile.SetResolution(res, res);                        
+                        _darkTile = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _darkTile.SetResolution(res, res);                        
                         break;
 
                     case "UvsChess.Images.Chess_LightBackground.png":
-                        lightTile = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
-                        lightTile.SetResolution(res, res);
+                        _lightTile = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _lightTile.SetResolution(res, res);
                         break;
 
-                    //case "UvsChess.Images.Chess_Border_0.png":
-                    //    lightTile = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
-                    //    lightTile.SetResolution(res, res);
-                    //    break;                        
+                    case "UvsChess.Images.Corner_Border.png":                    
+                        _cornerBorder = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _cornerBorder.SetResolution(res, res);
+                        break;
+
+                    case "UvsChess.Images.Horizontal_Border_0.png":
+                        _horizontalBorderBitmaps[0] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _horizontalBorderBitmaps[0].SetResolution(res, res);
+                        break;
+
+                    case "UvsChess.Images.Horizontal_Border_1.png":
+                        _horizontalBorderBitmaps[1] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _horizontalBorderBitmaps[1].SetResolution(res, res);
+                        break;
+
+                    case "UvsChess.Images.Horizontal_Border_2.png":
+                        _horizontalBorderBitmaps[2] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _horizontalBorderBitmaps[2].SetResolution(res, res);
+                        break;
+
+                    case "UvsChess.Images.Horizontal_Border_3.png":
+                        _horizontalBorderBitmaps[3] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _horizontalBorderBitmaps[3].SetResolution(res, res);
+                        break;
+
+                    case "UvsChess.Images.Horizontal_Border_4.png":
+                        _horizontalBorderBitmaps[4] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _horizontalBorderBitmaps[4].SetResolution(res, res);
+                        break;
+
+                    case "UvsChess.Images.Horizontal_Border_5.png":
+                        _horizontalBorderBitmaps[5] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _horizontalBorderBitmaps[5].SetResolution(res, res);
+                        break;
+
+                    case "UvsChess.Images.Horizontal_Border_6.png":
+                        _horizontalBorderBitmaps[6] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _horizontalBorderBitmaps[6].SetResolution(res, res);
+                        break;
+
+                    case "UvsChess.Images.Horizontal_Border_7.png":
+                        _horizontalBorderBitmaps[7] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _horizontalBorderBitmaps[7].SetResolution(res, res);
+                        break;
+
+                    case "UvsChess.Images.Vertical_Border_0.png":
+                        _verticalBorderBitmaps[0] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _verticalBorderBitmaps[0].SetResolution(res, res);
+                        break;
+
+                    case "UvsChess.Images.Vertical_Border_1.png":
+                        _verticalBorderBitmaps[1] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _verticalBorderBitmaps[1].SetResolution(res, res);
+                        break;
+
+                    case "UvsChess.Images.Vertical_Border_2.png":
+                        _verticalBorderBitmaps[2] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _verticalBorderBitmaps[2].SetResolution(res, res);
+                        break;
+
+                    case "UvsChess.Images.Vertical_Border_3.png":
+                        _verticalBorderBitmaps[3] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _verticalBorderBitmaps[3].SetResolution(res, res);
+                        break;
+
+                    case "UvsChess.Images.Vertical_Border_4.png":
+                        _verticalBorderBitmaps[4] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _verticalBorderBitmaps[4].SetResolution(res, res);
+                        break;
+
+                    case "UvsChess.Images.Vertical_Border_5.png":
+                        _verticalBorderBitmaps[5] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _verticalBorderBitmaps[5].SetResolution(res, res);
+                        break;
+
+                    case "UvsChess.Images.Vertical_Border_6.png":
+                        _verticalBorderBitmaps[6] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _verticalBorderBitmaps[6].SetResolution(res, res);
+                        break;
+
+                    case "UvsChess.Images.Vertical_Border_7.png":
+                        _verticalBorderBitmaps[7] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _verticalBorderBitmaps[7].SetResolution(res, res);
+                        break; 
 
                     case "UvsChess.Images.ChessPiece_WhitePawn.png":
                         pieceBitmaps[(int)ChessPiece.WhitePawn] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
@@ -117,10 +199,13 @@ namespace UvsChess.Gui
                 }
             }
 
-            _tileWidth = darkTile.Width;
-            _tileHeight = darkTile.Height;
-            _boardHeight = ChessBoard.NumberOfRows * _tileHeight;
-            _boardWidth = ChessBoard.NumberOfColumns * _tileWidth;
+            _horizontalBorderHeight = _horizontalBorderBitmaps[0].Height;
+            _verticalBorderWidth = _verticalBorderBitmaps[0].Width;
+
+            _tileWidth = _darkTile.Width;
+            _tileHeight = _darkTile.Height;
+            _boardHeight = (ChessBoard.NumberOfRows * _tileHeight) + _horizontalBorderHeight;
+            _boardWidth = (ChessBoard.NumberOfColumns * _tileWidth) + _verticalBorderWidth;
            
             this.Paint += OnPaint;
 
@@ -160,22 +245,32 @@ namespace UvsChess.Gui
 
             Graphics boardGraphics = Graphics.FromImage(boardBitmap);
 
+            boardGraphics.DrawImage(_cornerBorder, 0, 0);
+
+            for (int ix = 0; ix < ChessBoard.NumberOfColumns; ix++)
+            {
+                int curPos = (ix * _tileWidth) + _verticalBorderWidth;
+
+                boardGraphics.DrawImage(_horizontalBorderBitmaps[ix], curPos, 0);
+                boardGraphics.DrawImage(_verticalBorderBitmaps[ix], 0, curPos);
+            }
+
             bool lightSquare = true;
             for (int y = 0; y < ChessBoard.NumberOfRows; y++)
             {
-                int curY = y * _tileHeight;
+                int curY = (y * _tileHeight) + _horizontalBorderHeight;
 
                 for (int x = 0; x < ChessBoard.NumberOfColumns; x++)
                 {
-                    int curX = x * _tileWidth;
+                    int curX = (x * _tileWidth) + _verticalBorderWidth;
 
                     if (lightSquare)
                     {
-                        boardGraphics.DrawImage(lightTile, curX, curY);
+                        boardGraphics.DrawImage(_lightTile, curX, curY);
                     }
                     else
                     {
-                        boardGraphics.DrawImage(darkTile, curX, curY);
+                        boardGraphics.DrawImage(_darkTile, curX, curY);
                     }
 
                     if (board[x, y] != ChessPiece.Empty)
