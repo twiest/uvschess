@@ -82,11 +82,11 @@ namespace UvsChess
         {
             ChessBoard newChessBoard = new ChessBoard();
 
-            for (int curRow = 0; curRow < NumberOfRows; curRow++)
+            for (int Y = 0; Y < NumberOfRows; Y++)
             {
-                for (int curCol = 0; curCol < NumberOfColumns; curCol++)
+                for (int X = 0; X < NumberOfColumns; X++)
                 {
-                    newChessBoard._board[curRow, curCol] = this._board[curRow, curCol];
+                    newChessBoard._board[X, Y] = this._board[X, Y];
                 }
             }
 
