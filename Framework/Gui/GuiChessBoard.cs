@@ -171,9 +171,9 @@ namespace UvsChess.Gui
                         boardGraphics.DrawImage(darkTile, curX, curY);
                     }
 
-                    if (board[y, x] != ChessPiece.Empty)
+                    if (board[x, y] != ChessPiece.Empty)
                     {
-                        boardGraphics.DrawImage(pieceBitmaps[(int)board[y, x]], curX, curY);
+                        boardGraphics.DrawImage(pieceBitmaps[(int)board[x, y]], curX, curY);
                     }
 
                     lightSquare = !lightSquare;
