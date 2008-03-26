@@ -45,7 +45,7 @@
             this.radWhite = new System.Windows.Forms.RadioButton();
             this.cmbWhite = new System.Windows.Forms.ComboBox();
             this.lstHistory = new System.Windows.Forms.ListBox();
-            this.guiChessBoard1 = new UvsChess.Gui.GuiChessBoard();
+            this.chessBoardControl = new UvsChess.Gui.GuiChessBoard();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.menuStrip1.SuspendLayout();
@@ -116,6 +116,7 @@
             this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
             this.newToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.newToolStripMenuItem.Text = "New";
+            this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
             // 
             // startToolStripMenuItem
             // 
@@ -123,6 +124,7 @@
             this.startToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
             this.startToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.startToolStripMenuItem.Text = "Start";
+            this.startToolStripMenuItem.Click += new System.EventHandler(this.startToolStripMenuItem_Click);
             // 
             // stopToolStripMenuItem
             // 
@@ -130,6 +132,7 @@
             this.stopToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
             this.stopToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.stopToolStripMenuItem.Text = "Stop";
+            this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
             // 
             // historyToolStripMenuItem
             // 
@@ -162,7 +165,7 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.guiChessBoard1);
+            this.splitContainer1.Panel2.Controls.Add(this.chessBoardControl);
             this.splitContainer1.Size = new System.Drawing.Size(1016, 647);
             this.splitContainer1.SplitterDistance = 336;
             this.splitContainer1.TabIndex = 1;
@@ -199,6 +202,7 @@
             this.radWhite.TabStop = true;
             this.radWhite.Text = "White";
             this.radWhite.UseVisualStyleBackColor = true;
+            this.radWhite.CheckedChanged += new System.EventHandler(this.radWhite_CheckedChanged);
             // 
             // cmbWhite
             // 
@@ -221,13 +225,13 @@
             this.lstHistory.Size = new System.Drawing.Size(321, 563);
             this.lstHistory.TabIndex = 0;
             // 
-            // guiChessBoard1
+            // chessBoardControl
             // 
-            this.guiChessBoard1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.guiChessBoard1.Location = new System.Drawing.Point(0, 0);
-            this.guiChessBoard1.Name = "guiChessBoard1";
-            this.guiChessBoard1.Size = new System.Drawing.Size(676, 647);
-            this.guiChessBoard1.TabIndex = 0;
+            this.chessBoardControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.chessBoardControl.Location = new System.Drawing.Point(0, 0);
+            this.chessBoardControl.Name = "chessBoardControl";
+            this.chessBoardControl.Size = new System.Drawing.Size(676, 647);
+            this.chessBoardControl.TabIndex = 0;
             // 
             // openFileDialog1
             // 
@@ -278,6 +282,6 @@
         private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
-        private GuiChessBoard guiChessBoard1;
+        private GuiChessBoard chessBoardControl;
     }
 }

@@ -388,5 +388,9 @@ namespace UvsChess.Gui
 
             return boardBitmap;
         }
+        public void ResetBoard(ChessBoard board)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
