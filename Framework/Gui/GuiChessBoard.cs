@@ -16,9 +16,11 @@ namespace UvsChess.Gui
         int _tileWidth;
         int _tileHeight;
         bool _boardChanged = true;
-        Bitmap _boardBitmap;
+        Bitmap _boardBitmap;        
 
         Bitmap[] pieceBitmaps;
+        Bitmap[] _verticalBorderBitmaps = new Bitmap[ChessBoard.NumberOfRows];
+        Bitmap[] _horizontalBorderBitmaps = new Bitmap[ChessBoard.NumberOfColumns];
         Bitmap darkTile;
         Bitmap lightTile;
         Bitmap blackRook;
@@ -47,6 +49,11 @@ namespace UvsChess.Gui
                         lightTile = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
                         lightTile.SetResolution(res, res);
                         break;
+
+                    //case "UvsChess.Images.Chess_Border_0.png":
+                    //    lightTile = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                    //    lightTile.SetResolution(res, res);
+                    //    break;                        
 
                     case "UvsChess.Images.ChessPiece_WhitePawn.png":
                         pieceBitmaps[(int)ChessPiece.WhitePawn] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
@@ -119,21 +126,21 @@ namespace UvsChess.Gui
 
 
             // Validate the image sizes
-            //int defaultWidth = chessImages.Images[0].Width;
-            //int defaultHeight = chessImages.Images[0].Height;
+            foreach (Bitmap curBitmap in pieceBitmaps)
+            {
+                if (curBitmap != null)
+                {
+                    if (curBitmap.Height != _tileHeight)
+                    {
+                        throw (new Exception("Image height is outside the default height!"));
+                    }
 
-            //foreach (Image curImage in chessImages.Images)
-            //{
-            //    if (curImage.Height != defaultHeight)
-            //    {
-            //        throw (new Exception("Image height is outside the default height!"));
-            //    }
-
-            //    if (curImage.Width != defaultWidth)
-            //    {
-            //        throw (new Exception("Image width is outside the default width!"));
-            //    }
-            //}
+                    if (curBitmap.Width != _tileWidth)
+                    {
+                        throw (new Exception("Image width is outside the default width!"));
+                    }
+                }
+            }
         }
 
         public void OnPaint(object sender, PaintEventArgs e)

@@ -113,21 +113,10 @@
     <EmbeddedResource Include="Images\Empty_1x1_Mouse_Cursor.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Images\Border_0.png" />
-    <EmbeddedResource Include="Images\Border_1.png" />
-    <EmbeddedResource Include="Images\Border_2.png" />
-    <EmbeddedResource Include="Images\Border_3.png" />
-    <EmbeddedResource Include="Images\Border_4.png" />
-    <EmbeddedResource Include="Images\Border_5.png" />
-    <EmbeddedResource Include="Images\Border_6.png" />
-    <EmbeddedResource Include="Images\Border_7.png" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Gui\GuiChessBoard.resx">
       <DependentUpon>GuiChessBoard.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Images\Border_Empty.png" />
     <EmbeddedResource Include="Gui\WinGui.resx">
       <SubType>Designer</SubType>
       <DependentUpon>WinGui.cs</DependentUpon>
@@ -154,6 +143,24 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Horizontal_Border_0.png" />
+    <EmbeddedResource Include="Images\Horizontal_Border_1.png" />
+    <EmbeddedResource Include="Images\Horizontal_Border_2.png" />
+    <EmbeddedResource Include="Images\Horizontal_Border_3.png" />
+    <EmbeddedResource Include="Images\Horizontal_Border_4.png" />
+    <EmbeddedResource Include="Images\Horizontal_Border_5.png" />
+    <EmbeddedResource Include="Images\Horizontal_Border_6.png" />
+    <EmbeddedResource Include="Images\Horizontal_Border_7.png" />
+    <EmbeddedResource Include="Images\Vertical_Border_0.png" />
+    <EmbeddedResource Include="Images\Vertical_Border_1.png" />
+    <EmbeddedResource Include="Images\Vertical_Border_2.png" />
+    <EmbeddedResource Include="Images\Vertical_Border_3.png" />
+    <EmbeddedResource Include="Images\Vertical_Border_4.png" />
+    <EmbeddedResource Include="Images\Vertical_Border_5.png" />
+    <EmbeddedResource Include="Images\Vertical_Border_6.png" />
+    <EmbeddedResource Include="Images\Vertical_Border_7.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
