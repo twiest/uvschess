@@ -126,10 +126,10 @@ namespace UvsChess
             return lhs.Equals(rhs);                 
         }
 	
-	public override int GetHashCode()
-	{
-		return _x * 10 + _y;
-	}
+	    public override int GetHashCode()
+	    {
+            return _x * 10 + _y;
+	    }
         #endregion
     }
 }

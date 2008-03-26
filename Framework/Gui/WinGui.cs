@@ -19,6 +19,11 @@ namespace UvsChess.Gui
         ChessMove humanMove = null;
         List<AI> AvailableAIs = new List<AI>();
 
+
+        public delegate void PlayCompletedHandler();
+        public event PlayCompletedHandler PlayCompleted;
+        protected delegate void PlayDelegate();
+
         #endregion
 
         #region Properties
@@ -29,14 +34,16 @@ namespace UvsChess.Gui
         public WinGui()
         {
             InitializeComponent();
+
+
+            mainChessState = new ChessState();
+
+            WhitePlayer = new ChessPlayer(ChessColor.White);
+            BlackPlayer = new ChessPlayer(ChessColor.Black);
         }
 
         #endregion
 
-        private void cmbBlack_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
 
         private void WinGui_Load(object sender, EventArgs e)
         {
@@ -60,13 +67,14 @@ namespace UvsChess.Gui
             DialogResult result = openFileDialog1.ShowDialog();
             if (result == DialogResult.OK)
             {
+                Log("Resetting chess board");
                 StreamReader reader = new StreamReader(openFileDialog1.FileName);
                 string line = reader.ReadLine();
 
                 ChessState newstate = new ChessState(line);
+                chessBoardControl.ResetBoard(newstate.CurrentBoard);
+                reader.Close();
                 
-                
-                MessageBox.Show("Not implemented yet");
             }
         }
 
@@ -77,7 +85,13 @@ namespace UvsChess.Gui
             if (result == DialogResult.OK)
             {
                 StreamWriter writer = new StreamWriter(saveFileDialog1.FileName);
-                MessageBox.Show("Not implemented yet");
+                //MessageBox.Show("Not implemented yet");
+
+                Log("Saving board to " + saveFileDialog1.FileName);
+
+                string fenboard = mainChessState.ToFenBoard();
+                writer.WriteLine(fenboard);
+                writer.Close();
             }
 
         }
@@ -88,16 +102,19 @@ namespace UvsChess.Gui
         #endregion
 
         #region Game menu
-        private void startToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            IsRunning = true;
-            MessageBox.Show("Not implemented yet");
-        }
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            IsRunning = false;
+            chessBoardControl.ResetBoard();
+        }
+        private void startToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             IsRunning = true;
-            MessageBox.Show("Not implemented yet");
+
+            // CHANGE COLOR OF GUI SO USER KNOWS IT'S RUNNING
+
+            StartGame();
         }
 
         private void stopToolStripMenuItem_Click(object sender, EventArgs e)
@@ -121,6 +138,30 @@ namespace UvsChess.Gui
         }
 
         #region Game play methods and events
+        public IAsyncResult StartGame()
+        {
+            //TODO: disable radio buttons
+            PlayDelegate pd = new PlayDelegate(Play); //Start a new thread from this method
+            return pd.BeginInvoke(new AsyncCallback(EndPlay), null);
+        }
+        private void EndPlay(IAsyncResult ar)
+        {
+
+            throw new NotImplementedException();
+
+            try
+            {
+                //AsyncResult result = (AsyncResult)ar;
+                //PlayDelegate pd = (PlayDelegate)result.AsyncDelegate;
+                //pd.EndInvoke(ar);
+                //OnPlayCompleted();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Chess->MainForm->EndPlay: " + ex.Message);
+            }
+        }
+
         void Play()
         {
             //This method run in its own thread.
@@ -174,6 +215,8 @@ namespace UvsChess.Gui
                 {
                     isValidMove = true;
                 }
+
+                //TODO
 
                 //isValidMove = isValidMove && !isOverTime(player, thread_time, TurnWaitTime);
                 //isValidMove = isValidMove && !isOverTime(player, thread_time, PreferencesGUI.TurnLength);
@@ -310,7 +353,7 @@ namespace UvsChess.Gui
 
             AI tmpAI = null;
 
-            foreach (AI t in AvailableAIs)
+            foreach (AI t in DllLoader.AvailableAIs)
             {
                 if (t.ShortName == player.AIName)
                 {
@@ -338,6 +381,17 @@ namespace UvsChess.Gui
         public static void Log(string msg)
         {
             Console.WriteLine(msg);
+        }
+
+        private void cmbWhite_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            WhitePlayer.AIName = cmbWhite.SelectedItem.ToString();
+
+        }
+        private void cmbBlack_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+            BlackPlayer.AIName = cmbBlack.SelectedItem.ToString();
         }
     }
 }

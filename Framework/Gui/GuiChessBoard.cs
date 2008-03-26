@@ -388,9 +388,34 @@ namespace UvsChess.Gui
 
             return boardBitmap;
         }
+
+        /// <summary>
+        /// Resets the chess board to the given state
+        /// </summary>
+        /// <param name="board"></param>
         public void ResetBoard(ChessBoard board)
         {
-            throw new NotImplementedException();
+            _board = board;
+            _boardChanged = true;
+            this.Invalidate();
+        }
+
+        /// <summary>
+        /// Resets the chess board to the given state
+        /// </summary>
+        /// <param name="fenboard"></param>
+        public void ResetBoard(string fenboard)
+        {
+            ResetBoard(new ChessState(fenboard).CurrentBoard);
+        }
+
+        /// <summary>
+        /// Resets the chess board to the standard starting state
+        /// </summary>
+        /// <param name="fenboard"></param>        
+        public void ResetBoard()
+        {
+            ResetBoard(new ChessBoard());
         }
     }
 }

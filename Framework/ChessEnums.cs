@@ -59,7 +59,7 @@ namespace UvsChess
         Check,
         Checkmate,
         Stalemate,
-        //Castling,
+        //Castling,   //These are not supported. Maybe in future releases.
         //EnPassaint
     }
 }

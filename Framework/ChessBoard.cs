@@ -197,7 +197,7 @@ namespace UvsChess
                 for (int x = 0; x < ChessBoard.NumberOfColumns; ++x)
                 {
                     char c = 'x';
-                    switch (this[y, x])
+                    switch (this[x, y])
                     {
                         case ChessPiece.WhitePawn:
                             c = 'P';
