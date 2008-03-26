@@ -35,9 +35,7 @@ namespace UvsChess
     {
         public static void Log(string msg)
         {
-#if Console
             Console.WriteLine(msg);
-#endif
         }
     }
 }
