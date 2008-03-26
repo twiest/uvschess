@@ -119,36 +119,36 @@ namespace ExampleAI
         {
             ChessMove newMove = null;
 
-            for (int curRow = 1; curRow < ChessBoard.NumberOfRows - 1; curRow++)
+            for (int Y = 1; Y < ChessBoard.NumberOfRows - 1; Y++)
             {
-                for (int curCol = 0; curCol < ChessBoard.NumberOfColumns; curCol++)
+                for (int X = 0; X < ChessBoard.NumberOfColumns; X++)
                 {
                     if (currentColor == ChessColor.White)
                     {
-                        if ((currentBoard[curRow - 1, curCol] == ChessPiece.Empty) &&
-                            ((currentBoard[curRow, curCol] == ChessPiece.WhitePawn) ||
-                              (currentBoard[curRow, curCol] == ChessPiece.WhiteKing) ||
-                              (currentBoard[curRow, curCol] == ChessPiece.WhiteQueen) ||
-                              (currentBoard[curRow, curCol] == ChessPiece.WhiteRook)))
+                        if ((currentBoard[X, Y-1] == ChessPiece.Empty) &&
+                            ((currentBoard[X, Y] == ChessPiece.WhitePawn) ||
+                              (currentBoard[X, Y] == ChessPiece.WhiteKing) ||
+                              (currentBoard[X, Y] == ChessPiece.WhiteQueen) ||
+                              (currentBoard[X, Y] == ChessPiece.WhiteRook)))
                         {
                             newMove = new ChessMove();
-                            newMove.From = new ChessLocation(curRow, curCol);
-                            newMove.To = new ChessLocation(curRow - 1, curCol);
+                            newMove.From = new ChessLocation(X, Y);
+                            newMove.To = new ChessLocation(X, Y - 1);
 
                             return newMove;
                         }
                     }
                     else
                     {
-                        if ((currentBoard[curRow + 1, curCol] == ChessPiece.Empty) &&
-                            ((currentBoard[curRow, curCol] == ChessPiece.BlackPawn) ||
-                              (currentBoard[curRow, curCol] == ChessPiece.BlackKing) ||
-                              (currentBoard[curRow, curCol] == ChessPiece.BlackQueen) ||
-                              (currentBoard[curRow, curCol] == ChessPiece.BlackRook)))
+                        if ((currentBoard[X, Y+1] == ChessPiece.Empty) &&
+                            ((currentBoard[X, Y] == ChessPiece.BlackPawn) ||
+                              (currentBoard[X, Y] == ChessPiece.BlackKing) ||
+                              (currentBoard[X, Y] == ChessPiece.BlackQueen) ||
+                              (currentBoard[X, Y] == ChessPiece.BlackRook)))
                         {
                             newMove = new ChessMove();
-                            newMove.From = new ChessLocation(curRow, curCol);
-                            newMove.To = new ChessLocation(curRow + 1, curCol);
+                            newMove.From = new ChessLocation(X, Y);
+                            newMove.To = new ChessLocation(X + 1, Y);
 
                             return newMove;
                         }
@@ -158,6 +158,7 @@ namespace ExampleAI
 
             // If I couldn't find a valid move easily, 
             // I'll just create an empty move.
+            throw new Exception();
             newMove = new ChessMove();
 
             this.Log("ExampleAI just moved");

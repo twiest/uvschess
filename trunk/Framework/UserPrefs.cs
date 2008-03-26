@@ -59,8 +59,8 @@ namespace UvsChess
         
         public static int Time
         {
-            get { return Convert.ToInt32(items[TIME]); }
-            set { items[TIME] = value.ToString(); }
+            get { return 1000; }// Convert.ToInt32(items[TIME]); }
+            //set { items[TIME] = value.ToString(); }
         }
         public static int GracePeriod
         {
@@ -78,7 +78,7 @@ namespace UvsChess
             items = new Dictionary<string, string>();
             if (!File.Exists(FileName))
             {
-                Time = time_default;
+                //Time = time_default;
                 GracePeriod = grace_default;
                 return;
             }

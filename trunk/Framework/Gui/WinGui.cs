@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using System.Threading;
 
 namespace UvsChess.Gui
 {
@@ -12,7 +13,9 @@ namespace UvsChess.Gui
     {
         #region Members
 
-        ChessState mainChessState = null;
+        ManualResetEvent pieceMovedEvent = new ManualResetEvent(true);
+
+        ChessState _mainChessState = null;
         ChessPlayer WhitePlayer = null;
         ChessPlayer BlackPlayer = null;
         bool IsRunning = false;
@@ -24,9 +27,21 @@ namespace UvsChess.Gui
         public event PlayCompletedHandler PlayCompleted;
         protected delegate void PlayDelegate();
 
+        //These are for the threading involved with telling the AI to EndTurn
+        //int TurnWaitTime = 5000;// time in milliseconds for each turn. 
+        ChessPlayer thread_player = null;
+        ChessMove thread_move = null;
+        ChessBoard thread_board = null;
+        TimeSpan thread_time = TimeSpan.MinValue;
+
         #endregion
 
         #region Properties
+        private ChessState mainChessState
+        {
+            get { return _mainChessState; }
+            set { _mainChessState = value; }
+        }
 
         #endregion
 
@@ -39,9 +54,28 @@ namespace UvsChess.Gui
 
             WhitePlayer = new ChessPlayer(ChessColor.White);
             BlackPlayer = new ChessPlayer(ChessColor.Black);
+
+            chessBoardControl.PieceMovedByHuman += HumanMovedPieceEvent;
         }
 
         #endregion
+
+        void HumanMovedPieceEvent(ChessMove move)
+        {
+            if (IsRunning)
+            {
+                Log("Human move:");
+                humanMove = move;
+                pieceMovedEvent.Set();
+            }
+            else
+            {
+                Log("Pregame setup:");
+                mainChessState.CurrentBoard.MakeMove(move);
+                Log(mainChessState.CurrentBoard.ToFenBoard());
+            }
+
+        }
 
 
         private void WinGui_Load(object sender, EventArgs e)
@@ -321,17 +355,45 @@ namespace UvsChess.Gui
         }
         ChessMove GetNextHumanMove()
         {
-            //pieceMovedEvent.Reset();
-            //pieceMovedEvent.WaitOne();
-            throw new NotImplementedException();
-            
+            //chessBoardControl.IsLocked = false;
+
+            pieceMovedEvent.Reset();
+            pieceMovedEvent.WaitOne();            
+
             return humanMove;
         }
 
         ChessMove GetNextAIMove(ChessPlayer player, ChessBoard board)
         {
-            throw new NotImplementedException();
-            return null;
+            thread_player = player;
+            thread_board = board;
+
+            //Add threading here. Wait n seconds then call ChessAI.EndTurn()
+            ThreadStart job = new ThreadStart(threadedNextMove);
+            Thread thread = new Thread(job);
+
+            DateTime startTime = DateTime.Now;
+            thread.Start();
+
+            //Thread.Sleep(TurnWaitTime);//Time of turn
+            Thread.Sleep(UserPrefs.Time);
+
+            player.AI.EndTurn();
+            thread.Join();
+
+            thread_time = DateTime.Now - startTime;
+            thread_time = DateTime.Now.Subtract(startTime);
+
+            return thread_move;
+        }
+
+        private void threadedNextMove()
+        {
+            ChessPlayer player = thread_player;
+            ChessMove nextMove = player.AI.GetNextMove(thread_board, player.Color);
+
+            thread_move = nextMove;
+
         }
         #endregion
 
@@ -374,7 +436,7 @@ namespace UvsChess.Gui
         public void AddToHistory(string message, string fenboard)
         {
             
-            lstHistory.Items.Add(message);
+            //lstHistory.Items.Add(message);
         }
 
         public static void Log(string msg)
