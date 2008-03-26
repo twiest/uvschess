@@ -40,11 +40,6 @@ namespace UvsChess
         #endregion
 
         #region Constructors
-        public ChessLocation(int mouseX, int mouseY, int tileWidth, int tileHeight)
-            : this(mouseY / tileHeight, mouseX / tileWidth)
-        {
-        }
-
         public ChessLocation(int x, int y)
         {
             X = x;

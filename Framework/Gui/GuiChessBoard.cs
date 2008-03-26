@@ -11,6 +11,7 @@ namespace UvsChess.Gui
 {
     public partial class GuiChessBoard : UserControl
     {
+        ChessBoard _board;
         int _boardWidth;
         int _boardHeight;
         int _tileWidth;
@@ -18,9 +19,16 @@ namespace UvsChess.Gui
         int _horizontalBorderHeight;
         int _verticalBorderWidth;
         bool _boardChanged = true;
+        bool _isDraggingPiece = false;
+        int _mouseX;
+        int _mouseY;
+
+        ChessLocation _pieceBeingMovedLocation;
+        ChessPiece _pieceBeingMoved;
+
         Bitmap _boardBitmap;        
 
-        Bitmap[] pieceBitmaps;
+        Bitmap[] _pieceBitmaps;
         Bitmap[] _verticalBorderBitmaps = new Bitmap[ChessBoard.NumberOfRows];
         Bitmap[] _horizontalBorderBitmaps = new Bitmap[ChessBoard.NumberOfColumns];
         Bitmap _cornerBorder;
@@ -31,12 +39,19 @@ namespace UvsChess.Gui
         {
             InitializeComponent();
 
+            _board = new ChessBoard();
+
+            SetStyle(ControlStyles.DoubleBuffer, true);
+            SetStyle(ControlStyles.UserPaint, true);
+            SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+
             int numPieces = Enum.GetValues(typeof(ChessPiece)).Length;
-            pieceBitmaps = new Bitmap[numPieces];
+            _pieceBitmaps = new Bitmap[numPieces];
 
             Assembly asm = Assembly.GetExecutingAssembly();
             string[] resNames = asm.GetManifestResourceNames();
 
+            #region Loading Image Files
             int res = 95;
             foreach (string curRes in resNames)
             {
@@ -138,66 +153,67 @@ namespace UvsChess.Gui
                         break; 
 
                     case "UvsChess.Images.ChessPiece_WhitePawn.png":
-                        pieceBitmaps[(int)ChessPiece.WhitePawn] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
-                        pieceBitmaps[(int)ChessPiece.WhitePawn].SetResolution(res, res);
+                        _pieceBitmaps[(int)ChessPiece.WhitePawn] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _pieceBitmaps[(int)ChessPiece.WhitePawn].SetResolution(res, res);
                         break;
 
                     case "UvsChess.Images.ChessPiece_WhiteRook.png":
-                        pieceBitmaps[(int)ChessPiece.WhiteRook] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
-                        pieceBitmaps[(int)ChessPiece.WhiteRook].SetResolution(res, res);
+                        _pieceBitmaps[(int)ChessPiece.WhiteRook] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _pieceBitmaps[(int)ChessPiece.WhiteRook].SetResolution(res, res);
                         break;
 
                     case "UvsChess.Images.ChessPiece_WhiteKnight.png":
-                        pieceBitmaps[(int)ChessPiece.WhiteKnight] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
-                        pieceBitmaps[(int)ChessPiece.WhiteKnight].SetResolution(res, res);
+                        _pieceBitmaps[(int)ChessPiece.WhiteKnight] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _pieceBitmaps[(int)ChessPiece.WhiteKnight].SetResolution(res, res);
                         break;
 
                     case "UvsChess.Images.ChessPiece_WhiteBishop.png":
-                        pieceBitmaps[(int)ChessPiece.WhiteBishop] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
-                        pieceBitmaps[(int)ChessPiece.WhiteBishop].SetResolution(res, res);
+                        _pieceBitmaps[(int)ChessPiece.WhiteBishop] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _pieceBitmaps[(int)ChessPiece.WhiteBishop].SetResolution(res, res);
                         break;
 
                     case "UvsChess.Images.ChessPiece_WhiteQueen.png":
-                        pieceBitmaps[(int)ChessPiece.WhiteQueen] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
-                        pieceBitmaps[(int)ChessPiece.WhiteQueen].SetResolution(res, res);
+                        _pieceBitmaps[(int)ChessPiece.WhiteQueen] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _pieceBitmaps[(int)ChessPiece.WhiteQueen].SetResolution(res, res);
                         break;
 
                     case "UvsChess.Images.ChessPiece_WhiteKing.png":
-                        pieceBitmaps[(int)ChessPiece.WhiteKing] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
-                        pieceBitmaps[(int)ChessPiece.WhiteKing].SetResolution(res, res);
+                        _pieceBitmaps[(int)ChessPiece.WhiteKing] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _pieceBitmaps[(int)ChessPiece.WhiteKing].SetResolution(res, res);
                         break;
 
                     case "UvsChess.Images.ChessPiece_BlackPawn.png":
-                        pieceBitmaps[(int)ChessPiece.BlackPawn] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
-                        pieceBitmaps[(int)ChessPiece.BlackPawn].SetResolution(res, res);
+                        _pieceBitmaps[(int)ChessPiece.BlackPawn] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _pieceBitmaps[(int)ChessPiece.BlackPawn].SetResolution(res, res);
                         break;
 
                     case "UvsChess.Images.ChessPiece_BlackRook.png":
-                        pieceBitmaps[(int)ChessPiece.BlackRook] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
-                        pieceBitmaps[(int)ChessPiece.BlackRook].SetResolution(res, res);
+                        _pieceBitmaps[(int)ChessPiece.BlackRook] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _pieceBitmaps[(int)ChessPiece.BlackRook].SetResolution(res, res);
                         break;
 
                     case "UvsChess.Images.ChessPiece_BlackKnight.png":
-                        pieceBitmaps[(int)ChessPiece.BlackKnight] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
-                        pieceBitmaps[(int)ChessPiece.BlackKnight].SetResolution(res, res);
+                        _pieceBitmaps[(int)ChessPiece.BlackKnight] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _pieceBitmaps[(int)ChessPiece.BlackKnight].SetResolution(res, res);
                         break;
 
                     case "UvsChess.Images.ChessPiece_BlackBishop.png":
-                        pieceBitmaps[(int)ChessPiece.BlackBishop] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
-                        pieceBitmaps[(int)ChessPiece.BlackBishop].SetResolution(res, res);
+                        _pieceBitmaps[(int)ChessPiece.BlackBishop] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _pieceBitmaps[(int)ChessPiece.BlackBishop].SetResolution(res, res);
                         break;
                     
                     case "UvsChess.Images.ChessPiece_BlackQueen.png":
-                        pieceBitmaps[(int)ChessPiece.BlackQueen] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
-                        pieceBitmaps[(int)ChessPiece.BlackQueen].SetResolution(res, res);
+                        _pieceBitmaps[(int)ChessPiece.BlackQueen] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _pieceBitmaps[(int)ChessPiece.BlackQueen].SetResolution(res, res);
                         break;
 
                     case "UvsChess.Images.ChessPiece_BlackKing.png":
-                        pieceBitmaps[(int)ChessPiece.BlackKing] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
-                        pieceBitmaps[(int)ChessPiece.BlackKing].SetResolution(res, res);
+                        _pieceBitmaps[(int)ChessPiece.BlackKing] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _pieceBitmaps[(int)ChessPiece.BlackKing].SetResolution(res, res);
                         break;
                 }
             }
+            #endregion
 
             _horizontalBorderHeight = _horizontalBorderBitmaps[0].Height;
             _verticalBorderWidth = _verticalBorderBitmaps[0].Width;
@@ -208,10 +224,13 @@ namespace UvsChess.Gui
             _boardWidth = (ChessBoard.NumberOfColumns * _tileWidth) + _verticalBorderWidth;
            
             this.Paint += OnPaint;
+            this.MouseDown += OnMouseDown;
+            this.MouseUp += OnMouseUp;
+            this.MouseMove += OnMouseMove;
 
 
             // Validate the image sizes
-            foreach (Bitmap curBitmap in pieceBitmaps)
+            foreach (Bitmap curBitmap in _pieceBitmaps)
             {
                 if (curBitmap != null)
                 {
@@ -228,18 +247,90 @@ namespace UvsChess.Gui
             }
         }
 
-        public void OnPaint(object sender, PaintEventArgs e)
-        {
+        private void OnPaint(object sender, PaintEventArgs e)
+        {            
             if (_boardChanged)
             {
-                _boardBitmap = GetBoardImage(new ChessBoard());
+                _boardBitmap = GetBoardImage(_board);
                 _boardChanged = false;
             }
-            
-            e.Graphics.DrawImage(_boardBitmap, 0, 0);
+
+            e.Graphics.DrawImage(_boardBitmap, 0,0);
+            //e.Graphics.DrawImage(_boardBitmap, e.ClipRectangle);
+
+            if (_isDraggingPiece)
+            {
+                e.Graphics.DrawImage(_pieceBitmaps[(int)_pieceBeingMoved], _mouseX - (_tileWidth / 2), _mouseY - (_tileHeight / 2));
+            }
         }
 
-        public Bitmap GetBoardImage(ChessBoard board)
+        private void OnMouseDown(object sender, MouseEventArgs e)
+        {
+            if ( (e.Button == MouseButtons.Left) &&
+                 (e.X > _verticalBorderWidth) &&
+                 (e.Y > _horizontalBorderHeight) &&
+                 (e.X < _boardWidth) &&
+                 (e.Y < _boardHeight) )
+            {                
+                _mouseX = e.X;
+                _mouseY = e.Y;
+
+                _pieceBeingMovedLocation = new ChessLocation((_mouseX - _verticalBorderWidth) / _tileWidth, 
+                                                                          (_mouseY - _horizontalBorderHeight) / _tileHeight);
+                _pieceBeingMoved = _board[_pieceBeingMovedLocation];
+
+                if (_pieceBeingMoved != ChessPiece.Empty)
+                {
+                    // Only say the mouse is down if they clicked on a non-empty board square
+                    _isDraggingPiece = true;
+
+                    _board[_pieceBeingMovedLocation] = ChessPiece.Empty;
+                    _boardChanged = true;
+
+                    this.Invalidate();
+                }
+            }
+        }
+
+        private void OnMouseUp(object sender, MouseEventArgs e)
+        {
+            if ( (e.Button == MouseButtons.Left) &&
+                 (_isDraggingPiece) )
+            {
+                _isDraggingPiece = false;
+
+                if ((e.X > _verticalBorderWidth) &&
+                     (e.Y > _horizontalBorderHeight) &&
+                     (e.X < _boardWidth) &&
+                     (e.Y < _boardHeight))
+                {
+                    ChessLocation newLoc = new ChessLocation((_mouseX - _verticalBorderWidth) / _tileWidth,
+                                                             (_mouseY - _horizontalBorderHeight) / _tileHeight);
+                    _board[newLoc] = _pieceBeingMoved;
+                    _boardChanged = true;
+                }
+                else
+                {
+                    _board[_pieceBeingMovedLocation] = _pieceBeingMoved;
+                    _boardChanged = true;
+                }
+
+                this.Invalidate();
+            }
+        }
+
+        private void OnMouseMove(object sender, MouseEventArgs e)
+        {
+            if (_isDraggingPiece)
+            {
+                _mouseX = e.X;
+                _mouseY = e.Y;
+
+                this.Invalidate();
+            }
+        }
+
+        private Bitmap GetBoardImage(ChessBoard board)
         {
             Bitmap boardBitmap = new Bitmap(_boardWidth, _boardHeight);
 
@@ -275,14 +366,17 @@ namespace UvsChess.Gui
 
                     if (board[x, y] != ChessPiece.Empty)
                     {
-                        boardGraphics.DrawImage(pieceBitmaps[(int)board[x, y]], curX, curY);
+                        boardGraphics.DrawImage(_pieceBitmaps[(int)board[x, y]], curX, curY);
                     }
-
+                    
                     lightSquare = !lightSquare;
                 }
 
                 lightSquare = !lightSquare;
             }
+
+            boardGraphics.Dispose();
+            boardGraphics = null;
 
             return boardBitmap;
         }

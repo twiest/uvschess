@@ -56,9 +56,20 @@ namespace UvsChess
         /// <summary>
         /// Gets or sets the piece on the board in a specified location; 0,0 is the upper left hand corner of the board.
         /// </summary>
-        /// <param name="row">Row of the desired piece location</param>
-        /// <param name="col">Column of the desired piece location</param>
-        /// <returns></returns>
+        /// <param name="location">Location of the desired piece</param>
+        /// <returns>ChessPiece</returns>
+        public ChessPiece this[ChessLocation location]
+        {
+            get { return this[location.X, location.Y]; }
+            set { this[location.X, location.Y] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the piece on the board in a specified location; 0,0 is the upper left hand corner of the board.
+        /// </summary>
+        /// <param name="x">Column of the desired piece location</param>
+        /// <param name="y">Row of the desired piece location</param>
+        /// <returns>ChessPiece</returns>
         public ChessPiece this[int x, int y]
         {
             get { return _board[x, y]; }
