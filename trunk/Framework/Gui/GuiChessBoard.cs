@@ -410,7 +410,7 @@ namespace UvsChess.Gui
         /// <param name="board"></param>
         public void ResetBoard(ChessBoard board)
         {
-            _board = board;
+            _board = board.Clone();
             _boardChanged = true;
             this.Invalidate();
         }
