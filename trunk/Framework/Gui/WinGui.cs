@@ -381,7 +381,7 @@ namespace UvsChess.Gui
             player.AI.EndTurn();
             thread.Join();
 
-            thread_time = DateTime.Now - startTime;
+            //thread_time = DateTime.Now - startTime;
             thread_time = DateTime.Now.Subtract(startTime);
 
             return thread_move;
@@ -390,10 +390,7 @@ namespace UvsChess.Gui
         private void threadedNextMove()
         {
             ChessPlayer player = thread_player;
-            ChessMove nextMove = player.AI.GetNextMove(thread_board, player.Color);
-
-            thread_move = nextMove;
-
+            thread_move = player.AI.GetNextMove(thread_board, player.Color);
         }
         #endregion
 
