@@ -34,7 +34,7 @@ namespace UvsChess.Gui
         ChessBoard thread_board = null;
         TimeSpan thread_time = TimeSpan.MinValue;
 
-        delegate void StringParameterCallback(string text);
+        public delegate void StringParameterCallback(string text);
         delegate void NoParameterCallback();
 
 
@@ -60,6 +60,8 @@ namespace UvsChess.Gui
             BlackPlayer = new ChessPlayer(ChessColor.Black);
 
             chessBoardControl.PieceMovedByHuman += HumanMovedPieceEvent;
+
+            Logger.GuiWriteLine = AddToMainOutput;
         }
 
         #endregion
@@ -68,15 +70,15 @@ namespace UvsChess.Gui
         {
             if (IsRunning)
             {
-                Log("Human move:");
+                Logger.Log("Human move:");
                 humanMove = move;
                 pieceMovedEvent.Set();
             }
             else
             {
-                Log("Pregame setup:");
+                Logger.Log("Pregame setup:");
                 mainChessState.CurrentBoard.MakeMove(move);
-                Log(mainChessState.CurrentBoard.ToFenBoard());
+                Logger.Log(mainChessState.CurrentBoard.ToFenBoard());
             }
 
         }
@@ -104,7 +106,7 @@ namespace UvsChess.Gui
             DialogResult result = openFileDialog1.ShowDialog();
             if (result == DialogResult.OK)
             {
-                Log("Resetting chess board");
+                Logger.Log("Resetting chess board");
                 StreamReader reader = new StreamReader(openFileDialog1.FileName);
                 string line = reader.ReadLine();
 
@@ -124,7 +126,7 @@ namespace UvsChess.Gui
                 StreamWriter writer = new StreamWriter(saveFileDialog1.FileName);
                 //MessageBox.Show("Not implemented yet");
 
-                Log("Saving board to " + saveFileDialog1.FileName);
+                Logger.Log("Saving board to " + saveFileDialog1.FileName);
 
                 string fenboard = mainChessState.ToFenBoard();
                 writer.WriteLine(fenboard);
@@ -256,7 +258,7 @@ namespace UvsChess.Gui
                 }
             }
 
-            Log("Game Over");
+            Logger.Log("Game Over");
             IsRunning = false; //This is redundant, but it makes the code clear
             chessBoardControl.IsLocked = false;
         }
@@ -316,7 +318,7 @@ namespace UvsChess.Gui
             {
                     // Checkmate on a valid move has been signaled.
                     IsRunning = false;
-                    Log(String.Format("{0} has signaled that the game is a stalemate.",
+                    Logger.Log(String.Format("{0} has signaled that the game is a stalemate.",
                                         (player.Color == ChessColor.Black) ? "Black" : "White"));
             }
             else if (isValidMove)
@@ -343,7 +345,7 @@ namespace UvsChess.Gui
                     mainChessState.HalfMoves++;
                 }
 
-                Log(mainChessState.ToFenBoard());
+                Logger.Log(mainChessState.ToFenBoard());
 
             }
             else
@@ -354,12 +356,12 @@ namespace UvsChess.Gui
                 if (nextMove.Flag == ChessFlag.Stalemate)
                 {
                     // A stalemate has occurred.
-                    Log(String.Format("{0} has signaled that the game is a stalemate.",
+                    Logger.Log(String.Format("{0} has signaled that the game is a stalemate.",
                                         (player.Color == ChessColor.Black) ? "Black" : "White"));
                 }
                 else
                 {
-                    Log(String.Format("{0} has signaled that {1} returned an invalid move returned, therefore {1} loses!",
+                    Logger.Log(String.Format("{0} has signaled that {1} returned an invalid move returned, therefore {1} loses!",
                                    (player.Color == ChessColor.Black) ? "White" : "Black",
                                    (player.Color == ChessColor.Black) ? "Black" : "White"));
                 }
@@ -377,7 +379,7 @@ namespace UvsChess.Gui
             if ((time.TotalMilliseconds > (double)limit) && (player.IsComputer))
             {
                 isovertime = true;
-                Log("Too Much Time: Move timeout occurred!");
+                Logger.Log("Too Much Time: Move timeout occurred!");
             }
             return isovertime;
         }
@@ -487,9 +489,16 @@ namespace UvsChess.Gui
             }
         }
 
-        public static void Log(string msg)
+        public void AddToMainOutput(string message)
         {
-            Console.WriteLine(msg);
+            if (this.lstMainOutput.InvokeRequired)
+            {
+                this.Invoke(new StringParameterCallback(AddToMainOutput), new object[] { message });
+            }
+            else
+            {
+                lstMainOutput.Items.Add(message);
+            }
         }
 
         private void cmbWhite_SelectedIndexChanged(object sender, EventArgs e)
