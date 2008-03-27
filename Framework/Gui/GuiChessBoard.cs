@@ -232,6 +232,7 @@ namespace UvsChess.Gui
             this.MouseDown += OnMouseDown;
             this.MouseUp += OnMouseUp;
             this.MouseMove += OnMouseMove;
+            this.Resize += OnResize;
 
 
             // Validate the image sizes
@@ -258,6 +259,55 @@ namespace UvsChess.Gui
             set { _isLocked = value; }
         }
 
+        public int AdjustedVerticalBorderWidth
+        {
+            get
+            {
+                return (int)(_verticalBorderWidth * ( (float)this.Width / (float)_boardWidth));
+            }
+        }
+
+        public int AdjustedHorizontalBorderHeight
+        {
+            get
+            {
+                return (int)(_horizontalBorderHeight * ((float)this.Height / (float)_boardHeight));
+            }
+        }
+
+        public int AdjustedTileWidth
+        {
+            get
+            {
+                return (int)(_tileWidth * ( (float)this.Width / (float)_boardWidth));
+            }
+        }
+
+        public int AdjustedTileHeight
+        {
+            get
+            {
+                return (int)(_tileHeight * ((float)this.Height / (float)_boardHeight));
+            }
+        }
+
+        private void OnResize(object sender, EventArgs e)
+        {
+            if (this.Width < this.Height)
+            {
+                this.Height = this.Width;
+            }
+            else
+            {
+                this.Width = this.Height;
+            }
+
+            Logger.Log("vbw: " + _verticalBorderWidth + "  AdjustedVBW: " + AdjustedVerticalBorderWidth.ToString() + 
+                       "  -  bw: " + _boardWidth.ToString() + "  width: " + this.Width.ToString());
+
+            Invalidate();
+        }
+
         private void OnPaint(object sender, PaintEventArgs e)
         {            
             if (_boardChanged)
@@ -266,8 +316,9 @@ namespace UvsChess.Gui
                 _boardChanged = false;
             }
 
-            e.Graphics.DrawImage(_boardBitmap, 0,0);
-            //e.Graphics.DrawImage(_boardBitmap, e.ClipRectangle);
+            // This one doesn't resize the board with the control
+            //e.Graphics.DrawImage(_boardBitmap, 0,0);
+            e.Graphics.DrawImage(_boardBitmap, 0, 0, this.Width, this.Height);
 
             if (_isDraggingPiece)
             {
@@ -279,16 +330,17 @@ namespace UvsChess.Gui
         {
             if ( (! IsLocked) &&
                  (e.Button == MouseButtons.Left) &&
-                 (e.X > _verticalBorderWidth) &&
-                 (e.Y > _horizontalBorderHeight) &&
-                 (e.X < _boardWidth) &&
-                 (e.Y < _boardHeight) )
+                 (e.X > AdjustedVerticalBorderWidth) &&
+                 (e.Y > AdjustedHorizontalBorderHeight) &&
+                 (e.X < this.Width) &&
+                 (e.Y < this.Height))
             {                
                 _mouseX = e.X;
                 _mouseY = e.Y;
 
-                _pieceBeingMovedLocation = new ChessLocation((_mouseX - _verticalBorderWidth) / _tileWidth, 
-                                                                          (_mouseY - _horizontalBorderHeight) / _tileHeight);
+                _pieceBeingMovedLocation = new ChessLocation((_mouseX - AdjustedVerticalBorderWidth) / AdjustedTileWidth,
+                                                             (_mouseY - AdjustedHorizontalBorderHeight) / AdjustedTileHeight);
+
                 _pieceBeingMoved = _board[_pieceBeingMovedLocation];
 
                 if (_pieceBeingMoved != ChessPiece.Empty)
@@ -311,13 +363,13 @@ namespace UvsChess.Gui
             {
                 _isDraggingPiece = false;
 
-                if ((e.X > _verticalBorderWidth) &&
-                     (e.Y > _horizontalBorderHeight) &&
-                     (e.X < _boardWidth) &&
-                     (e.Y < _boardHeight))
+                 if ((e.X > AdjustedVerticalBorderWidth) &&
+                     (e.Y > AdjustedHorizontalBorderHeight) &&
+                     (e.X < this.Width) &&
+                     (e.Y < this.Height))
                 {
-                    ChessLocation newLoc = new ChessLocation((_mouseX - _verticalBorderWidth) / _tileWidth,
-                                                             (_mouseY - _horizontalBorderHeight) / _tileHeight);
+                    ChessLocation newLoc = new ChessLocation((_mouseX - AdjustedVerticalBorderWidth) / AdjustedTileWidth,
+                                                             (_mouseY - AdjustedHorizontalBorderHeight) / AdjustedTileHeight);
 
                     _board[newLoc] = _pieceBeingMoved;
                     _boardChanged = true;
