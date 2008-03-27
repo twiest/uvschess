@@ -328,7 +328,7 @@
             // 
             this.splitContainer2.Panel2.Controls.Add(this.tabControl1);
             this.splitContainer2.Size = new System.Drawing.Size(798, 726);
-            this.splitContainer2.SplitterDistance = 645;
+            this.splitContainer2.SplitterDistance = 522;
             this.splitContainer2.TabIndex = 0;
             // 
             // chessBoardControl
@@ -337,7 +337,7 @@
             this.chessBoardControl.IsLocked = false;
             this.chessBoardControl.Location = new System.Drawing.Point(0, 0);
             this.chessBoardControl.Name = "chessBoardControl";
-            this.chessBoardControl.Size = new System.Drawing.Size(798, 645);
+            this.chessBoardControl.Size = new System.Drawing.Size(522, 522);
             this.chessBoardControl.TabIndex = 0;
             // 
             // tabControl1
@@ -347,7 +347,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(798, 77);
+            this.tabControl1.Size = new System.Drawing.Size(798, 200);
             this.tabControl1.TabIndex = 0;
             // 
             // tabPage1
@@ -356,7 +356,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(790, 51);
+            this.tabPage1.Size = new System.Drawing.Size(790, 174);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Main";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -369,7 +369,7 @@
             this.lstMainOutput.ItemHeight = 14;
             this.lstMainOutput.Location = new System.Drawing.Point(3, 3);
             this.lstMainOutput.Name = "lstMainOutput";
-            this.lstMainOutput.Size = new System.Drawing.Size(784, 32);
+            this.lstMainOutput.Size = new System.Drawing.Size(784, 158);
             this.lstMainOutput.TabIndex = 0;
             // 
             // openFileDialog1
