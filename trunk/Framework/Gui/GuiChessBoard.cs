@@ -302,9 +302,6 @@ namespace UvsChess.Gui
                 this.Width = this.Height;
             }
 
-            Logger.Log("vbw: " + _verticalBorderWidth + "  AdjustedVBW: " + AdjustedVerticalBorderWidth.ToString() + 
-                       "  -  bw: " + _boardWidth.ToString() + "  width: " + this.Width.ToString());
-
             Invalidate();
         }
 

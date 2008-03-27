@@ -429,6 +429,7 @@ namespace UvsChess.Gui
 
         ChessMove GetNextAIMove(ChessPlayer player, ChessBoard board)
         {
+            
             thread_player = player;
             thread_board = board;
 
@@ -437,9 +438,11 @@ namespace UvsChess.Gui
             Thread thread = new Thread(job);
 
             DateTime startTime = DateTime.Now;
+            DateTime endTime = startTime.AddMilliseconds(UserPrefs.Time);
             thread.Start();
 
-            while ((startTime.AddMilliseconds(UserPrefs.Time)) < DateTime.Now)
+            //while (player.AI.IsRunning && (startTime.AddMilliseconds(UserPrefs.Time)) < DateTime.Now)
+            while (player.AI.IsRunning && (DateTime.Now < endTime))
             {
                 Thread.Sleep(100);
             }
