@@ -59,7 +59,7 @@ namespace UvsChess
         
         public static int Time
         {
-            get { return 1000; }// Convert.ToInt32(items[TIME]); }
+            get { return 5000; }// Convert.ToInt32(items[TIME]); }
             //set { items[TIME] = value.ToString(); }
         }
         public static int GracePeriod

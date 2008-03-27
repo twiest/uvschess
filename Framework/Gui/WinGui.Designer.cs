@@ -39,9 +39,16 @@
             this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.historyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutUvsChessToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.lblFullMoves = new System.Windows.Forms.Label();
             this.cmbBlack = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.radBlack = new System.Windows.Forms.RadioButton();
+            this.label2 = new System.Windows.Forms.Label();
+            this.lblHalfMoves = new System.Windows.Forms.Label();
             this.radWhite = new System.Windows.Forms.RadioButton();
             this.cmbWhite = new System.Windows.Forms.ComboBox();
             this.lstHistory = new System.Windows.Forms.ListBox();
@@ -68,7 +75,8 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.gameToolStripMenuItem,
-            this.historyToolStripMenuItem});
+            this.historyToolStripMenuItem,
+            this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1064, 24);
@@ -158,6 +166,27 @@
             this.clearToolStripMenuItem.Text = "Clear";
             this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
             // 
+            // helpToolStripMenuItem
+            // 
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.helpToolStripMenuItem1,
+            this.aboutUvsChessToolStripMenuItem});
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
+            this.helpToolStripMenuItem.Text = "Help";
+            // 
+            // helpToolStripMenuItem1
+            // 
+            this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
+            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(164, 22);
+            this.helpToolStripMenuItem1.Text = "Help";
+            // 
+            // aboutUvsChessToolStripMenuItem
+            // 
+            this.aboutUvsChessToolStripMenuItem.Name = "aboutUvsChessToolStripMenuItem";
+            this.aboutUvsChessToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+            this.aboutUvsChessToolStripMenuItem.Text = "About UvsChess";
+            // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -166,8 +195,12 @@
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.lblFullMoves);
             this.splitContainer1.Panel1.Controls.Add(this.cmbBlack);
+            this.splitContainer1.Panel1.Controls.Add(this.label1);
             this.splitContainer1.Panel1.Controls.Add(this.radBlack);
+            this.splitContainer1.Panel1.Controls.Add(this.label2);
+            this.splitContainer1.Panel1.Controls.Add(this.lblHalfMoves);
             this.splitContainer1.Panel1.Controls.Add(this.radWhite);
             this.splitContainer1.Panel1.Controls.Add(this.cmbWhite);
             this.splitContainer1.Panel1.Controls.Add(this.lstHistory);
@@ -178,6 +211,16 @@
             this.splitContainer1.Size = new System.Drawing.Size(1064, 726);
             this.splitContainer1.SplitterDistance = 262;
             this.splitContainer1.TabIndex = 1;
+            // 
+            // lblFullMoves
+            // 
+            this.lblFullMoves.AutoSize = true;
+            this.lblFullMoves.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblFullMoves.Location = new System.Drawing.Point(179, 69);
+            this.lblFullMoves.Name = "lblFullMoves";
+            this.lblFullMoves.Size = new System.Drawing.Size(13, 13);
+            this.lblFullMoves.TabIndex = 3;
+            this.lblFullMoves.Text = "1";
             // 
             // cmbBlack
             // 
@@ -191,6 +234,16 @@
             this.cmbBlack.TabIndex = 4;
             this.cmbBlack.SelectedIndexChanged += new System.EventHandler(this.cmbBlack_SelectedIndexChanged);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(136, 69);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(37, 13);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "Move:";
+            // 
             // radBlack
             // 
             this.radBlack.AutoSize = true;
@@ -200,6 +253,26 @@
             this.radBlack.TabIndex = 3;
             this.radBlack.Text = "Black";
             this.radBlack.UseVisualStyleBackColor = true;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(12, 69);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(61, 13);
+            this.label2.TabIndex = 1;
+            this.label2.Text = "Half Moves";
+            // 
+            // lblHalfMoves
+            // 
+            this.lblHalfMoves.AutoSize = true;
+            this.lblHalfMoves.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblHalfMoves.Location = new System.Drawing.Point(89, 69);
+            this.lblHalfMoves.Name = "lblHalfMoves";
+            this.lblHalfMoves.Size = new System.Drawing.Size(13, 13);
+            this.lblHalfMoves.TabIndex = 0;
+            this.lblHalfMoves.Text = "0";
             // 
             // radWhite
             // 
@@ -232,10 +305,11 @@
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.lstHistory.FormattingEnabled = true;
-            this.lstHistory.Location = new System.Drawing.Point(3, 65);
+            this.lstHistory.Location = new System.Drawing.Point(3, 104);
             this.lstHistory.Name = "lstHistory";
-            this.lstHistory.Size = new System.Drawing.Size(256, 654);
+            this.lstHistory.Size = new System.Drawing.Size(256, 615);
             this.lstHistory.TabIndex = 0;
+            this.lstHistory.SelectedIndexChanged += new System.EventHandler(this.lstHistory_SelectedIndexChanged);
             // 
             // splitContainer2
             // 
@@ -357,5 +431,12 @@
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.ListBox lstMainOutput;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lblHalfMoves;
+        private System.Windows.Forms.Label lblFullMoves;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem aboutUvsChessToolStripMenuItem;
     }
 }

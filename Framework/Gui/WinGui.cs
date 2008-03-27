@@ -35,7 +35,9 @@ namespace UvsChess.Gui
         TimeSpan thread_time = TimeSpan.MinValue;
 
         public delegate void StringParameterCallback(string text);
+        public delegate void TwoStringParameterCallback(string text1,string text2);
         delegate void NoParameterCallback();
+        delegate void IntParameterCallback(int i);
 
 
         #endregion
@@ -50,6 +52,7 @@ namespace UvsChess.Gui
         #endregion
 
         #region Constructors
+
         public WinGui()
         {
             InitializeComponent();
@@ -64,26 +67,6 @@ namespace UvsChess.Gui
             Logger.GuiWriteLine = AddToMainOutput;
         }
 
-        #endregion
-
-        void HumanMovedPieceEvent(ChessMove move)
-        {
-            if (IsRunning)
-            {
-                Logger.Log("Human move:");
-                humanMove = move;
-                pieceMovedEvent.Set();
-            }
-            else
-            {
-                Logger.Log("Pregame setup:");
-                mainChessState.CurrentBoard.MakeMove(move);
-                Logger.Log(mainChessState.CurrentBoard.ToFenBoard());
-            }
-
-        }
-
-
         private void WinGui_Load(object sender, EventArgs e)
         {
             DllLoader.SearhForAIs();
@@ -97,9 +80,10 @@ namespace UvsChess.Gui
             cmbWhite.SelectedIndex = 0;
         }
 
-        
+        #endregion             
 
         #region File menu
+
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
             openFileDialog1.Filter = "FEN files (*.fen)|*.fen|All files (*.*)| *.*";
@@ -171,7 +155,7 @@ namespace UvsChess.Gui
         }
         #endregion
 
-
+        #region AISelector controls
         private void radWhite_CheckedChanged(object sender, EventArgs e)
         {
 
@@ -206,6 +190,17 @@ namespace UvsChess.Gui
                 this.cmbWhite.Enabled = true;
             }
         }
+        private void cmbWhite_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            WhitePlayer.AIName = cmbWhite.SelectedItem.ToString();
+
+        }
+        private void cmbBlack_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+            BlackPlayer.AIName = cmbBlack.SelectedItem.ToString();
+        }
+        #endregion
 
         #region Game play methods and events
         public IAsyncResult StartGame()
@@ -325,7 +320,7 @@ namespace UvsChess.Gui
             {
                 //update the board
                 chessBoardControl.ResetBoard(newstate.CurrentBoard);
-                AddToHistory(player.Color.ToString() + ": " + nextMove.ToString());//, newstate.ToFenBoard());
+                AddToHistory(player.Color.ToString() + ": " + nextMove.ToString(), newstate.ToFenBoard());
 
                 //update mainChessState for valid 
                 mainChessState = newstate;
@@ -333,6 +328,7 @@ namespace UvsChess.Gui
                 if (player.Color == ChessColor.Black)
                 {
                     mainChessState.FullMoves++;//Increment fullmoves after black's turn
+                    SetFullMoves(mainChessState.FullMoves);
                 }
 
                 //Determine if a pawn was moved or a kill was made.
@@ -344,7 +340,7 @@ namespace UvsChess.Gui
                 {
                     mainChessState.HalfMoves++;
                 }
-
+                SetHalfMoves(mainChessState.HalfMoves);
                 Logger.Log(mainChessState.ToFenBoard());
 
             }
@@ -414,6 +410,22 @@ namespace UvsChess.Gui
 
             return humanMove;
         }
+        void HumanMovedPieceEvent(ChessMove move)
+        {
+            if (IsRunning)
+            {
+                Logger.Log("Human move:");
+                humanMove = move;
+                pieceMovedEvent.Set();
+            }
+            else
+            {
+                Logger.Log("Pregame setup:");
+                mainChessState.CurrentBoard.MakeMove(move);
+                Logger.Log(mainChessState.CurrentBoard.ToFenBoard());
+            }
+
+        } 
 
         ChessMove GetNextAIMove(ChessPlayer player, ChessBoard board)
         {
@@ -427,8 +439,10 @@ namespace UvsChess.Gui
             DateTime startTime = DateTime.Now;
             thread.Start();
 
-            //Thread.Sleep(TurnWaitTime);//Time of turn
-            Thread.Sleep(UserPrefs.Time);
+            while ((startTime.AddMilliseconds(UserPrefs.Time)) < DateTime.Now)
+            {
+                Thread.Sleep(100);
+            }
 
             player.AI.EndTurn();
             thread.Join();
@@ -476,16 +490,45 @@ namespace UvsChess.Gui
             player.AI = ai;
 
         }
-    
-        public void AddToHistory(string message)
+
+        #region GUI update methods
+        public void SetHalfMoves(int halfmoves)
         {
-            if (this.lstHistory.InvokeRequired)
+            if (this.lblHalfMoves.InvokeRequired)
             {
-                this.Invoke(new StringParameterCallback(AddToHistory), new object[] { message });
+                IntParameterCallback cb = new IntParameterCallback(SetHalfMoves);
+                this.Invoke(cb, new object[] { halfmoves });
             }
             else
             {
-                lstHistory.Items.Add(message);
+                lblHalfMoves.Text = halfmoves.ToString();
+            }
+        }
+
+        public void SetFullMoves(int fullmoves)
+        {
+            if (this.lblFullMoves.InvokeRequired)
+            {
+                IntParameterCallback cb = new IntParameterCallback(SetFullMoves);
+                this.Invoke(cb, new object[] { fullmoves });
+            }
+            else
+            {
+                lblFullMoves.Text = fullmoves.ToString();
+            }
+        }
+    
+        public void AddToHistory(string message,string fenboard)
+        {
+            if (this.lstHistory.InvokeRequired)
+            {
+                this.Invoke(new TwoStringParameterCallback(AddToHistory), new object[] { message,fenboard });
+            }
+            else
+            {
+                HistoryItem item = new HistoryItem(message,fenboard);
+                lstHistory.Items.Add(item);
+                
             }
         }
 
@@ -500,16 +543,17 @@ namespace UvsChess.Gui
                 lstMainOutput.Items.Add(message);
             }
         }
-
-        private void cmbWhite_SelectedIndexChanged(object sender, EventArgs e)
+        #endregion
+        
+        private void lstHistory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            WhitePlayer.AIName = cmbWhite.SelectedItem.ToString();
+            HistoryItem item = (HistoryItem)lstHistory.SelectedItem;
+            Logger.Log(string.Format("clicked on: {0} - {1}",item,item.fenboard));
 
-        }
-        private void cmbBlack_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-            BlackPlayer.AIName = cmbBlack.SelectedItem.ToString();
+            mainChessState = new ChessState(item.fenboard);
+            chessBoardControl.ResetBoard(mainChessState.CurrentBoard);
+            
+           
         }
     }
 }
