@@ -34,7 +34,8 @@ namespace UvsChess.Gui
         ChessBoard thread_board = null;
         TimeSpan thread_time = TimeSpan.MinValue;
 
-        delegate void AddToHistoryCallback(string text);
+        delegate void StringParameterCallback(string text);
+        delegate void NoParameterCallback();
 
 
         #endregion
@@ -174,24 +175,47 @@ namespace UvsChess.Gui
 
         }
 
+        private void DisableRadioBtnsAndComboBoxes()
+        {
+            if (this.radBlack.InvokeRequired)
+            {
+                this.Invoke(new NoParameterCallback(DisableRadioBtnsAndComboBoxes), null);
+            }
+            else
+            {
+                this.radBlack.Enabled = false;
+                this.radWhite.Enabled = false;
+                this.cmbBlack.Enabled = false;
+                this.cmbWhite.Enabled = false;
+            }
+        }
+
+        private void EnableRadioBtnsAndComboBoxes()
+        {
+            if (this.radBlack.InvokeRequired)
+            {
+                this.Invoke(new NoParameterCallback(EnableRadioBtnsAndComboBoxes), null);
+            }
+            else
+            {
+                this.radBlack.Enabled = true;
+                this.radWhite.Enabled = true;
+                this.cmbBlack.Enabled = true;
+                this.cmbWhite.Enabled = true;
+            }
+        }
+
         #region Game play methods and events
         public IAsyncResult StartGame()
         {
-            //TODO: disable radio buttons
-            //radBlack.Enabled = false;
-            //radWhite.Enabled = false;
-            //cmbBlack.Enabled = false;
-            //cmbWhite.Enabled = false;
+            DisableRadioBtnsAndComboBoxes();
 
             PlayDelegate pd = new PlayDelegate(Play); //Start a new thread from this method
             return pd.BeginInvoke(new AsyncCallback(EndPlay), null);
         }
         private void EndPlay(IAsyncResult ar)
         {
-            //radBlack.Enabled = true;
-            //radWhite.Enabled = true;
-            //cmbBlack.Enabled = true;
-            //cmbWhite.Enabled = true;
+            EnableRadioBtnsAndComboBoxes();
 
             //throw new NotImplementedException();
 
@@ -455,16 +479,12 @@ namespace UvsChess.Gui
         {
             if (this.lstHistory.InvokeRequired)
             {
-                AddToHistoryCallback cb = new AddToHistoryCallback(AddToHistory);
-                this.Invoke(cb, new object[] { message });
+                this.Invoke(new StringParameterCallback(AddToHistory), new object[] { message });
             }
             else
             {
                 lstHistory.Items.Add(message);
             }
-        
-
-            //lstHistory.Items.Add(message);
         }
 
         public static void Log(string msg)
