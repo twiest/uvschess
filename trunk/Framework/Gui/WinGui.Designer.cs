@@ -45,13 +45,22 @@
             this.radWhite = new System.Windows.Forms.RadioButton();
             this.cmbWhite = new System.Windows.Forms.ComboBox();
             this.lstHistory = new System.Windows.Forms.ListBox();
-            this.chessBoardControl = new UvsChess.Gui.GuiChessBoard();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.lstMainOutput = new System.Windows.Forms.ListBox();
+            this.chessBoardControl = new UvsChess.Gui.GuiChessBoard();
             this.menuStrip1.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            this.splitContainer2.Panel1.SuspendLayout();
+            this.splitContainer2.Panel2.SuspendLayout();
+            this.splitContainer2.SuspendLayout();
+            this.tabControl1.SuspendLayout();
+            this.tabPage1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -165,9 +174,9 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.chessBoardControl);
-            this.splitContainer1.Size = new System.Drawing.Size(1064, 683);
-            this.splitContainer1.SplitterDistance = 351;
+            this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
+            this.splitContainer1.Size = new System.Drawing.Size(1064, 726);
+            this.splitContainer1.SplitterDistance = 262;
             this.splitContainer1.TabIndex = 1;
             // 
             // cmbBlack
@@ -178,7 +187,7 @@
             this.cmbBlack.FormattingEnabled = true;
             this.cmbBlack.Location = new System.Drawing.Point(71, 33);
             this.cmbBlack.Name = "cmbBlack";
-            this.cmbBlack.Size = new System.Drawing.Size(277, 21);
+            this.cmbBlack.Size = new System.Drawing.Size(188, 21);
             this.cmbBlack.TabIndex = 4;
             this.cmbBlack.SelectedIndexChanged += new System.EventHandler(this.cmbBlack_SelectedIndexChanged);
             // 
@@ -213,7 +222,7 @@
             this.cmbWhite.FormattingEnabled = true;
             this.cmbWhite.Location = new System.Drawing.Point(71, 6);
             this.cmbWhite.Name = "cmbWhite";
-            this.cmbWhite.Size = new System.Drawing.Size(277, 21);
+            this.cmbWhite.Size = new System.Drawing.Size(188, 21);
             this.cmbWhite.TabIndex = 1;
             this.cmbWhite.SelectedIndexChanged += new System.EventHandler(this.cmbWhite_SelectedIndexChanged);
             // 
@@ -225,8 +234,64 @@
             this.lstHistory.FormattingEnabled = true;
             this.lstHistory.Location = new System.Drawing.Point(3, 65);
             this.lstHistory.Name = "lstHistory";
-            this.lstHistory.Size = new System.Drawing.Size(345, 615);
+            this.lstHistory.Size = new System.Drawing.Size(256, 654);
             this.lstHistory.TabIndex = 0;
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            // 
+            // splitContainer2
+            // 
+            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer2.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer2.Name = "splitContainer2";
+            this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer2.Panel1
+            // 
+            this.splitContainer2.Panel1.AutoScroll = true;
+            this.splitContainer2.Panel1.Controls.Add(this.chessBoardControl);
+            // 
+            // splitContainer2.Panel2
+            // 
+            this.splitContainer2.Panel2.Controls.Add(this.tabControl1);
+            this.splitContainer2.Size = new System.Drawing.Size(798, 726);
+            this.splitContainer2.SplitterDistance = 645;
+            this.splitContainer2.TabIndex = 0;
+            // 
+            // tabControl1
+            // 
+            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl1.Location = new System.Drawing.Point(0, 0);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(798, 77);
+            this.tabControl1.TabIndex = 0;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.lstMainOutput);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(790, 51);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Main";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // lstMainOutput
+            // 
+            this.lstMainOutput.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lstMainOutput.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lstMainOutput.FormattingEnabled = true;
+            this.lstMainOutput.ItemHeight = 14;
+            this.lstMainOutput.Location = new System.Drawing.Point(3, 3);
+            this.lstMainOutput.Name = "lstMainOutput";
+            this.lstMainOutput.Size = new System.Drawing.Size(784, 32);
+            this.lstMainOutput.TabIndex = 0;
             // 
             // chessBoardControl
             // 
@@ -234,24 +299,20 @@
             this.chessBoardControl.IsLocked = false;
             this.chessBoardControl.Location = new System.Drawing.Point(0, 0);
             this.chessBoardControl.Name = "chessBoardControl";
-            this.chessBoardControl.Size = new System.Drawing.Size(709, 683);
+            this.chessBoardControl.Size = new System.Drawing.Size(798, 645);
             this.chessBoardControl.TabIndex = 0;
-            // 
-            // openFileDialog1
-            // 
-            this.openFileDialog1.FileName = "openFileDialog1";
             // 
             // WinGui
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1064, 707);
+            this.ClientSize = new System.Drawing.Size(1064, 750);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "WinGui";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "UvsChess - © Rusty Howell and Thomas Wiest";
+            this.Text = "UvsChess.googlecode.com - © Rusty Howell and Thomas Wiest";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.WinGui_Load);
             this.menuStrip1.ResumeLayout(false);
@@ -260,6 +321,11 @@
             this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.ResumeLayout(false);
+            this.splitContainer2.Panel1.ResumeLayout(false);
+            this.splitContainer2.Panel2.ResumeLayout(false);
+            this.splitContainer2.ResumeLayout(false);
+            this.tabControl1.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -286,6 +352,10 @@
         private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
+        private System.Windows.Forms.SplitContainer splitContainer2;
         private GuiChessBoard chessBoardControl;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.ListBox lstMainOutput;
     }
 }

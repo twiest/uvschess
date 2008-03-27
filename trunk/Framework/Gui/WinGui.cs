@@ -104,8 +104,8 @@ namespace UvsChess.Gui
                 StreamReader reader = new StreamReader(openFileDialog1.FileName);
                 string line = reader.ReadLine();
 
-                ChessState newstate = new ChessState(line);
-                chessBoardControl.ResetBoard(newstate.CurrentBoard);
+                mainChessState = new ChessState(line);
+                chessBoardControl.ResetBoard(mainChessState.CurrentBoard);
                 reader.Close();
                 
             }
@@ -174,11 +174,21 @@ namespace UvsChess.Gui
         public IAsyncResult StartGame()
         {
             //TODO: disable radio buttons
+            //radBlack.Enabled = false;
+            //radWhite.Enabled = false;
+            //cmbBlack.Enabled = false;
+            //cmbWhite.Enabled = false;
+
             PlayDelegate pd = new PlayDelegate(Play); //Start a new thread from this method
             return pd.BeginInvoke(new AsyncCallback(EndPlay), null);
         }
         private void EndPlay(IAsyncResult ar)
         {
+            //radBlack.Enabled = true;
+            //radWhite.Enabled = true;
+            //cmbBlack.Enabled = true;
+            //cmbWhite.Enabled = true;
+
             //throw new NotImplementedException();
 
             //try
@@ -221,7 +231,6 @@ namespace UvsChess.Gui
             Log("Game Over");
             IsRunning = false; //This is redundant, but it makes the code clear
             chessBoardControl.IsLocked = false;
-
         }
 
         void DoNextMove(ChessPlayer player, ChessPlayer opponent)
@@ -311,6 +320,7 @@ namespace UvsChess.Gui
             }
             else
             {
+                // It is either a stalemate or an invalid move. Either way, we're done running.
                 IsRunning = false;
 
                 if (nextMove.Flag == ChessFlag.Stalemate)
