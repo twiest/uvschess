@@ -33,9 +33,18 @@ namespace UvsChess
 {
     public class Logger
     {
+        public static UvsChess.Gui.WinGui.StringParameterCallback GuiWriteLine = null;
+
         public static void Log(string msg)
-        {            
-            Console.WriteLine(msg);
+        {
+            if (GuiWriteLine == null)
+            {
+                Console.WriteLine(msg);
+            }
+            else
+            {
+                GuiWriteLine(msg);
+            }
         }
     }
 }
