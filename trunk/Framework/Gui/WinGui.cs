@@ -179,20 +179,19 @@ namespace UvsChess.Gui
         }
         private void EndPlay(IAsyncResult ar)
         {
+            //throw new NotImplementedException();
 
-            throw new NotImplementedException();
-
-            try
-            {
-                //AsyncResult result = (AsyncResult)ar;
-                //PlayDelegate pd = (PlayDelegate)result.AsyncDelegate;
-                //pd.EndInvoke(ar);
-                //OnPlayCompleted();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("Chess->MainForm->EndPlay: " + ex.Message);
-            }
+            //try
+            //{
+            //    //AsyncResult result = (AsyncResult)ar;
+            //    //PlayDelegate pd = (PlayDelegate)result.AsyncDelegate;
+            //    //pd.EndInvoke(ar);
+            //    //OnPlayCompleted();
+            //}
+            //catch (Exception ex)
+            //{
+            //    System.Diagnostics.Debug.WriteLine("Chess->MainForm->EndPlay: " + ex.Message);
+            //}
         }
 
         void Play()
@@ -238,15 +237,18 @@ namespace UvsChess.Gui
             {
                 nextMove = GetNextAIMove(player, mainChessState.CurrentBoard.Clone());
 
-                newstate = mainChessState.Clone();
-                newstate.MakeMove(nextMove);
-                if (opponent.IsComputer)
+                if (nextMove.Flag != ChessFlag.Stalemate)
                 {
-                    isValidMove = opponent.AI.IsValidMove(newstate);
-                }
-                else
-                {
-                    isValidMove = true;
+                    newstate = mainChessState.Clone();
+                    newstate.MakeMove(nextMove);
+                    if (opponent.IsComputer)
+                    {
+                        isValidMove = opponent.AI.IsValidMove(newstate);
+                    }
+                    else
+                    {
+                        isValidMove = true;
+                    }
                 }
 
                 //TODO
@@ -272,20 +274,19 @@ namespace UvsChess.Gui
                 }
             }
 
-            if (isValidMove)//update the board
+            if ( (isValidMove) && 
+                 (nextMove.Flag == ChessFlag.Checkmate) )
             {
+                    // Checkmate on a valid move has been signaled.
+                    IsRunning = false;
+                    Log(String.Format("{0} has signaled that the game is a stalemate.",
+                                        (player.Color == ChessColor.Black) ? "Black" : "White"));
+            }
+            else if (isValidMove)
+            {
+                //update the board
                 chessBoardControl.ResetBoard(newstate.CurrentBoard);
-            }
-            else //or reset the board
-            {
-                chessBoardControl.ResetBoard(mainChessState.CurrentBoard);
-            }
-
-
-            AddToHistory(player.Color.ToString() + ": " + nextMove.ToString(), newstate.ToFenBoard());
-
-            if (isValidMove)
-            {
+                AddToHistory(player.Color.ToString() + ": " + nextMove.ToString(), newstate.ToFenBoard());
 
                 //update mainChessState for valid 
                 mainChessState = newstate;
@@ -311,8 +312,19 @@ namespace UvsChess.Gui
             else
             {
                 IsRunning = false;
-                Log(String.Format("Invalid move returned, {0} loses!", (player.Color == ChessColor.Black) ? "Black" : "White"));
 
+                if (nextMove.Flag == ChessFlag.Stalemate)
+                {
+                    // A stalemate has occurred.
+                    Log(String.Format("{0} has signaled that the game is a stalemate.",
+                                        (player.Color == ChessColor.Black) ? "Black" : "White"));
+                }
+                else
+                {
+                    Log(String.Format("{0} has signaled that {1} returned an invalid move returned, therefore {1} loses!",
+                                   (player.Color == ChessColor.Black) ? "White" : "Black",
+                                   (player.Color == ChessColor.Black) ? "Black" : "White"));
+                }
             }
         }
 
