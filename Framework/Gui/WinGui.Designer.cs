@@ -45,9 +45,9 @@
             this.radWhite = new System.Windows.Forms.RadioButton();
             this.cmbWhite = new System.Windows.Forms.ComboBox();
             this.lstHistory = new System.Windows.Forms.ListBox();
+            this.chessBoardControl = new UvsChess.Gui.GuiChessBoard();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.chessBoardControl = new UvsChess.Gui.GuiChessBoard();
             this.menuStrip1.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -62,7 +62,7 @@
             this.historyToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1016, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1064, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -166,8 +166,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.chessBoardControl);
-            this.splitContainer1.Size = new System.Drawing.Size(1016, 647);
-            this.splitContainer1.SplitterDistance = 336;
+            this.splitContainer1.Size = new System.Drawing.Size(1064, 683);
+            this.splitContainer1.SplitterDistance = 351;
             this.splitContainer1.TabIndex = 1;
             // 
             // cmbBlack
@@ -178,7 +178,7 @@
             this.cmbBlack.FormattingEnabled = true;
             this.cmbBlack.Location = new System.Drawing.Point(71, 33);
             this.cmbBlack.Name = "cmbBlack";
-            this.cmbBlack.Size = new System.Drawing.Size(262, 21);
+            this.cmbBlack.Size = new System.Drawing.Size(277, 21);
             this.cmbBlack.TabIndex = 4;
             this.cmbBlack.SelectedIndexChanged += new System.EventHandler(this.cmbBlack_SelectedIndexChanged);
             // 
@@ -213,7 +213,7 @@
             this.cmbWhite.FormattingEnabled = true;
             this.cmbWhite.Location = new System.Drawing.Point(71, 6);
             this.cmbWhite.Name = "cmbWhite";
-            this.cmbWhite.Size = new System.Drawing.Size(262, 21);
+            this.cmbWhite.Size = new System.Drawing.Size(277, 21);
             this.cmbWhite.TabIndex = 1;
             this.cmbWhite.SelectedIndexChanged += new System.EventHandler(this.cmbWhite_SelectedIndexChanged);
             // 
@@ -223,14 +223,10 @@
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.lstHistory.FormattingEnabled = true;
-            this.lstHistory.Location = new System.Drawing.Point(12, 65);
+            this.lstHistory.Location = new System.Drawing.Point(3, 65);
             this.lstHistory.Name = "lstHistory";
-            this.lstHistory.Size = new System.Drawing.Size(321, 563);
+            this.lstHistory.Size = new System.Drawing.Size(345, 615);
             this.lstHistory.TabIndex = 0;
-            // 
-            // openFileDialog1
-            // 
-            this.openFileDialog1.FileName = "openFileDialog1";
             // 
             // chessBoardControl
             // 
@@ -238,14 +234,18 @@
             this.chessBoardControl.IsLocked = false;
             this.chessBoardControl.Location = new System.Drawing.Point(0, 0);
             this.chessBoardControl.Name = "chessBoardControl";
-            this.chessBoardControl.Size = new System.Drawing.Size(676, 647);
+            this.chessBoardControl.Size = new System.Drawing.Size(709, 683);
             this.chessBoardControl.TabIndex = 0;
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
             // 
             // WinGui
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1016, 671);
+            this.ClientSize = new System.Drawing.Size(1064, 707);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;

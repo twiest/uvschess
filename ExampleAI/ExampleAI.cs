@@ -157,8 +157,9 @@ namespace ExampleAI
             }
 
             // If I couldn't find a valid move easily, 
-            // I'll just create an empty move.
+            // I'll just create an empty move and flag a stalemate.
             newMove = new ChessMove();
+            newMove.Flag = ChessFlag.Stalemate;
 
             this.Log("ExampleAI just moved");
 
