@@ -45,13 +45,13 @@
             this.radWhite = new System.Windows.Forms.RadioButton();
             this.cmbWhite = new System.Windows.Forms.ComboBox();
             this.lstHistory = new System.Windows.Forms.ListBox();
-            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.chessBoardControl = new UvsChess.Gui.GuiChessBoard();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.lstMainOutput = new System.Windows.Forms.ListBox();
-            this.chessBoardControl = new UvsChess.Gui.GuiChessBoard();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.menuStrip1.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -237,10 +237,6 @@
             this.lstHistory.Size = new System.Drawing.Size(256, 654);
             this.lstHistory.TabIndex = 0;
             // 
-            // openFileDialog1
-            // 
-            this.openFileDialog1.FileName = "openFileDialog1";
-            // 
             // splitContainer2
             // 
             this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -260,6 +256,15 @@
             this.splitContainer2.Size = new System.Drawing.Size(798, 726);
             this.splitContainer2.SplitterDistance = 645;
             this.splitContainer2.TabIndex = 0;
+            // 
+            // chessBoardControl
+            // 
+            this.chessBoardControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.chessBoardControl.IsLocked = false;
+            this.chessBoardControl.Location = new System.Drawing.Point(0, 0);
+            this.chessBoardControl.Name = "chessBoardControl";
+            this.chessBoardControl.Size = new System.Drawing.Size(798, 645);
+            this.chessBoardControl.TabIndex = 0;
             // 
             // tabControl1
             // 
@@ -293,14 +298,9 @@
             this.lstMainOutput.Size = new System.Drawing.Size(784, 32);
             this.lstMainOutput.TabIndex = 0;
             // 
-            // chessBoardControl
+            // openFileDialog1
             // 
-            this.chessBoardControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.chessBoardControl.IsLocked = false;
-            this.chessBoardControl.Location = new System.Drawing.Point(0, 0);
-            this.chessBoardControl.Name = "chessBoardControl";
-            this.chessBoardControl.Size = new System.Drawing.Size(798, 645);
-            this.chessBoardControl.TabIndex = 0;
+            this.openFileDialog1.FileName = "openFileDialog1";
             // 
             // WinGui
             // 
