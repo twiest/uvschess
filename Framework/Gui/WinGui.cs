@@ -63,6 +63,7 @@ namespace UvsChess.Gui
             BlackPlayer = new ChessPlayer(ChessColor.Black);
 
             chessBoardControl.PieceMovedByHuman += HumanMovedPieceEvent;
+            
 
             Logger.GuiWriteLine = AddToMainOutput;
         }
@@ -525,13 +526,13 @@ namespace UvsChess.Gui
         {
             if (this.lstHistory.InvokeRequired)
             {
-                this.Invoke(new TwoStringParameterCallback(AddToHistory), new object[] { message,fenboard });
+                this.Invoke(new TwoStringParameterCallback(AddToHistory), new object[] { message, fenboard });
             }
             else
             {
                 HistoryItem item = new HistoryItem(message,fenboard);
                 lstHistory.Items.Add(item);
-                
+                lstHistory.SelectedIndex = lstHistory.Items.Count - 1;
             }
         }
 
@@ -544,6 +545,8 @@ namespace UvsChess.Gui
             else
             {
                 lstMainOutput.Items.Add(message);
+                lstMainOutput.SelectedIndex = lstMainOutput.Items.Count - 1;
+                lstMainOutput.ClearSelected();
             }
         }
         #endregion
