@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace UvsChess
+namespace UvsChess.Framework
 {
 
     // Students don't need to see this class

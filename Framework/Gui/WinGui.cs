@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Threading;
+
+using UvsChess.Framework;
 
 namespace UvsChess.Gui
 {
@@ -156,6 +157,23 @@ namespace UvsChess.Gui
         }
         #endregion
 
+        #region Help menu
+
+
+        private void aboutUvsChessToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AboutUvsChess about = new AboutUvsChess();
+            about.ShowDialog();
+        }
+
+        private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Preferences prefs = new Preferences();
+            prefs.ShowDialog();
+        }
+
+        #endregion
+
         #region AISelector controls
         private void radWhite_CheckedChanged(object sender, EventArgs e)
         {
@@ -229,7 +247,16 @@ namespace UvsChess.Gui
             //    System.Diagnostics.Debug.WriteLine("Chess->MainForm->EndPlay: " + ex.Message);
             //}
         }
+        private void RemoveHistory()
+        {
+            int sel = lstHistory.SelectedIndex;
+            
+            while(lstHistory.Items.Count > sel)
+            {
+                lstHistory.Items.RemoveAt(lstHistory.Items.Count-1);
+            }
 
+        }
         void Play()
         {
             //This method run in its own thread.

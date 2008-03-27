@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 
-namespace UvsChess
+namespace UvsChess.Framework
 {
     class DllLoader
     {
