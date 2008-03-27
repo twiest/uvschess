@@ -34,6 +34,9 @@ namespace UvsChess.Gui
         ChessBoard thread_board = null;
         TimeSpan thread_time = TimeSpan.MinValue;
 
+        delegate void AddToHistoryCallback(string text);
+
+
         #endregion
 
         #region Properties
@@ -153,7 +156,8 @@ namespace UvsChess.Gui
         private void stopToolStripMenuItem_Click(object sender, EventArgs e)
         {
             IsRunning = false;
-            MessageBox.Show("Not implemented yet");
+            chessBoardControl.IsLocked = false;
+            //TODO: change color of gui so user knows it's not running
         }
         #endregion
 
@@ -295,7 +299,7 @@ namespace UvsChess.Gui
             {
                 //update the board
                 chessBoardControl.ResetBoard(newstate.CurrentBoard);
-                AddToHistory(player.Color.ToString() + ": " + nextMove.ToString(), newstate.ToFenBoard());
+                AddToHistory(player.Color.ToString() + ": " + nextMove.ToString());//, newstate.ToFenBoard());
 
                 //update mainChessState for valid 
                 mainChessState = newstate;
@@ -446,15 +450,20 @@ namespace UvsChess.Gui
             player.AI = ai;
 
         }
+    
         public void AddToHistory(string message)
         {
-            AddToHistory(message, string.Empty);
-        }
+            if (this.lstHistory.InvokeRequired)
+            {
+                AddToHistoryCallback cb = new AddToHistoryCallback(AddToHistory);
+                this.Invoke(cb, new object[] { message });
+            }
+            else
+            {
+                lstHistory.Items.Add(message);
+            }
+        
 
-        //TODO
-        public void AddToHistory(string message, string fenboard)
-        {
-            
             //lstHistory.Items.Add(message);
         }
 
