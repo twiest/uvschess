@@ -71,7 +71,6 @@ namespace UvsChess.Gui
         }
         #endregion
 
-
         #region Constructors
         public WinGui()
         {
@@ -148,6 +147,8 @@ namespace UvsChess.Gui
         }
         private void startToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            RemoveHistory();
+
             IsRunning = true;
 
             // CHANGE COLOR OF GUI SO USER KNOWS IT'S RUNNING
@@ -157,24 +158,12 @@ namespace UvsChess.Gui
 
         private void stopToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            IsRunning = false;
-            chessBoardControl.IsLocked = false;
-
-            WhitePlayer.EndTurnEarly();
-            BlackPlayer.EndTurnEarly();
-
-            timerThread.Join();
-
-            EnableRadioBtnsAndComboBoxes();
-
-            WhitePlayer = null;
-            BlackPlayer = null;
-            //TODO: change color of gui so user knows it's not running
+            StopGame();
         }
 
         private void clearHistoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            
             lstHistory.Items.Clear();
         }
         #endregion
@@ -231,40 +220,69 @@ namespace UvsChess.Gui
                 this.cmbWhite.Enabled = true;
             }
         }
+        private void DisableMenuItemsDuringPlay()
+        {
+            startToolStripMenuItem.Enabled = false;
+            clearHistoryToolStripMenuItem.Enabled = false;
+            newToolStripMenuItem.Enabled = false;
+
+            openToolStripMenuItem.Enabled = false;
+            saveToolStripMenuItem.Enabled = false;
+
+            stopToolStripMenuItem.Enabled = true;
+        }
+        private void EnableMenuItemsAfterPlay()
+        {
+            startToolStripMenuItem.Enabled = true;
+            clearHistoryToolStripMenuItem.Enabled = true;
+            newToolStripMenuItem.Enabled = true;
+
+            openToolStripMenuItem.Enabled = true;
+            saveToolStripMenuItem.Enabled = true;
+
+            stopToolStripMenuItem.Enabled = false;
+        }
         #endregion
 
         #region Game play methods and events
         public void StartGame()
         {
+            DisableMenuItemsDuringPlay();
             DisableRadioBtnsAndComboBoxes();
 
             timerThread = new Thread(Play);
             timerThread.Start();
         }
 
-        private void EndPlay(IAsyncResult ar)
+        private void StopGame()
         {
-            
+            IsRunning = false;
+            chessBoardControl.IsLocked = false;
 
-            //throw new NotImplementedException();
+            //this method gets called from Stop menu item, and on Form.Closing().
+            // so we have to check if white or black have already been cleaned up.
+            if (WhitePlayer != null) WhitePlayer.EndTurnEarly();
+            if (BlackPlayer != null) BlackPlayer.EndTurnEarly();
 
-            //try
-            //{
-            //    //AsyncResult result = (AsyncResult)ar;
-            //    //PlayDelegate pd = (PlayDelegate)result.AsyncDelegate;
-            //    //pd.EndInvoke(ar);
-            //    //OnPlayCompleted();
-            //}
-            //catch (Exception ex)
-            //{
-            //    System.Diagnostics.Debug.WriteLine("Chess->MainForm->EndPlay: " + ex.Message);
-            //}
+            if (timerThread != null) timerThread.Join();
+
+            EnableRadioBtnsAndComboBoxes();
+            EnableMenuItemsAfterPlay();
+
+            WhitePlayer = null;
+            BlackPlayer = null;
+            //TODO: change color of gui so user knows it's not running
         }
+
         private void RemoveHistory()
         {
             int sel = lstHistory.SelectedIndex;
-            
-            while(lstHistory.Items.Count > sel)
+
+            if (sel < 0)
+            {
+                return;
+            }
+            while(lstHistory.Items.Count > sel + 1)
             {
                 lstHistory.Items.RemoveAt(lstHistory.Items.Count-1);
             }
@@ -588,7 +606,7 @@ namespace UvsChess.Gui
         private void lstHistory_SelectedIndexChanged(object sender, EventArgs e)
         {
             HistoryItem item = (HistoryItem)lstHistory.SelectedItem;
-            Logger.Log(string.Format("clicked on: {0} - {1}",item,item.fenboard));
+            //Logger.Log(string.Format("clicked on: {0} - {1}",item,item.fenboard));
 
             mainChessState = new ChessState(item.fenboard);
             chessBoardControl.ResetBoard(mainChessState.CurrentBoard);
@@ -624,7 +642,8 @@ namespace UvsChess.Gui
 
         private void WinGui_FormClosing(object sender, FormClosingEventArgs e)
         {
-            stopToolStripMenuItem_Click(null, null);
+            StopGame();
+
         }
     }
 }
