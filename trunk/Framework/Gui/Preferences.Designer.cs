@@ -66,29 +66,29 @@ namespace UvsChess.Gui
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(15, 30);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(30, 13);
+            this.label1.Size = new System.Drawing.Size(115, 13);
             this.label1.TabIndex = 2;
-            this.label1.Text = "Time";
+            this.label1.Text = "Time for each turn (ms)";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(15, 64);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(68, 13);
+            this.label2.Size = new System.Drawing.Size(90, 13);
             this.label2.TabIndex = 3;
-            this.label2.Text = "Grace period";
+            this.label2.Text = "Grace period (ms)";
             // 
             // txtTime
             // 
-            this.txtTime.Location = new System.Drawing.Point(101, 30);
+            this.txtTime.Location = new System.Drawing.Point(136, 27);
             this.txtTime.Name = "txtTime";
             this.txtTime.Size = new System.Drawing.Size(100, 20);
             this.txtTime.TabIndex = 5;
             // 
             // txtGrace
             // 
-            this.txtGrace.Location = new System.Drawing.Point(101, 64);
+            this.txtGrace.Location = new System.Drawing.Point(136, 61);
             this.txtGrace.Name = "txtGrace";
             this.txtGrace.Size = new System.Drawing.Size(100, 20);
             this.txtGrace.TabIndex = 6;
@@ -97,7 +97,7 @@ namespace UvsChess.Gui
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(292, 266);
+            this.ClientSize = new System.Drawing.Size(262, 112);
             this.Controls.Add(this.txtGrace);
             this.Controls.Add(this.txtTime);
             this.Controls.Add(this.label2);

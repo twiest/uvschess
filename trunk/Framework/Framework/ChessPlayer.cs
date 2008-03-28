@@ -41,6 +41,7 @@ namespace UvsChess.Framework
         public IChessAI AI;
         public TimeSpan TimeOfLastMove = TimeSpan.MinValue;
 
+        private Thread thread;
         private bool _isMyTurn = false;
         private ChessBoard _currentBoard = null;
         private ChessMove _moveToReturn;
@@ -74,13 +75,12 @@ namespace UvsChess.Framework
             }
             else
             {
-                Thread thread = new Thread(GetNextAIMove);
+                thread = new Thread(GetNextAIMove);
 
                 DateTime startTime = DateTime.Now;
                 DateTime endTime = startTime.AddMilliseconds(UserPrefs.Time);
                 thread.Start();
 
-                //while (player.AI.IsRunning && (startTime.AddMilliseconds(UserPrefs.Time)) < DateTime.Now)
                 while (this.AI.IsRunning && (DateTime.Now < endTime))
                 {
                     Thread.Sleep(100);
@@ -90,10 +90,24 @@ namespace UvsChess.Framework
                 thread.Join();
 
                 TimeOfLastMove = DateTime.Now.Subtract(startTime);
+                thread = null;
             }
 
             _isMyTurn = false;
             return _moveToReturn;
+        }
+
+        public void EndTurnEarly()
+        {
+            if (this.IsHuman)
+            {
+                _pieceMovedByHumanEvent.Set();
+            }
+            else if (thread != null)
+            {
+                this.AI.EndTurn();
+                thread.Join();
+            }
         }
 
         public void HumanMovedPieceEvent(ChessMove move)
