@@ -81,7 +81,7 @@ namespace UvsChess.Framework
                 thread = new Thread(GetNextAIMove);
 
                 _startTime = DateTime.Now;
-                _endTime = _startTime.AddMilliseconds(UserPrefs.Time);
+                _endTime = _startTime.AddMilliseconds(UvsChess.Gui.Preferences.Time);
                 thread.Start();
 
                 this.StartPollingAI();
