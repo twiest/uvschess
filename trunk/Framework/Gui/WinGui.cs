@@ -228,11 +228,13 @@ namespace UvsChess.Gui
                 this.cmbWhite.Enabled = true;
             }
         }
+
         private void cmbWhite_SelectedIndexChanged(object sender, EventArgs e)
         {
             WhitePlayer.AIName = cmbWhite.SelectedItem.ToString();
 
         }
+
         private void cmbBlack_SelectedIndexChanged(object sender, EventArgs e)
         {
 
@@ -348,7 +350,7 @@ namespace UvsChess.Gui
                 {
                     chessBoardControl.IsLocked = false;
 
-                    nextMove = player.GetNextMove(mainChessState.CurrentBoard.Clone());
+                    nextMove = player.GetNextMove(mainChessState.CurrentBoard.Clone(), ref chessBoardControl.PieceMovedByHuman);
 
                     chessBoardControl.IsLocked = true;
 
@@ -497,7 +499,7 @@ namespace UvsChess.Gui
             if (player.IsHuman)
             {
                 // Hook up the Gui piece move to the player event.
-                chessBoardControl.PieceMovedByHuman += player.HumanMovedPieceEvent;
+                //chessBoardControl.PieceMovedByHuman += player.HumanMovedPieceEvent;
 
                 // Player is a human, so we don't need to load an AI.
                 return;

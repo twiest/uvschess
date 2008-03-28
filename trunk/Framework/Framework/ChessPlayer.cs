@@ -40,9 +40,9 @@ namespace UvsChess.Framework
         public string AIName;
         public IChessAI AI;
 
-        private bool _isMyTurn = false;
+        private ChessBoard _currentBoard = null;
         private ChessMove _moveToReturn;
-        ManualResetEvent _pieceMovedByHumanEvent = new ManualResetEvent(true);
+        private ManualResetEvent _pieceMovedByHumanEvent = new ManualResetEvent(true);
 
 
         public ChessPlayer(ChessColor color)
@@ -60,28 +60,30 @@ namespace UvsChess.Framework
             get { return !IsHuman; }
         }
 
-        public ChessMove GetNextMove(ChessBoard currentBoard)
+        public ChessMove GetNextMove(ChessBoard currentBoard, ref UvsChess.Gui.GuiChessBoard.PieceMovedByHumanDelegate PieceMovedByHumanDelegate)
         {
-            _isMyTurn = true;
+            _currentBoard = currentBoard;
 
             if (this.IsHuman)
             {
+                // Hook up the GUI chess event
+                PieceMovedByHumanDelegate += this.HumanMovedPieceEvent;
+
                 _pieceMovedByHumanEvent.Reset();
                 _pieceMovedByHumanEvent.WaitOne();
+
+                // Take away the even since my turn is over
+                PieceMovedByHumanDelegate -= this.HumanMovedPieceEvent;
             }
 
-            _isMyTurn = false;
             return _moveToReturn;
         }
 
         public void HumanMovedPieceEvent(ChessMove move)
         {
-            if (_isMyTurn)
-            {
-                Logger.Log("Human Playing " + Color.ToString() + " moved:");
-                _moveToReturn = move;
-                _pieceMovedByHumanEvent.Set();
-            }
+            Logger.Log("Human Playing " + Color.ToString() + " moved:");
+            _moveToReturn = move;
+            _pieceMovedByHumanEvent.Set();
         } 
     }
 
