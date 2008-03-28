@@ -298,6 +298,7 @@ namespace UvsChess.Gui
             IsRunning = true;
             //ChessMove currentMove = null;
             chessBoardControl.IsLocked = true;
+            AddToHistory("Start Of Game", mainChessState.ToFenBoard());
 
             while (IsRunning)
             {
