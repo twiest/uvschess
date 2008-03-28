@@ -47,16 +47,8 @@ namespace UvsChess.Gui
         bool IsRunning = false;
         List<AI> AvailableAIs = new List<AI>();
 
-
         public delegate void PlayCompletedHandler();
         protected delegate void PlayDelegate();
-
-        //These are for the threading involved with telling the AI to EndTurn
-        //int TurnWaitTime = 5000;// time in milliseconds for each turn. 
-        ChessPlayer thread_player = null;
-        ChessMove thread_move = null;
-        ChessBoard thread_board = null;
-        TimeSpan thread_time = TimeSpan.MinValue;
 
         public delegate void StringParameterCallback(string text);
         public delegate void TwoStringParameterCallback(string text1,string text2);
@@ -321,7 +313,7 @@ namespace UvsChess.Gui
 
             if (player.IsComputer)
             {
-                nextMove = GetNextAIMove(player, mainChessState.CurrentBoard.Clone());
+                nextMove = player.GetNextMove(mainChessState.CurrentBoard, ref chessBoardControl.PieceMovedByHuman);
 
                 if (nextMove.Flag != ChessFlag.Stalemate)
                 {
@@ -455,39 +447,6 @@ namespace UvsChess.Gui
 
             return false;
         }
-
-        ChessMove GetNextAIMove(ChessPlayer player, ChessBoard board)
-        {            
-            thread_player = player;
-            thread_board = board;
-
-            //Add threading here. Wait n seconds then call ChessAI.EndTurn()
-            ThreadStart job = new ThreadStart(threadedNextMove);
-            Thread thread = new Thread(job);
-
-            DateTime startTime = DateTime.Now;
-            DateTime endTime = startTime.AddMilliseconds(UserPrefs.Time);
-            thread.Start();
-
-            //while (player.AI.IsRunning && (startTime.AddMilliseconds(UserPrefs.Time)) < DateTime.Now)
-            while (player.AI.IsRunning && (DateTime.Now < endTime))
-            {
-                Thread.Sleep(100);
-            }
-
-            player.AI.EndTurn();
-            thread.Join();
-
-            //thread_time = DateTime.Now - startTime;
-            thread_time = DateTime.Now.Subtract(startTime);
-
-            return thread_move;
-        }
-
-        private void threadedNextMove()
-        {
-            thread_move = thread_player.AI.GetNextMove(thread_board, thread_player.Color);
-        }
         #endregion
 
         /// <summary>
@@ -498,9 +457,6 @@ namespace UvsChess.Gui
         {
             if (player.IsHuman)
             {
-                // Hook up the Gui piece move to the player event.
-                //chessBoardControl.PieceMovedByHuman += player.HumanMovedPieceEvent;
-
                 // Player is a human, so we don't need to load an AI.
                 return;
             }
