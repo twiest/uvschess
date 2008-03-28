@@ -110,6 +110,7 @@ namespace UvsChess.Framework
             }
             else if (thread != null)
             {
+                StopPollingAI();
                 this.AI.EndTurn();
                 thread.Join();
 
@@ -131,8 +132,8 @@ namespace UvsChess.Framework
         {
             this.StopPollingAI();
 
-            if ( (!this.AI.IsRunning) ||
-                 (DateTime.Now > _endTime))
+            if ((!this.AI.IsRunning) || 
+                (DateTime.Now > _endTime))
             {
                 this.AI.EndTurn();
                 thread.Join();
