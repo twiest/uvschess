@@ -398,16 +398,16 @@ namespace UvsChess.Gui
                     ChessLocation newLoc = new ChessLocation((_mouseX - AdjustedVerticalBorderWidth) / AdjustedTileWidth,
                                                              (_mouseY - AdjustedHorizontalBorderHeight) / AdjustedTileHeight);
 
-                    _board[newLoc] = _pieceBeingMoved;
+                    ChessMove humanMove = new ChessMove();
+                    humanMove.From = _pieceBeingMovedLocation;
+                    humanMove.To = newLoc;
+
+                    _board.MakeMove(humanMove);
                     _boardChanged = true;
 
                     if ( (_pieceBeingMovedLocation != newLoc) && 
                          (PieceMovedByHuman != null) )
                     {
-                        ChessMove humanMove = new ChessMove();
-                        humanMove.From = _pieceBeingMovedLocation;
-                        humanMove.To = newLoc;
-
                         PieceMovedByHuman(humanMove);
                     }
                 }
