@@ -41,6 +41,7 @@ namespace UvsChess.Framework
         public IChessAI AI;
         public TimeSpan TimeOfLastMove = TimeSpan.MinValue;
 
+        private bool _isMyTurn = false;
         private ChessBoard _currentBoard = null;
         private ChessMove _moveToReturn;
         private ManualResetEvent _pieceMovedByHumanEvent = new ManualResetEvent(true);
@@ -61,20 +62,15 @@ namespace UvsChess.Framework
             get { return !IsHuman; }
         }
 
-        public ChessMove GetNextMove(ChessBoard currentBoard, ref UvsChess.Gui.GuiChessBoard.PieceMovedByHumanDelegate PieceMovedByHumanDelegate)
+        public ChessMove GetNextMove(ChessBoard currentBoard)
         {
+            _isMyTurn = true;
             _currentBoard = currentBoard.Clone();
 
             if (this.IsHuman)
             {
-                // Hook up the GUI chess event
-                PieceMovedByHumanDelegate += this.HumanMovedPieceEvent;
-
                 _pieceMovedByHumanEvent.Reset();
                 _pieceMovedByHumanEvent.WaitOne();
-
-                // Take away the event since my turn is over
-                PieceMovedByHumanDelegate -= this.HumanMovedPieceEvent;
             }
             else
             {
@@ -96,14 +92,18 @@ namespace UvsChess.Framework
                 TimeOfLastMove = DateTime.Now.Subtract(startTime);
             }
 
+            _isMyTurn = false;
             return _moveToReturn;
         }
 
         public void HumanMovedPieceEvent(ChessMove move)
         {
-            Logger.Log("Human Playing " + Color.ToString() + " moved:");
-            _moveToReturn = move;
-            _pieceMovedByHumanEvent.Set();
+            if (_isMyTurn)
+            {
+                Logger.Log("Human Playing " + Color.ToString() + " moved:");
+                _moveToReturn = move;
+                _pieceMovedByHumanEvent.Set();
+            }
         }
 
         private void threadedNextMove()
