@@ -25,13 +25,14 @@
 // 		Thomas Wiest  twiest@users.sourceforge.net
 //		Rusty Howell  rhowell@users.sourceforge.net
 
+
+// TODO: Go through and make sure that only the namespaces used are the ones referenced.
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Threading;
 
 namespace UvsChess.Framework
 {
-
     // Students don't need to see this class
     class ChessPlayer
     {
@@ -39,20 +40,52 @@ namespace UvsChess.Framework
         public string AIName;
         public IChessAI AI;
 
+        private bool _isMyTurn = false;
+        private ChessMove _moveToReturn;
+        ManualResetEvent _pieceMovedByHumanEvent = new ManualResetEvent(true);
+
+
         public ChessPlayer(ChessColor color)
         {
             Color = color;
         }
+
         public bool IsHuman
         {
-            get { return AI == null; }
+            get { return ((this.AIName == null) || (this.AIName == "Human")); }
         }
+
         public bool IsComputer
         {
             get { return !IsHuman; }
         }
+
+        public ChessMove GetNextMove(ChessBoard currentBoard)
+        {
+            _isMyTurn = true;
+
+            if (this.IsHuman)
+            {
+                _pieceMovedByHumanEvent.Reset();
+                _pieceMovedByHumanEvent.WaitOne();
+            }
+
+            _isMyTurn = false;
+            return _moveToReturn;
+        }
+
+        public void HumanMovedPieceEvent(ChessMove move)
+        {
+            if (_isMyTurn)
+            {
+                Logger.Log("Human Playing " + Color.ToString() + " moved:");
+                _moveToReturn = move;
+                _pieceMovedByHumanEvent.Set();
+            }
+        } 
     }
 
+    // TODO: Separate all classes into their own files.
     // Students don't need to see this class
     class AI
     {
