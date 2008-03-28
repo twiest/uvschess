@@ -74,7 +74,7 @@ namespace UvsChess.Framework
             }
             else
             {
-                Thread thread = new Thread(threadedNextMove);
+                Thread thread = new Thread(GetNextAIMove);
 
                 DateTime startTime = DateTime.Now;
                 DateTime endTime = startTime.AddMilliseconds(UserPrefs.Time);
@@ -106,7 +106,7 @@ namespace UvsChess.Framework
             }
         }
 
-        private void threadedNextMove()
+        private void GetNextAIMove()
         {
             _moveToReturn = this.AI.GetNextMove(_currentBoard, this.Color);
         }
