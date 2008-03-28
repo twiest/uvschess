@@ -625,11 +625,6 @@ namespace UvsChess.Gui
         private void WinGui_FormClosing(object sender, FormClosingEventArgs e)
         {
             stopToolStripMenuItem_Click(null, null);
-            if (timerThread != null)
-            {
-                timerThread.Join();
-                timerThread = null;
-            }
         }
     }
 }
