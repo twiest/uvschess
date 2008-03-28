@@ -41,12 +41,15 @@ namespace UvsChess.Framework
         public IChessAI AI;
         public TimeSpan TimeOfLastMove = TimeSpan.MinValue;
 
+        private DateTime _startTime;
+        private DateTime _endTime;
         private Thread thread;
         private bool _isMyTurn = false;
         private ChessBoard _currentBoard = null;
         private ChessMove _moveToReturn;
         private ManualResetEvent _pieceMovedByHumanEvent = new ManualResetEvent(true);
-
+        private int Interval = 100;
+        private Timer WakeUpTimer;
 
         public ChessPlayer(ChessColor color)
         {
@@ -77,23 +80,25 @@ namespace UvsChess.Framework
             {
                 thread = new Thread(GetNextAIMove);
 
-                DateTime startTime = DateTime.Now;
-                DateTime endTime = startTime.AddMilliseconds(UserPrefs.Time);
+                _startTime = DateTime.Now;
+                _endTime = _startTime.AddMilliseconds(UserPrefs.Time);
                 thread.Start();
 
-                while (this.AI.IsRunning && (DateTime.Now < endTime))
-                {
-                    Thread.Sleep(100);
-                }
+                this.StartPollingAI();
 
-                this.AI.EndTurn();
-                thread.Join();
+                _pieceMovedByHumanEvent.Reset();
+                _pieceMovedByHumanEvent.WaitOne();
 
-                TimeOfLastMove = DateTime.Now.Subtract(startTime);
                 thread = null;
             }
 
             _isMyTurn = false;
+
+            // Clean up the heap for the next player.
+            // This doesn't cost any AI time.
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+
             return _moveToReturn;
         }
 
@@ -107,6 +112,39 @@ namespace UvsChess.Framework
             {
                 this.AI.EndTurn();
                 thread.Join();
+
+                _pieceMovedByHumanEvent.Set();
+            }
+        }
+
+        private void StartPollingAI()
+        {
+            WakeUpTimer = new Timer(this.PollAI, null, Interval, Interval);
+        }
+
+        private void StopPollingAI()
+        {
+            WakeUpTimer.Change(System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
+        }
+
+        private void PollAI(object state)
+        {
+            this.StopPollingAI();
+
+            if ( (!this.AI.IsRunning) ||
+                 (DateTime.Now > _endTime))
+            {
+                this.AI.EndTurn();
+                thread.Join();
+
+                TimeOfLastMove = DateTime.Now.Subtract(_startTime);
+
+                _pieceMovedByHumanEvent.Set();
+            }
+            else
+            {
+                // poll again
+                StartPollingAI();
             }
         }
 
