@@ -56,6 +56,7 @@ namespace UvsChess.Gui
         public delegate void StringParameterCallback(string text);
         public delegate void TwoStringParameterCallback(string text1,string text2);
         public delegate string CmbBoxParamaterCallback(ComboBox cmb);
+        private delegate void RadioBtnParameterCallback(RadioButton rad);
         delegate void NoParameterCallback();
         delegate void IntParameterCallback(int i);
 
@@ -198,7 +199,7 @@ namespace UvsChess.Gui
         #region AISelector controls
         private void radWhite_CheckedChanged(object sender, EventArgs e)
         {
-
+            mainChessState.CurrentPlayerColor = ChessColor.White;
         }
 
         private void DisableRadioBtnsAndComboBoxes()
@@ -309,10 +310,13 @@ namespace UvsChess.Gui
             {
                 if (mainChessState.CurrentPlayerColor == ChessColor.White)
                 {
+                    //change radion button selection
+                    SelectRadio(radWhite);
                     DoNextMove(WhitePlayer, BlackPlayer);
                 }
                 else
                 {
+                    SelectRadio(radBlack);
                     DoNextMove(BlackPlayer, WhitePlayer);
                 }
             }
@@ -591,6 +595,17 @@ namespace UvsChess.Gui
             
            
         }
+        private void SelectRadio(RadioButton rad)
+        {
+            if (rad.InvokeRequired)
+            {
+                this.Invoke(new RadioBtnParameterCallback(SelectRadio), new object[] { rad });
+            }
+            else
+            {
+                rad.Checked = true;
+            }
+        }
 
         private void cmbWhite_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -600,6 +615,21 @@ namespace UvsChess.Gui
         private void cmbBlack_SelectedIndexChanged(object sender, EventArgs e)
         {
             BlackPlayerName = cmbBlack.SelectedItem.ToString();
+        }
+
+        private void radBlack_CheckedChanged(object sender, EventArgs e)
+        {
+            mainChessState.CurrentPlayerColor = ChessColor.Black;
+        }
+
+        private void WinGui_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            stopToolStripMenuItem_Click(null, null);
+            if (timerThread != null)
+            {
+                timerThread.Join();
+                timerThread = null;
+            }
         }
     }
 }
