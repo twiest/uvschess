@@ -284,6 +284,11 @@ namespace UvsChess.Gui
             set { _isLocked = value; }
         }
 
+        public ChessBoard Board
+        {
+            get { return _board.Clone(); }
+        }
+
         public int AdjustedVerticalBorderWidth
         {
             get

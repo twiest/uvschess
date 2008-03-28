@@ -71,6 +71,8 @@ namespace UvsChess
             return newMove;
         }
 
+        // TODO: We need to add == and != stuff so they can compare two moves.
+
         public override string ToString()
         {
             return "From: [" + this.From.X + ", " + this.From.Y + "]   To: [" + this.To.X + ", " + this.To.Y + "]";

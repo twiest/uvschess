@@ -41,18 +41,14 @@ namespace UvsChess.Gui
     {
         #region Members
 
-        ManualResetEvent pieceMovedEvent = new ManualResetEvent(true);
-
         ChessState _mainChessState = null;
         ChessPlayer WhitePlayer = null;
         ChessPlayer BlackPlayer = null;
         bool IsRunning = false;
-        ChessMove humanMove = null;
         List<AI> AvailableAIs = new List<AI>();
 
 
         public delegate void PlayCompletedHandler();
-        public event PlayCompletedHandler PlayCompleted;
         protected delegate void PlayDelegate();
 
         //These are for the threading involved with telling the AI to EndTurn
@@ -76,11 +72,10 @@ namespace UvsChess.Gui
             get { return _mainChessState; }
             set { _mainChessState = value; }
         }
-
         #endregion
 
-        #region Constructors
 
+        #region Constructors
         public WinGui()
         {
             InitializeComponent();
@@ -89,9 +84,6 @@ namespace UvsChess.Gui
 
             WhitePlayer = new ChessPlayer(ChessColor.White);
             BlackPlayer = new ChessPlayer(ChessColor.Black);
-
-            chessBoardControl.PieceMovedByHuman += HumanMovedPieceEvent;
-            
 
             Logger.GuiWriteLine = AddToMainOutput;
         }
@@ -256,6 +248,7 @@ namespace UvsChess.Gui
             PlayDelegate pd = new PlayDelegate(Play); //Start a new thread from this method
             return pd.BeginInvoke(new AsyncCallback(EndPlay), null);
         }
+
         private void EndPlay(IAsyncResult ar)
         {
             EnableRadioBtnsAndComboBoxes();
@@ -282,11 +275,14 @@ namespace UvsChess.Gui
             {
                 lstHistory.Items.RemoveAt(lstHistory.Items.Count-1);
             }
-
         }
+
         void Play()
         {
             //This method run in its own thread.
+
+            // Setup the current state so that it's the same as the gui chess board
+            mainChessState.CurrentBoard = chessBoardControl.Board;
 
             //Load the AI if it isn't loaded already
             LoadAI(WhitePlayer);
@@ -315,7 +311,6 @@ namespace UvsChess.Gui
 
         void DoNextMove(ChessPlayer player, ChessPlayer opponent)
         {
-
             ChessMove nextMove = null;
             //DateTime start = DateTime.Now;
             bool isValidMove = false;
@@ -353,12 +348,14 @@ namespace UvsChess.Gui
                 {
                     chessBoardControl.IsLocked = false;
 
-                    nextMove = GetNextHumanMove();
+                    nextMove = player.GetNextMove(mainChessState.CurrentBoard.Clone());
 
                     chessBoardControl.IsLocked = true;
 
                     newstate = mainChessState.Clone();
                     newstate.MakeMove(nextMove);
+
+                    // TODO: Fix NRE here when a human is playing another human
                     isValidMove = opponent.AI.IsValidMove(newstate);
                 }
             }
@@ -456,35 +453,9 @@ namespace UvsChess.Gui
 
             return false;
         }
-        ChessMove GetNextHumanMove()
-        {
-            //chessBoardControl.IsLocked = false;
-
-            pieceMovedEvent.Reset();
-            pieceMovedEvent.WaitOne();            
-
-            return humanMove;
-        }
-        void HumanMovedPieceEvent(ChessMove move)
-        {
-            if (IsRunning)
-            {
-                Logger.Log("Human move:");
-                humanMove = move;
-                pieceMovedEvent.Set();
-            }
-            else
-            {
-                Logger.Log("Pregame setup:");
-                mainChessState.CurrentBoard.MakeMove(move);
-                Logger.Log(mainChessState.CurrentBoard.ToFenBoard());
-            }
-
-        } 
 
         ChessMove GetNextAIMove(ChessPlayer player, ChessBoard board)
-        {
-            
+        {            
             thread_player = player;
             thread_board = board;
 
@@ -513,8 +484,7 @@ namespace UvsChess.Gui
 
         private void threadedNextMove()
         {
-            ChessPlayer player = thread_player;
-            thread_move = player.AI.GetNextMove(thread_board, player.Color);
+            thread_move = thread_player.AI.GetNextMove(thread_board, thread_player.Color);
         }
         #endregion
 
@@ -524,12 +494,17 @@ namespace UvsChess.Gui
         /// <param name="player"></param>
         void LoadAI(ChessPlayer player)
         {
-            if ((player.AIName == null) || (player.AIName == "Human"))
+            if (player.IsHuman)
             {
+                // Hook up the Gui piece move to the player event.
+                chessBoardControl.PieceMovedByHuman += player.HumanMovedPieceEvent;
+
+                // Player is a human, so we don't need to load an AI.
                 return;
             }
             else if (player.AI != null)
             {
+                // AI has already been loaded, so return
                 return;
             }
 

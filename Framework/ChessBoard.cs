@@ -107,6 +107,10 @@ namespace UvsChess
             }
         }
 
+        // TODO: determine if we should remove this method. On the one hand, it could be convenient.
+        //       on the other hand, we never even used it. Also, it might be good to have students
+        //       learn that the empty tile is in the ChessPiece enum in order to do their 
+        //       "< empty == white" logic.
         public bool IsTileEmpty(ChessLocation location)
         {
             return (_board[location.X, location.Y] == ChessPiece.Empty);
