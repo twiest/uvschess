@@ -44,14 +44,18 @@ namespace UvsChess.Gui
         ChessState _mainChessState = null;
         ChessPlayer WhitePlayer = null;
         ChessPlayer BlackPlayer = null;
+        string WhitePlayerName = string.Empty;
+        string BlackPlayerName = string.Empty;
         bool IsRunning = false;
         List<AI> AvailableAIs = new List<AI>();
+        Thread timerThread = null;
 
         public delegate void PlayCompletedHandler();
         protected delegate void PlayDelegate();
 
         public delegate void StringParameterCallback(string text);
         public delegate void TwoStringParameterCallback(string text1,string text2);
+        public delegate string CmbBoxParamaterCallback(ComboBox cmb);
         delegate void NoParameterCallback();
         delegate void IntParameterCallback(int i);
 
@@ -73,9 +77,6 @@ namespace UvsChess.Gui
             InitializeComponent();
 
             mainChessState = new ChessState();
-
-            WhitePlayer = new ChessPlayer(ChessColor.White);
-            BlackPlayer = new ChessPlayer(ChessColor.Black);
 
             Logger.GuiWriteLine = AddToMainOutput;
         }
@@ -157,13 +158,22 @@ namespace UvsChess.Gui
         {
             IsRunning = false;
             chessBoardControl.IsLocked = false;
+
+            WhitePlayer.EndTurnEarly();
+            BlackPlayer.EndTurnEarly();
+
+            timerThread.Join();
+
+            EnableRadioBtnsAndComboBoxes();
+
+            WhitePlayer = null;
+            BlackPlayer = null;
             //TODO: change color of gui so user knows it's not running
         }
-        #endregion
 
-        #region History menu
-        private void clearToolStripMenuItem_Click(object sender, EventArgs e)
+        private void clearHistoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
+
             lstHistory.Items.Clear();
         }
         #endregion
@@ -220,32 +230,20 @@ namespace UvsChess.Gui
                 this.cmbWhite.Enabled = true;
             }
         }
-
-        private void cmbWhite_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            WhitePlayer.AIName = cmbWhite.SelectedItem.ToString();
-
-        }
-
-        private void cmbBlack_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-            BlackPlayer.AIName = cmbBlack.SelectedItem.ToString();
-        }
         #endregion
 
         #region Game play methods and events
-        public IAsyncResult StartGame()
+        public void StartGame()
         {
             DisableRadioBtnsAndComboBoxes();
 
-            PlayDelegate pd = new PlayDelegate(Play); //Start a new thread from this method
-            return pd.BeginInvoke(new AsyncCallback(EndPlay), null);
+            timerThread = new Thread(Play);
+            timerThread.Start();
         }
 
         private void EndPlay(IAsyncResult ar)
         {
-            EnableRadioBtnsAndComboBoxes();
+            
 
             //throw new NotImplementedException();
 
@@ -277,6 +275,13 @@ namespace UvsChess.Gui
 
             // Setup the current state so that it's the same as the gui chess board
             mainChessState.CurrentBoard = chessBoardControl.Board;
+                        
+            // Setup the players based on the combo boxes
+            WhitePlayer = new ChessPlayer(ChessColor.White);
+            BlackPlayer = new ChessPlayer(ChessColor.Black);
+
+            WhitePlayer.AIName = WhitePlayerName;
+            BlackPlayer.AIName = BlackPlayerName;
 
             //Load the AI if it isn't loaded already
             LoadAI(WhitePlayer);
@@ -324,7 +329,7 @@ namespace UvsChess.Gui
                 chessBoardControl.PieceMovedByHuman -= BlackPlayer.HumanMovedPieceEvent;
             }
 
-            Logger.Log("Game Over");
+            //Logger.Log("Game Over");
             IsRunning = false; //This is redundant, but it makes the code clear
             chessBoardControl.IsLocked = false;
         }
@@ -340,6 +345,12 @@ namespace UvsChess.Gui
             if (player.IsComputer)
             {
                 nextMove = player.GetNextMove(mainChessState.CurrentBoard);
+
+                if (!IsRunning)
+                {
+                    // if we're not running, leave the method
+                    return;
+                }
 
                 if (nextMove.Flag != ChessFlag.Stalemate)
                 {
@@ -369,6 +380,12 @@ namespace UvsChess.Gui
                     chessBoardControl.IsLocked = false;
 
                     nextMove = player.GetNextMove(mainChessState.CurrentBoard.Clone());
+
+                    if (! IsRunning)
+                    {
+                        // if we're not running, leave the method
+                        return;
+                    }
 
                     chessBoardControl.IsLocked = true;
 
@@ -573,6 +590,16 @@ namespace UvsChess.Gui
             chessBoardControl.ResetBoard(mainChessState.CurrentBoard);
             
            
+        }
+
+        private void cmbWhite_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            WhitePlayerName = cmbWhite.SelectedItem.ToString();
+        }
+
+        private void cmbBlack_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            BlackPlayerName = cmbBlack.SelectedItem.ToString();
         }
     }
 }
