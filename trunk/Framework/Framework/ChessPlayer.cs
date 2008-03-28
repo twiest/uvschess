@@ -39,6 +39,7 @@ namespace UvsChess.Framework
         public ChessColor Color;
         public string AIName;
         public IChessAI AI;
+        public TimeSpan TimeOfLastMove = TimeSpan.MinValue;
 
         private ChessBoard _currentBoard = null;
         private ChessMove _moveToReturn;
@@ -62,7 +63,7 @@ namespace UvsChess.Framework
 
         public ChessMove GetNextMove(ChessBoard currentBoard, ref UvsChess.Gui.GuiChessBoard.PieceMovedByHumanDelegate PieceMovedByHumanDelegate)
         {
-            _currentBoard = currentBoard;
+            _currentBoard = currentBoard.Clone();
 
             if (this.IsHuman)
             {
@@ -72,8 +73,27 @@ namespace UvsChess.Framework
                 _pieceMovedByHumanEvent.Reset();
                 _pieceMovedByHumanEvent.WaitOne();
 
-                // Take away the even since my turn is over
+                // Take away the event since my turn is over
                 PieceMovedByHumanDelegate -= this.HumanMovedPieceEvent;
+            }
+            else
+            {
+                Thread thread = new Thread(threadedNextMove);
+
+                DateTime startTime = DateTime.Now;
+                DateTime endTime = startTime.AddMilliseconds(UserPrefs.Time);
+                thread.Start();
+
+                //while (player.AI.IsRunning && (startTime.AddMilliseconds(UserPrefs.Time)) < DateTime.Now)
+                while (this.AI.IsRunning && (DateTime.Now < endTime))
+                {
+                    Thread.Sleep(100);
+                }
+
+                this.AI.EndTurn();
+                thread.Join();
+
+                TimeOfLastMove = DateTime.Now.Subtract(startTime);
             }
 
             return _moveToReturn;
@@ -84,7 +104,12 @@ namespace UvsChess.Framework
             Logger.Log("Human Playing " + Color.ToString() + " moved:");
             _moveToReturn = move;
             _pieceMovedByHumanEvent.Set();
-        } 
+        }
+
+        private void threadedNextMove()
+        {
+            _moveToReturn = this.AI.GetNextMove(_currentBoard, this.Color);
+        }
     }
 
     // TODO: Separate all classes into their own files.
