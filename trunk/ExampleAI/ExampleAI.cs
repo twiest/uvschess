@@ -86,7 +86,7 @@ namespace ExampleAI
 
                 if (myNextMove == null)
                 {
-                    myNextMove = FindAMove(board, myColor);
+                    myNextMove = MoveAPawn(board, myColor);
                     running = false;
                 }
 
@@ -115,7 +115,7 @@ namespace ExampleAI
 
 
         #region My AI Logic
-        ChessMove FindAMove(ChessBoard currentBoard, ChessColor currentColor)
+        ChessMove MoveAPawn(ChessBoard currentBoard, ChessColor currentColor)
         {
             // This logic only moves pawns one space forward. It does not move any other pieces.
         

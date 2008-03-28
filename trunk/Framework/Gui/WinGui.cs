@@ -158,7 +158,10 @@ namespace UvsChess.Gui
 
         private void stopToolStripMenuItem_Click(object sender, EventArgs e)
         {
+
             StopGame();
+
+            //if (timerThread != null) timerThread.Join();
         }
 
         private void clearHistoryToolStripMenuItem_Click(object sender, EventArgs e)
@@ -222,25 +225,39 @@ namespace UvsChess.Gui
         }
         private void DisableMenuItemsDuringPlay()
         {
-            startToolStripMenuItem.Enabled = false;
-            clearHistoryToolStripMenuItem.Enabled = false;
-            newToolStripMenuItem.Enabled = false;
+            if (this.radBlack.InvokeRequired)
+            {
+                this.Invoke(new NoParameterCallback(DisableMenuItemsDuringPlay), null);
+            }
+            else
+            {
+                startToolStripMenuItem.Enabled = false;
+                clearHistoryToolStripMenuItem.Enabled = false;
+                newToolStripMenuItem.Enabled = false;
 
-            openToolStripMenuItem.Enabled = false;
-            saveToolStripMenuItem.Enabled = false;
+                openToolStripMenuItem.Enabled = false;
+                saveToolStripMenuItem.Enabled = false;
 
-            stopToolStripMenuItem.Enabled = true;
+                stopToolStripMenuItem.Enabled = true;
+            }
         }
         private void EnableMenuItemsAfterPlay()
         {
-            startToolStripMenuItem.Enabled = true;
-            clearHistoryToolStripMenuItem.Enabled = true;
-            newToolStripMenuItem.Enabled = true;
+            if (this.radBlack.InvokeRequired)
+            {
+                this.Invoke(new NoParameterCallback(EnableMenuItemsAfterPlay), null);
+            }
+            else
+            {
+                startToolStripMenuItem.Enabled = true;
+                clearHistoryToolStripMenuItem.Enabled = true;
+                newToolStripMenuItem.Enabled = true;
 
-            openToolStripMenuItem.Enabled = true;
-            saveToolStripMenuItem.Enabled = true;
+                openToolStripMenuItem.Enabled = true;
+                saveToolStripMenuItem.Enabled = true;
 
-            stopToolStripMenuItem.Enabled = false;
+                stopToolStripMenuItem.Enabled = false;
+            }
         }
         #endregion
 
@@ -252,6 +269,7 @@ namespace UvsChess.Gui
 
             timerThread = new Thread(Play);
             timerThread.Start();
+
         }
 
         private void StopGame()
@@ -259,18 +277,35 @@ namespace UvsChess.Gui
             IsRunning = false;
             chessBoardControl.IsLocked = false;
 
+            //if (timerThread != null) timerThread.Join();
+
             //this method gets called from Stop menu item, and on Form.Closing().
             // so we have to check if white or black have already been cleaned up.
-            if (WhitePlayer != null) WhitePlayer.EndTurnEarly();
-            if (BlackPlayer != null) BlackPlayer.EndTurnEarly();
 
-            if (timerThread != null) timerThread.Join();
-
-            EnableRadioBtnsAndComboBoxes();
-            EnableMenuItemsAfterPlay();
+            if (WhitePlayer != null)
+            {
+                WhitePlayer.EndTurnEarly();
+                if (WhitePlayer.IsHuman)
+                {
+                    // Take away the event for Black since the game is over
+                    chessBoardControl.PieceMovedByHuman -= WhitePlayer.HumanMovedPieceEvent;
+                }
+            }
+            if (BlackPlayer != null)
+            {
+                BlackPlayer.EndTurnEarly();
+                if (BlackPlayer.IsHuman)
+                {
+                    // Take away the event for Black since the game is over
+                    chessBoardControl.PieceMovedByHuman -= BlackPlayer.HumanMovedPieceEvent;
+                }
+            }
 
             WhitePlayer = null;
             BlackPlayer = null;
+
+            EnableRadioBtnsAndComboBoxes();
+            EnableMenuItemsAfterPlay();
             //TODO: change color of gui so user knows it's not running
         }
 
@@ -294,7 +329,7 @@ namespace UvsChess.Gui
 
             // Setup the current state so that it's the same as the gui chess board
             mainChessState.CurrentBoard = chessBoardControl.Board;
-                        
+
             // Setup the players based on the combo boxes
             WhitePlayer = new ChessPlayer(ChessColor.White);
             BlackPlayer = new ChessPlayer(ChessColor.Black);
@@ -339,21 +374,20 @@ namespace UvsChess.Gui
                 }
             }
 
-            if (WhitePlayer.IsHuman)
+            if ((WhitePlayer != null) && (WhitePlayer.IsHuman))
             {
                 // Take away the event for White since the game is over
                 chessBoardControl.PieceMovedByHuman -= WhitePlayer.HumanMovedPieceEvent;
             }
 
-            if (BlackPlayer.IsHuman)
+            if ((BlackPlayer != null) && (BlackPlayer.IsHuman))
             {
                 // Take away the event for Black since the game is over
                 chessBoardControl.PieceMovedByHuman -= BlackPlayer.HumanMovedPieceEvent;
             }
 
             //Logger.Log("Game Over");
-            IsRunning = false; //This is redundant, but it makes the code clear
-            chessBoardControl.IsLocked = false;
+            StopGame();
         }
 
         void DoNextMove(ChessPlayer player, ChessPlayer opponent)
@@ -642,7 +676,8 @@ namespace UvsChess.Gui
 
         private void WinGui_FormClosing(object sender, FormClosingEventArgs e)
         {
-            StopGame();
+            stopToolStripMenuItem_Click(null, null);
+            if (timerThread != null) timerThread.Join();
 
         }
     }
