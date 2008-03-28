@@ -282,6 +282,19 @@ namespace UvsChess.Gui
             LoadAI(WhitePlayer);
             LoadAI(BlackPlayer);
 
+            if (WhitePlayer.IsHuman)
+            {
+                // Hook up the GUI chess event for White
+                chessBoardControl.PieceMovedByHuman += WhitePlayer.HumanMovedPieceEvent;
+            }
+
+            if (BlackPlayer.IsHuman)
+            {
+                // Hook up the GUI chess event for Black
+                chessBoardControl.PieceMovedByHuman += BlackPlayer.HumanMovedPieceEvent;
+            }
+
+
             IsRunning = true;
             //ChessMove currentMove = null;
             chessBoardControl.IsLocked = true;
@@ -296,6 +309,18 @@ namespace UvsChess.Gui
                 {
                     DoNextMove(BlackPlayer, WhitePlayer);
                 }
+            }
+
+            if (WhitePlayer.IsHuman)
+            {
+                // Take away the event for White since the game is over
+                chessBoardControl.PieceMovedByHuman -= WhitePlayer.HumanMovedPieceEvent;
+            }
+
+            if (BlackPlayer.IsHuman)
+            {
+                // Take away the event for Black since the game is over
+                chessBoardControl.PieceMovedByHuman -= BlackPlayer.HumanMovedPieceEvent;
             }
 
             Logger.Log("Game Over");
@@ -313,7 +338,7 @@ namespace UvsChess.Gui
 
             if (player.IsComputer)
             {
-                nextMove = player.GetNextMove(mainChessState.CurrentBoard, ref chessBoardControl.PieceMovedByHuman);
+                nextMove = player.GetNextMove(mainChessState.CurrentBoard);
 
                 if (nextMove.Flag != ChessFlag.Stalemate)
                 {
@@ -342,7 +367,7 @@ namespace UvsChess.Gui
                 {
                     chessBoardControl.IsLocked = false;
 
-                    nextMove = player.GetNextMove(mainChessState.CurrentBoard.Clone(), ref chessBoardControl.PieceMovedByHuman);
+                    nextMove = player.GetNextMove(mainChessState.CurrentBoard.Clone());
 
                     chessBoardControl.IsLocked = true;
 
