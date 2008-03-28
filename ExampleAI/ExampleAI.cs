@@ -117,6 +117,8 @@ namespace ExampleAI
         #region My AI Logic
         ChessMove FindAMove(ChessBoard currentBoard, ChessColor currentColor)
         {
+            // This logic only moves pawns one space forward. It does not move any other pieces.
+        
             ChessMove newMove = null;
 
             for (int Y = 1; Y < ChessBoard.NumberOfRows - 1; Y++)
@@ -126,10 +128,7 @@ namespace ExampleAI
                     if (currentColor == ChessColor.White)
                     {
                         if ((currentBoard[X, Y-1] == ChessPiece.Empty) &&
-                            ((currentBoard[X, Y] == ChessPiece.WhitePawn) ||
-                              (currentBoard[X, Y] == ChessPiece.WhiteKing) ||
-                              (currentBoard[X, Y] == ChessPiece.WhiteQueen) ||
-                              (currentBoard[X, Y] == ChessPiece.WhiteRook)))
+                            (currentBoard[X, Y] == ChessPiece.WhitePawn))
                         {
                             newMove = new ChessMove();
                             newMove.From = new ChessLocation(X, Y);
@@ -138,17 +137,14 @@ namespace ExampleAI
                             return newMove;
                         }
                     }
-                    else
+                    else // player is black
                     {
                         if ((currentBoard[X, Y+1] == ChessPiece.Empty) &&
-                            ((currentBoard[X, Y] == ChessPiece.BlackPawn) ||
-                              (currentBoard[X, Y] == ChessPiece.BlackKing) ||
-                              (currentBoard[X, Y] == ChessPiece.BlackQueen) ||
-                              (currentBoard[X, Y] == ChessPiece.BlackRook)))
+                            (currentBoard[X, Y] == ChessPiece.BlackPawn))
                         {
                             newMove = new ChessMove();
                             newMove.From = new ChessLocation(X, Y);
-                            newMove.To = new ChessLocation(X + 1, Y);
+                            newMove.To = new ChessLocation(X, Y + 1);
 
                             return newMove;
                         }
