@@ -177,8 +177,6 @@ namespace UvsChess.Gui
 
         private void stopToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            chessBoardControl.IsLocked = false;
-
             // Remove the ChessGame from the GuiChessBoard updates
             chessBoardControl.PieceMovedByHuman -= _mainGame.WhitePlayer_HumanMovedPieceEvent;
             chessBoardControl.PieceMovedByHuman -= _mainGame.BlackPlayer_HumanMovedPieceEvent;
@@ -190,6 +188,11 @@ namespace UvsChess.Gui
             _mainGame.GameUpdated -= GameUpdated;
 
             _mainGame.StopGame();
+
+            chessBoardControl.IsLocked = false;
+
+            EnableMenuItemsAfterPlay();
+            EnableRadioBtnsAndComboBoxes();
         }
 
         private void clearHistoryToolStripMenuItem_Click(object sender, EventArgs e)
