@@ -80,7 +80,6 @@ namespace UvsChess.Gui
             this.cmbWhite = new System.Windows.Forms.ComboBox();
             this.lstHistory = new System.Windows.Forms.ListBox();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.chessBoardControl = new UvsChess.Gui.GuiChessBoard();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.lstMainOutput = new System.Windows.Forms.ListBox();
@@ -90,6 +89,7 @@ namespace UvsChess.Gui
             this.listBox2 = new System.Windows.Forms.ListBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.chessBoardControl = new UvsChess.Gui.GuiChessBoard();
             this.menuStrip1.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -129,7 +129,7 @@ namespace UvsChess.Gui
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
             this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
@@ -137,15 +137,15 @@ namespace UvsChess.Gui
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
-            this.saveToolStripMenuItem.Text = "Save";
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.saveToolStripMenuItem.Text = "Save Selected State";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -164,7 +164,7 @@ namespace UvsChess.Gui
             // 
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
             this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.newToolStripMenuItem.Text = "New";
             this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
             // 
@@ -172,7 +172,7 @@ namespace UvsChess.Gui
             // 
             this.startToolStripMenuItem.Name = "startToolStripMenuItem";
             this.startToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
-            this.startToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.startToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.startToolStripMenuItem.Text = "Start";
             this.startToolStripMenuItem.Click += new System.EventHandler(this.startToolStripMenuItem_Click);
             // 
@@ -181,14 +181,14 @@ namespace UvsChess.Gui
             this.stopToolStripMenuItem.Enabled = false;
             this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
             this.stopToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-            this.stopToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.stopToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.stopToolStripMenuItem.Text = "Stop";
             this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
             // 
             // clearHistoryToolStripMenuItem
             // 
             this.clearHistoryToolStripMenuItem.Name = "clearHistoryToolStripMenuItem";
-            this.clearHistoryToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.clearHistoryToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.clearHistoryToolStripMenuItem.Text = "Clear History";
             this.clearHistoryToolStripMenuItem.Click += new System.EventHandler(this.clearHistoryToolStripMenuItem_Click);
             // 
@@ -288,7 +288,7 @@ namespace UvsChess.Gui
             this.radBlack.TabIndex = 3;
             this.radBlack.Text = "Black";
             this.radBlack.UseVisualStyleBackColor = true;
-            this.radBlack.CheckedChanged += new System.EventHandler(this.radBlack_CheckedChanged);
+            this.radBlack.CheckedChanged += new System.EventHandler(this.radWhiteBlack_CheckedChanged);
             // 
             // label2
             // 
@@ -321,7 +321,7 @@ namespace UvsChess.Gui
             this.radWhite.TabStop = true;
             this.radWhite.Text = "White";
             this.radWhite.UseVisualStyleBackColor = true;
-            this.radWhite.CheckedChanged += new System.EventHandler(this.radWhite_CheckedChanged);
+            this.radWhite.CheckedChanged += new System.EventHandler(this.radWhiteBlack_CheckedChanged);
             // 
             // cmbWhite
             // 
@@ -366,15 +366,6 @@ namespace UvsChess.Gui
             this.splitContainer2.Size = new System.Drawing.Size(798, 726);
             this.splitContainer2.SplitterDistance = 522;
             this.splitContainer2.TabIndex = 0;
-            // 
-            // chessBoardControl
-            // 
-            this.chessBoardControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.chessBoardControl.IsLocked = false;
-            this.chessBoardControl.Location = new System.Drawing.Point(0, 0);
-            this.chessBoardControl.Name = "chessBoardControl";
-            this.chessBoardControl.Size = new System.Drawing.Size(522, 522);
-            this.chessBoardControl.TabIndex = 0;
             // 
             // tabControl1
             // 
@@ -457,6 +448,15 @@ namespace UvsChess.Gui
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
+            // 
+            // chessBoardControl
+            // 
+            this.chessBoardControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.chessBoardControl.IsLocked = false;
+            this.chessBoardControl.Location = new System.Drawing.Point(0, 0);
+            this.chessBoardControl.Name = "chessBoardControl";
+            this.chessBoardControl.Size = new System.Drawing.Size(522, 522);
+            this.chessBoardControl.TabIndex = 0;
             // 
             // WinGui
             // 
