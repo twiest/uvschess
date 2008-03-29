@@ -40,15 +40,13 @@ namespace UvsChess.Gui
     public partial class WinGui : Form
     {
         #region Members
+        ChessGame _mainGame = null;
 
-        ChessState _mainChessState = null;
-        ChessPlayer WhitePlayer = null;
-        ChessPlayer BlackPlayer = null;
         string WhitePlayerName = string.Empty;
         string BlackPlayerName = string.Empty;
-        bool IsRunning = false;
+        
         List<AI> AvailableAIs = new List<AI>();
-        Thread timerThread = null;
+        
 
         public delegate void PlayCompletedHandler();
         protected delegate void PlayDelegate();
@@ -59,16 +57,6 @@ namespace UvsChess.Gui
         private delegate void RadioBtnParameterCallback(RadioButton rad);
         delegate void NoParameterCallback();
         delegate void IntParameterCallback(int i);
-
-
-        #endregion
-
-        #region Properties
-        private ChessState mainChessState
-        {
-            get { return _mainChessState; }
-            set { _mainChessState = value; }
-        }
         #endregion
 
         #region Constructors
@@ -76,9 +64,12 @@ namespace UvsChess.Gui
         {
             InitializeComponent();
 
-            mainChessState = new ChessState();
-
             Logger.GuiWriteLine = AddToMainOutput;
+
+            // Setup history lstBox
+            clearHistoryToolStripMenuItem_Click(null, null);
+
+            chessBoardControl.PieceMovedByHuman += GuiChessBoardChangedByHuman;
         }
 
         private void WinGui_Load(object sender, EventArgs e)
@@ -97,7 +88,6 @@ namespace UvsChess.Gui
         #endregion             
 
         #region File menu
-
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
             openFileDialog1.Filter = "FEN files (*.fen)|*.fen|All files (*.*)| *.*";
@@ -108,10 +98,22 @@ namespace UvsChess.Gui
                 StreamReader reader = new StreamReader(openFileDialog1.FileName);
                 string line = reader.ReadLine();
 
-                mainChessState = new ChessState(line);
-                chessBoardControl.ResetBoard(mainChessState.CurrentBoard);
-                reader.Close();
-                
+                lstHistory.Items.Clear();
+                AddToHistory("Start of Game", line);
+
+                chessBoardControl.ResetBoard(line);
+
+                ChessState tmpState = new ChessState(line);
+                if (tmpState.CurrentPlayerColor == ChessColor.White)
+                {
+                    radWhite.Checked = true;
+                }
+                else
+                {
+                    radBlack.Checked = true;
+                }
+
+                reader.Close();                
             }
         }
 
@@ -122,16 +124,18 @@ namespace UvsChess.Gui
             if (result == DialogResult.OK)
             {
                 StreamWriter writer = new StreamWriter(saveFileDialog1.FileName);
-                //MessageBox.Show("Not implemented yet");
 
                 Logger.Log("Saving board to " + saveFileDialog1.FileName);
 
-                string fenboard = mainChessState.ToFenBoard();
+
+                HistoryItem item = (HistoryItem)lstHistory.SelectedItem;
+                string fenboard = item.fenboard;
+
                 writer.WriteLine(fenboard);
                 writer.Close();
             }
-
         }
+
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Application.Exit();
@@ -139,41 +143,67 @@ namespace UvsChess.Gui
         #endregion
 
         #region Game menu
-
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            IsRunning = false;
-            chessBoardControl.ResetBoard();
+            clearHistoryToolStripMenuItem_Click(null, null);
         }
+
         private void startToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            RemoveHistory();
+            // TODO: CHANGE COLOR OF GUI SO USER KNOWS IT'S RUNNING
 
-            IsRunning = true;
 
-            // CHANGE COLOR OF GUI SO USER KNOWS IT'S RUNNING
+            RemoveHistoryAfterSelected();
 
-            StartGame();
+            HistoryItem item = (HistoryItem)lstHistory.SelectedItem;
+
+            _mainGame = new ChessGame(item.fenboard, WhitePlayerName, BlackPlayerName);
+
+            DisableMenuItemsDuringPlay();
+            DisableRadioBtnsAndComboBoxes();
+
+            // Remove WinGui from the GuiChessBoard updates
+            chessBoardControl.PieceMovedByHuman -= GuiChessBoardChangedByHuman;
+
+            // Add the ChessGame to the GuiChessBoard updates
+            chessBoardControl.PieceMovedByHuman += _mainGame.WhitePlayer_HumanMovedPieceEvent;
+            chessBoardControl.PieceMovedByHuman += _mainGame.BlackPlayer_HumanMovedPieceEvent;
+
+            // Add WinGui to the ChessGame updates
+            _mainGame.GameUpdated += GameUpdated;
+
+            _mainGame.StartGame();
         }
 
         private void stopToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            chessBoardControl.IsLocked = false;
 
-            StopGame();
+            // Remove the ChessGame from the GuiChessBoard updates
+            chessBoardControl.PieceMovedByHuman -= _mainGame.WhitePlayer_HumanMovedPieceEvent;
+            chessBoardControl.PieceMovedByHuman -= _mainGame.BlackPlayer_HumanMovedPieceEvent;
 
-            //if (timerThread != null) timerThread.Join();
+            // Add WinGui to the GuiChessBoard updates
+            chessBoardControl.PieceMovedByHuman += GuiChessBoardChangedByHuman;
+
+            // Remove WinGui from the ChessGame updates
+            _mainGame.GameUpdated -= GameUpdated;
+
+            _mainGame.StopGame();
         }
 
         private void clearHistoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
+            radWhite.Checked = true;
+            radBlack.Checked = false;
+
             lstHistory.Items.Clear();
+
+            AddToHistory("Start of Game", ChessState.FenStartState);
         }
         #endregion
 
         #region Help menu
-
-
         private void aboutUvsChessToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AboutUvsChess about = new AboutUvsChess();
@@ -185,13 +215,50 @@ namespace UvsChess.Gui
             Preferences prefs = new Preferences();
             prefs.ShowDialog();
         }
-
         #endregion
 
         #region AISelector controls
-        private void radWhite_CheckedChanged(object sender, EventArgs e)
+        private void radWhiteBlack_CheckedChanged(object sender, EventArgs e)
         {
-            mainChessState.CurrentPlayerColor = ChessColor.White;
+            HistoryItem item = (HistoryItem)lstHistory.SelectedItem;
+            ChessState tmpState = new ChessState(item.fenboard);
+
+            if (radWhite.Checked)
+            {
+                tmpState.CurrentPlayerColor = ChessColor.White;
+            }
+            else
+            {
+                tmpState.CurrentPlayerColor = ChessColor.Black;
+            }
+
+            item.fenboard = tmpState.ToFenBoard();
+
+            lstHistory.Items[lstHistory.SelectedIndex] = item;
+        }
+
+        private void radWhite_SetChecked()
+        {
+            if (this.radWhite.InvokeRequired)
+            {
+                this.Invoke(new NoParameterCallback(radWhite_SetChecked), null);
+            }
+            else
+            {
+                this.radWhite.Checked = true;
+            }
+        }
+
+        private void radBlack_SetChecked()
+        {
+            if (this.radBlack.InvokeRequired)
+            {
+                this.Invoke(new NoParameterCallback(radBlack_SetChecked), null);
+            }
+            else
+            {
+                this.radBlack.Checked = true;
+            }
         }
 
         private void DisableRadioBtnsAndComboBoxes()
@@ -262,54 +329,32 @@ namespace UvsChess.Gui
         #endregion
 
         #region Game play methods and events
-        public void StartGame()
+        public void GameUpdated(string playerColor, string nextMove, string fen)
         {
-            DisableMenuItemsDuringPlay();
-            DisableRadioBtnsAndComboBoxes();
-
-            timerThread = new Thread(Play);
-            timerThread.Start();
-
+            AddToHistory(playerColor + ": " + nextMove, fen); 
         }
 
-        private void StopGame()
+        public void GuiChessBoardChangedByHuman(ChessMove move)
         {
-            IsRunning = false;
-            chessBoardControl.IsLocked = false;
+            HistoryItem item = (HistoryItem)lstHistory.SelectedItem;
+            ChessState tmpState = new ChessState(item.fenboard);
+            tmpState.MakeMove(move);
 
-            //if (timerThread != null) timerThread.Join();
-
-            //this method gets called from Stop menu item, and on Form.Closing().
-            // so we have to check if white or black have already been cleaned up.
-
-            if (WhitePlayer != null)
+            if (radWhite.Checked)
             {
-                WhitePlayer.EndTurnEarly();
-                if (WhitePlayer.IsHuman)
-                {
-                    // Take away the event for Black since the game is over
-                    chessBoardControl.PieceMovedByHuman -= WhitePlayer.HumanMovedPieceEvent;
-                }
+                tmpState.CurrentPlayerColor = ChessColor.White;
             }
-            if (BlackPlayer != null)
+            else
             {
-                BlackPlayer.EndTurnEarly();
-                if (BlackPlayer.IsHuman)
-                {
-                    // Take away the event for Black since the game is over
-                    chessBoardControl.PieceMovedByHuman -= BlackPlayer.HumanMovedPieceEvent;
-                }
+                tmpState.CurrentPlayerColor = ChessColor.Black;
             }
 
-            WhitePlayer = null;
-            BlackPlayer = null;
+            item.fenboard = tmpState.ToFenBoard();
 
-            EnableRadioBtnsAndComboBoxes();
-            EnableMenuItemsAfterPlay();
-            //TODO: change color of gui so user knows it's not running
+            lstHistory.Items[lstHistory.SelectedIndex] = item;
         }
 
-        private void RemoveHistory()
+        private void RemoveHistoryAfterSelected()
         {
             int sel = lstHistory.SelectedIndex;
 
@@ -320,192 +365,6 @@ namespace UvsChess.Gui
             while(lstHistory.Items.Count > sel + 1)
             {
                 lstHistory.Items.RemoveAt(lstHistory.Items.Count-1);
-            }
-        }
-
-        void Play()
-        {
-            //This method run in its own thread.
-
-            // Setup the current state so that it's the same as the gui chess board
-            mainChessState.CurrentBoard = chessBoardControl.Board;
-
-            // Setup the players based on the combo boxes
-            WhitePlayer = new ChessPlayer(ChessColor.White);
-            BlackPlayer = new ChessPlayer(ChessColor.Black);
-
-            WhitePlayer.AIName = WhitePlayerName;
-            BlackPlayer.AIName = BlackPlayerName;
-
-            //Load the AI if it isn't loaded already
-            LoadAI(WhitePlayer);
-            LoadAI(BlackPlayer);
-
-            if (WhitePlayer.IsHuman)
-            {
-                // Hook up the GUI chess event for White
-                chessBoardControl.PieceMovedByHuman += WhitePlayer.HumanMovedPieceEvent;
-            }
-
-            if (BlackPlayer.IsHuman)
-            {
-                // Hook up the GUI chess event for Black
-                chessBoardControl.PieceMovedByHuman += BlackPlayer.HumanMovedPieceEvent;
-            }
-
-
-            IsRunning = true;
-            //ChessMove currentMove = null;
-            chessBoardControl.IsLocked = true;
-            AddToHistory("Start Of Game", mainChessState.ToFenBoard());
-
-            while (IsRunning)
-            {
-                if (mainChessState.CurrentPlayerColor == ChessColor.White)
-                {
-                    //change radion button selection
-                    SelectRadio(radWhite);
-                    DoNextMove(WhitePlayer, BlackPlayer);
-                }
-                else
-                {
-                    SelectRadio(radBlack);
-                    DoNextMove(BlackPlayer, WhitePlayer);
-                }
-            }
-
-            if ((WhitePlayer != null) && (WhitePlayer.IsHuman))
-            {
-                // Take away the event for White since the game is over
-                chessBoardControl.PieceMovedByHuman -= WhitePlayer.HumanMovedPieceEvent;
-            }
-
-            if ((BlackPlayer != null) && (BlackPlayer.IsHuman))
-            {
-                // Take away the event for Black since the game is over
-                chessBoardControl.PieceMovedByHuman -= BlackPlayer.HumanMovedPieceEvent;
-            }
-
-            //Logger.Log("Game Over");
-            StopGame();
-        }
-
-        void DoNextMove(ChessPlayer player, ChessPlayer opponent)
-        {
-            ChessMove nextMove = null;
-            //DateTime start = DateTime.Now;
-            bool isValidMove = false;
-            ChessState newstate = null;
-
-
-            if (player.IsComputer)
-            {
-                nextMove = player.GetNextMove(mainChessState.CurrentBoard);
-
-                if (!IsRunning)
-                {
-                    // if we're not running, leave the method
-                    return;
-                }
-
-                if (nextMove.Flag != ChessFlag.Stalemate)
-                {
-                    newstate = mainChessState.Clone();
-                    newstate.MakeMove(nextMove);
-                    if (opponent.IsComputer)
-                    {
-                        isValidMove = opponent.AI.IsValidMove(newstate);
-                    }
-                    else
-                    {
-                        isValidMove = true;
-                    }
-                }
-
-                //TODO
-
-                //isValidMove = isValidMove && !isOverTime(player, thread_time, TurnWaitTime);
-                //isValidMove = isValidMove && !isOverTime(player, thread_time, PreferencesGUI.TurnLength);
-                //isValidMove = isValidMove && !isOverTime(player, thread_time, UserPrefs.Time);
-
-            }
-            else //player is human
-            {
-                while (!isValidMove)
-                {
-                    chessBoardControl.IsLocked = false;
-
-                    nextMove = player.GetNextMove(mainChessState.CurrentBoard.Clone());
-
-                    if (! IsRunning)
-                    {
-                        // if we're not running, leave the method
-                        return;
-                    }
-
-                    chessBoardControl.IsLocked = true;
-
-                    newstate = mainChessState.Clone();
-                    newstate.MakeMove(nextMove);
-
-                    // TODO: Fix NRE here when a human is playing another human
-                    isValidMove = opponent.AI.IsValidMove(newstate);
-                }
-            }
-
-            if ( (isValidMove) && 
-                 (nextMove.Flag == ChessFlag.Checkmate) )
-            {
-                    // Checkmate on a valid move has been signaled.
-                    IsRunning = false;
-                    Logger.Log(String.Format("{0} has signaled that the game is a stalemate.",
-                                        (player.Color == ChessColor.Black) ? "Black" : "White"));
-            }
-            else if (isValidMove)
-            {
-                //update the board
-                chessBoardControl.ResetBoard(newstate.CurrentBoard);
-                AddToHistory(player.Color.ToString() + ": " + nextMove.ToString(), newstate.ToFenBoard());
-
-                //update mainChessState for valid 
-                mainChessState = newstate;
-
-                if (player.Color == ChessColor.Black)
-                {
-                    mainChessState.FullMoves++;//Increment fullmoves after black's turn
-                    SetFullMoves(mainChessState.FullMoves);
-                }
-
-                //Determine if a pawn was moved or a kill was made.
-                if (ResetHalfMove())
-                {
-                    mainChessState.HalfMoves = 0;
-                }
-                else
-                {
-                    mainChessState.HalfMoves++;
-                }
-                SetHalfMoves(mainChessState.HalfMoves);
-                Logger.Log(mainChessState.ToFenBoard());
-
-            }
-            else
-            {
-                // It is either a stalemate or an invalid move. Either way, we're done running.
-                IsRunning = false;
-
-                if (nextMove.Flag == ChessFlag.Stalemate)
-                {
-                    // A stalemate has occurred.
-                    Logger.Log(String.Format("{0} has signaled that the game is a stalemate.",
-                                        (player.Color == ChessColor.Black) ? "Black" : "White"));
-                }
-                else
-                {
-                    Logger.Log(String.Format("{0} has signaled that {1} returned an invalid move returned, therefore {1} loses!",
-                                   (player.Color == ChessColor.Black) ? "White" : "Black",
-                                   (player.Color == ChessColor.Black) ? "Black" : "White"));
-                }
             }
         }
 
@@ -524,62 +383,9 @@ namespace UvsChess.Gui
             }
             return isovertime;
         }
-
-
-        //This method checks if a pawn was moved or a kill was made.
-        private bool ResetHalfMove()
-        {
-            ChessMove move = mainChessState.PreviousMove;
-            //Check for a pawn move
-            ChessPiece piece = mainChessState.PreviousBoard[move.From.X, move.From.Y];
-            if ((piece == ChessPiece.WhitePawn) || (piece == ChessPiece.BlackPawn))
-            {
-                return true;
-            }
-
-            //Check for a kill
-            piece = mainChessState.PreviousBoard[move.To.X, move.To.Y];
-            if (piece != ChessPiece.Empty)
-            {
-                return true;
-            }
-
-            return false;
-        }
         #endregion
 
-        /// <summary>
-        /// Loads the AI for the chess player. If the AI is already loaded, it will just return.
-        /// </summary>
-        /// <param name="player"></param>
-        void LoadAI(ChessPlayer player)
-        {
-            if (player.IsHuman)
-            {
-                // Player is a human, so we don't need to load an AI.
-                return;
-            }
-            else if (player.AI != null)
-            {
-                // AI has already been loaded, so return
-                return;
-            }
 
-            AI tmpAI = null;
-
-            foreach (AI t in DllLoader.AvailableAIs)
-            {
-                if (t.ShortName == player.AIName)
-                {
-                    tmpAI = t;
-                    break;
-                }
-            }
-            System.Reflection.Assembly assem = System.Reflection.Assembly.LoadFile(tmpAI.FileName);
-            IChessAI ai = (IChessAI)assem.CreateInstance(tmpAI.FullName);
-            player.AI = ai;
-
-        }
 
         #region GUI update methods
         public void SetHalfMoves(int halfmoves)
@@ -640,13 +446,20 @@ namespace UvsChess.Gui
         private void lstHistory_SelectedIndexChanged(object sender, EventArgs e)
         {
             HistoryItem item = (HistoryItem)lstHistory.SelectedItem;
-            //Logger.Log(string.Format("clicked on: {0} - {1}",item,item.fenboard));
+            ChessState tmpState = new ChessState(item.fenboard);
 
-            mainChessState = new ChessState(item.fenboard);
-            chessBoardControl.ResetBoard(mainChessState.CurrentBoard);
-            
-           
+            if (tmpState.CurrentPlayerColor == ChessColor.White)
+            {
+                radWhite_SetChecked();
+            }
+            else
+            {
+                radBlack_SetChecked();
+            }
+
+            chessBoardControl.ResetBoard(new ChessBoard(item.fenboard));
         }
+
         private void SelectRadio(RadioButton rad)
         {
             if (rad.InvokeRequired)
@@ -669,16 +482,9 @@ namespace UvsChess.Gui
             BlackPlayerName = cmbBlack.SelectedItem.ToString();
         }
 
-        private void radBlack_CheckedChanged(object sender, EventArgs e)
-        {
-            mainChessState.CurrentPlayerColor = ChessColor.Black;
-        }
-
         private void WinGui_FormClosing(object sender, FormClosingEventArgs e)
         {
-            stopToolStripMenuItem_Click(null, null);
-            if (timerThread != null) timerThread.Join();
-
+            //stopToolStripMenuItem_Click(null, null);
         }
     }
 }

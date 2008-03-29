@@ -284,12 +284,7 @@ namespace UvsChess.Gui
             set { _isLocked = value; }
         }
 
-        public ChessBoard Board
-        {
-            get { return _board.Clone(); }
-        }
-
-        public int AdjustedVerticalBorderWidth
+        private int AdjustedVerticalBorderWidth
         {
             get
             {
@@ -297,7 +292,7 @@ namespace UvsChess.Gui
             }
         }
 
-        public int AdjustedHorizontalBorderHeight
+        private int AdjustedHorizontalBorderHeight
         {
             get
             {
@@ -305,7 +300,7 @@ namespace UvsChess.Gui
             }
         }
 
-        public int AdjustedTileWidth
+        private int AdjustedTileWidth
         {
             get
             {
@@ -313,7 +308,7 @@ namespace UvsChess.Gui
             }
         }
 
-        public int AdjustedTileHeight
+        private int AdjustedTileHeight
         {
             get
             {

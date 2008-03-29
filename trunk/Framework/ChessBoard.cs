@@ -40,7 +40,7 @@ namespace UvsChess
         #endregion
 
         #region Constructors
-        public ChessBoard():this(ChessState.StartState)
+        public ChessBoard():this(ChessState.FenStartState)
         {            
         }
 

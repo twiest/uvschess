@@ -33,8 +33,8 @@ namespace UvsChess
     public class ChessState
     {
         #region Members
-        public const string StartState = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-        //public const string StartState = "rnbqkbnr/1ppppppp/8/p7/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 2";
+        public const string FenStartState = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+        //public const string FenStartState = "rnbqkbnr/1ppppppp/8/p7/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 2";
         private ChessBoard _currentBoard;
         private ChessBoard _previousBoard;
         private ChessMove _previousMove;
@@ -47,7 +47,7 @@ namespace UvsChess
 
         #region Constructors
         public ChessState()
-            : this(StartState)
+            : this(FenStartState)
         {
 
         }
@@ -60,7 +60,7 @@ namespace UvsChess
         {
             if ((fenBoard == null) || (fenBoard == string.Empty))
             {
-                fenBoard = StartState;
+                fenBoard = FenStartState;
             }
             FromFenBoard(fenBoard);
         }
