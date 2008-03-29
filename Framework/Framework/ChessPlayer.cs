@@ -43,13 +43,13 @@ namespace UvsChess.Framework
 
         private DateTime _startTime;
         private DateTime _endTime;
-        private Thread thread;
+        private Thread _runAIThread;
         private bool _isMyTurn = false;
         private ChessBoard _currentBoard = null;
         private ChessMove _moveToReturn;
         private ManualResetEvent _pieceMovedByHumanEvent = new ManualResetEvent(true);
         private int Interval = 100;
-        private Timer WakeUpTimer;
+        private Timer _pollAITimer;
 
         public ChessPlayer(ChessColor color)
         {
@@ -78,24 +78,25 @@ namespace UvsChess.Framework
             }
             else
             {
-                thread = new Thread(GetNextAIMove);
+                _runAIThread = new Thread(GetNextAIMove);
 
                 _startTime = DateTime.Now;
                 _endTime = _startTime.AddMilliseconds(UvsChess.Gui.Preferences.Time);
-                thread.Start();
+                _runAIThread.Start();
 
                 this.StartPollingAI();
 
                 _pieceMovedByHumanEvent.Reset();
                 _pieceMovedByHumanEvent.WaitOne();
 
-                thread = null;
+                _runAIThread = null;
             }
 
             _isMyTurn = false;
 
             // Clean up the heap for the next player.
-            // This doesn't cost any AI time.
+            // This doesn't cost the AI time 
+            //(it's done after the AI's turn time has been calculated).
             GC.Collect();
             GC.WaitForPendingFinalizers();
 
@@ -108,11 +109,11 @@ namespace UvsChess.Framework
             {
                 _pieceMovedByHumanEvent.Set();
             }
-            else if (thread != null)
+            else if (_runAIThread != null)
             {
                 StopPollingAI();
                 this.AI.EndTurn();
-                thread.Join();
+                _runAIThread.Join();
 
                 _pieceMovedByHumanEvent.Set();
             }
@@ -120,12 +121,12 @@ namespace UvsChess.Framework
 
         private void StartPollingAI()
         {
-            WakeUpTimer = new Timer(this.PollAI, null, Interval, Interval);
+            _pollAITimer = new Timer(this.PollAI, null, Interval, Interval);
         }
 
         private void StopPollingAI()
         {
-            WakeUpTimer.Change(System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
+            _pollAITimer.Change(System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
         }
 
         private void PollAI(object state)
@@ -136,7 +137,7 @@ namespace UvsChess.Framework
                 (DateTime.Now > _endTime))
             {
                 this.AI.EndTurn();
-                thread.Join();
+                _runAIThread.Join();
 
                 TimeOfLastMove = DateTime.Now.Subtract(_startTime);
 

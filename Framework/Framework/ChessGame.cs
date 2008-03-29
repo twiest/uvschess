@@ -14,7 +14,7 @@ namespace UvsChess.Framework
 
         ChessPlayer WhitePlayer = null;
         ChessPlayer BlackPlayer = null;
-        Thread timerThread = null;
+        Thread _chessGameThread = null;
         
         public ChessGame(string fen, string whitePlayerName, string blackPlayerName)
         {
@@ -39,8 +39,8 @@ namespace UvsChess.Framework
 
         public void StartGame()
         {
-            timerThread = new Thread(PlayInThread);
-            timerThread.Start();
+            _chessGameThread = new Thread(PlayInThread);
+            _chessGameThread.Start();
         }
 
         public void StopGame()
@@ -50,7 +50,7 @@ namespace UvsChess.Framework
             WhitePlayer.EndTurnEarly();
             BlackPlayer.EndTurnEarly();
 
-            timerThread.Join();
+            _chessGameThread.Join();
 
             WhitePlayer = null;
             BlackPlayer = null;           
