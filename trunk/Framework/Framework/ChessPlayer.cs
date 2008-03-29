@@ -151,7 +151,7 @@ namespace UvsChess.Framework
 
         public void HumanMovedPieceEvent(ChessMove move)
         {
-            if (_isMyTurn)
+            if ( (_isMyTurn) && (this.IsHuman) )
             {
                 Logger.Log("Human Playing " + Color.ToString() + " moved:");
                 _moveToReturn = move;

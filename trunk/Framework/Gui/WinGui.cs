@@ -177,22 +177,26 @@ namespace UvsChess.Gui
 
         private void stopToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Remove the ChessGame from the GuiChessBoard updates
-            chessBoardControl.PieceMovedByHuman -= _mainGame.WhitePlayer_HumanMovedPieceEvent;
-            chessBoardControl.PieceMovedByHuman -= _mainGame.BlackPlayer_HumanMovedPieceEvent;
+            if (_mainGame != null)
+            {
+                // Remove the ChessGame from the GuiChessBoard updates
+                chessBoardControl.PieceMovedByHuman -= _mainGame.WhitePlayer_HumanMovedPieceEvent;
+                chessBoardControl.PieceMovedByHuman -= _mainGame.BlackPlayer_HumanMovedPieceEvent;
 
-            // Add WinGui to the GuiChessBoard updates
-            chessBoardControl.PieceMovedByHuman += GuiChessBoardChangedByHuman;
+                // Remove WinGui from the ChessGame updates
+                _mainGame.GameUpdated -= GameUpdated;
 
-            // Remove WinGui from the ChessGame updates
-            _mainGame.GameUpdated -= GameUpdated;
+                _mainGame.StopGame();
+                _mainGame = null;
 
-            _mainGame.StopGame();
+                // Add WinGui to the GuiChessBoard updates
+                chessBoardControl.PieceMovedByHuman += GuiChessBoardChangedByHuman;
 
-            chessBoardControl.IsLocked = false;
+                chessBoardControl.IsLocked = false;
 
-            EnableMenuItemsAfterPlay();
-            EnableRadioBtnsAndComboBoxes();
+                EnableMenuItemsAfterPlay();
+                EnableRadioBtnsAndComboBoxes();
+            }
         }
 
         private void clearHistoryToolStripMenuItem_Click(object sender, EventArgs e)
@@ -487,7 +491,7 @@ namespace UvsChess.Gui
 
         private void WinGui_FormClosing(object sender, FormClosingEventArgs e)
         {
-            //stopToolStripMenuItem_Click(null, null);
+            stopToolStripMenuItem_Click(null, null);
         }
     }
 }

@@ -47,50 +47,23 @@ namespace UvsChess.Framework
         {
             IsRunning = false;            
 
-            //if (timerThread != null) timerThread.Join();
+            WhitePlayer.EndTurnEarly();
+            BlackPlayer.EndTurnEarly();
 
-            //this method gets called from Stop menu item, and on Form.Closing().
-            // so we have to check if white or black have already been cleaned up.
-
-            if (WhitePlayer != null)
-            {
-                WhitePlayer.EndTurnEarly();
-                if (WhitePlayer.IsHuman)
-                {
-                    // Take away the event for Black since the game is over
-                    //chessBoardControl.PieceMovedByHuman -= WhitePlayer.HumanMovedPieceEvent;
-                }
-            }
-            if (BlackPlayer != null)
-            {
-                BlackPlayer.EndTurnEarly();
-                if (BlackPlayer.IsHuman)
-                {
-                    // Take away the event for Black since the game is over
-                    //chessBoardControl.PieceMovedByHuman -= BlackPlayer.HumanMovedPieceEvent;
-                }
-            }
+            timerThread.Join();
 
             WhitePlayer = null;
-            BlackPlayer = null;
-
-            //TODO: change color of gui so user knows it's not running
+            BlackPlayer = null;           
         }
 
         public void WhitePlayer_HumanMovedPieceEvent(ChessMove move)
         {
-            if (WhitePlayer.IsHuman)
-            {
-                WhitePlayer.HumanMovedPieceEvent(move);
-            }
+            WhitePlayer.HumanMovedPieceEvent(move);
         }
 
         public void BlackPlayer_HumanMovedPieceEvent(ChessMove move)
         {
-            if (BlackPlayer.IsHuman)
-            {
-                BlackPlayer.HumanMovedPieceEvent(move);
-            }
+            BlackPlayer.HumanMovedPieceEvent(move);
         }
 
         void PlayInThread()
@@ -116,7 +89,7 @@ namespace UvsChess.Framework
             }
 
             //Logger.Log("Game Over");
-            StopGame();
+            //StopGame();
         }
 
         void DoNextMove(ChessPlayer player, ChessPlayer opponent)
