@@ -80,16 +80,25 @@ namespace UvsChess.Gui
             this.cmbWhite = new System.Windows.Forms.ComboBox();
             this.lstHistory = new System.Windows.Forms.ListBox();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.chessBoardControl = new UvsChess.Gui.GuiChessBoard();
             this.tabLogs = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.btnSaveMainOutputsLog = new System.Windows.Forms.Button();
+            this.btnClearMainOutputsLog = new System.Windows.Forms.Button();
+            this.chkBxAutoScrollMainOutput = new System.Windows.Forms.CheckBox();
             this.lstMainOutput = new System.Windows.Forms.ListBox();
             this.tabWhite = new System.Windows.Forms.TabPage();
+            this.btnClearWhitesLog = new System.Windows.Forms.Button();
+            this.btnSaveWhitesLog = new System.Windows.Forms.Button();
+            this.chkBxAutoScrollWhitesLog = new System.Windows.Forms.CheckBox();
             this.lstWhiteAILog = new System.Windows.Forms.ListBox();
             this.tabBlack = new System.Windows.Forms.TabPage();
+            this.btnClearBlacksLog = new System.Windows.Forms.Button();
+            this.btnSaveBlacksLog = new System.Windows.Forms.Button();
+            this.chkBxAutoScrollBlacksLog = new System.Windows.Forms.CheckBox();
             this.lstBlackAILog = new System.Windows.Forms.ListBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.chessBoardControl = new UvsChess.Gui.GuiChessBoard();
             this.menuStrip1.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -350,7 +359,7 @@ namespace UvsChess.Gui
             // splitContainer2
             // 
             this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer2.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+            this.splitContainer2.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
             this.splitContainer2.Location = new System.Drawing.Point(0, 0);
             this.splitContainer2.Name = "splitContainer2";
             this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
@@ -358,23 +367,15 @@ namespace UvsChess.Gui
             // splitContainer2.Panel1
             // 
             this.splitContainer2.Panel1.AutoScroll = true;
+            this.splitContainer2.Panel1.BackColor = System.Drawing.Color.White;
             this.splitContainer2.Panel1.Controls.Add(this.chessBoardControl);
             // 
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.tabLogs);
             this.splitContainer2.Size = new System.Drawing.Size(798, 726);
-            this.splitContainer2.SplitterDistance = 522;
+            this.splitContainer2.SplitterDistance = 333;
             this.splitContainer2.TabIndex = 0;
-            // 
-            // chessBoardControl
-            // 
-            this.chessBoardControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.chessBoardControl.IsLocked = false;
-            this.chessBoardControl.Location = new System.Drawing.Point(0, 0);
-            this.chessBoardControl.Name = "chessBoardControl";
-            this.chessBoardControl.Size = new System.Drawing.Size(522, 522);
-            this.chessBoardControl.TabIndex = 0;
             // 
             // tabLogs
             // 
@@ -387,40 +388,116 @@ namespace UvsChess.Gui
             this.tabLogs.Location = new System.Drawing.Point(0, 3);
             this.tabLogs.Name = "tabLogs";
             this.tabLogs.SelectedIndex = 0;
-            this.tabLogs.Size = new System.Drawing.Size(798, 197);
+            this.tabLogs.Size = new System.Drawing.Size(798, 386);
             this.tabLogs.TabIndex = 0;
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.btnSaveMainOutputsLog);
+            this.tabPage1.Controls.Add(this.btnClearMainOutputsLog);
+            this.tabPage1.Controls.Add(this.chkBxAutoScrollMainOutput);
             this.tabPage1.Controls.Add(this.lstMainOutput);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(790, 171);
+            this.tabPage1.Size = new System.Drawing.Size(790, 360);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Main";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // btnSaveMainOutputsLog
+            // 
+            this.btnSaveMainOutputsLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSaveMainOutputsLog.Location = new System.Drawing.Point(628, 3);
+            this.btnSaveMainOutputsLog.Name = "btnSaveMainOutputsLog";
+            this.btnSaveMainOutputsLog.Size = new System.Drawing.Size(75, 23);
+            this.btnSaveMainOutputsLog.TabIndex = 3;
+            this.btnSaveMainOutputsLog.Text = "Save...";
+            this.btnSaveMainOutputsLog.UseVisualStyleBackColor = true;
+            this.btnSaveMainOutputsLog.Click += new System.EventHandler(this.btnSaveMainOutputsLog_Click);
+            // 
+            // btnClearMainOutputsLog
+            // 
+            this.btnClearMainOutputsLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnClearMainOutputsLog.Location = new System.Drawing.Point(709, 3);
+            this.btnClearMainOutputsLog.Name = "btnClearMainOutputsLog";
+            this.btnClearMainOutputsLog.Size = new System.Drawing.Size(75, 23);
+            this.btnClearMainOutputsLog.TabIndex = 2;
+            this.btnClearMainOutputsLog.Text = "Clear";
+            this.btnClearMainOutputsLog.UseVisualStyleBackColor = true;
+            this.btnClearMainOutputsLog.Click += new System.EventHandler(this.btnClearMainOutputsLog_Click);
+            // 
+            // chkBxAutoScrollMainOutput
+            // 
+            this.chkBxAutoScrollMainOutput.AutoSize = true;
+            this.chkBxAutoScrollMainOutput.Checked = true;
+            this.chkBxAutoScrollMainOutput.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkBxAutoScrollMainOutput.Location = new System.Drawing.Point(3, 5);
+            this.chkBxAutoScrollMainOutput.Name = "chkBxAutoScrollMainOutput";
+            this.chkBxAutoScrollMainOutput.Size = new System.Drawing.Size(77, 17);
+            this.chkBxAutoScrollMainOutput.TabIndex = 1;
+            this.chkBxAutoScrollMainOutput.Text = "Auto Scroll";
+            this.chkBxAutoScrollMainOutput.UseVisualStyleBackColor = true;
+            // 
             // lstMainOutput
             // 
-            this.lstMainOutput.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lstMainOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.lstMainOutput.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstMainOutput.FormattingEnabled = true;
             this.lstMainOutput.ItemHeight = 14;
-            this.lstMainOutput.Location = new System.Drawing.Point(3, 3);
+            this.lstMainOutput.Location = new System.Drawing.Point(0, 28);
             this.lstMainOutput.Name = "lstMainOutput";
-            this.lstMainOutput.Size = new System.Drawing.Size(784, 158);
+            this.lstMainOutput.Size = new System.Drawing.Size(787, 312);
             this.lstMainOutput.TabIndex = 0;
             // 
             // tabWhite
             // 
+            this.tabWhite.Controls.Add(this.btnClearWhitesLog);
+            this.tabWhite.Controls.Add(this.btnSaveWhitesLog);
+            this.tabWhite.Controls.Add(this.chkBxAutoScrollWhitesLog);
             this.tabWhite.Controls.Add(this.lstWhiteAILog);
             this.tabWhite.Location = new System.Drawing.Point(4, 22);
             this.tabWhite.Name = "tabWhite";
-            this.tabWhite.Size = new System.Drawing.Size(790, 171);
+            this.tabWhite.Size = new System.Drawing.Size(790, 360);
             this.tabWhite.TabIndex = 2;
             this.tabWhite.Text = "White\'s log";
             this.tabWhite.UseVisualStyleBackColor = true;
+            // 
+            // btnClearWhitesLog
+            // 
+            this.btnClearWhitesLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnClearWhitesLog.Location = new System.Drawing.Point(709, 3);
+            this.btnClearWhitesLog.Name = "btnClearWhitesLog";
+            this.btnClearWhitesLog.Size = new System.Drawing.Size(75, 23);
+            this.btnClearWhitesLog.TabIndex = 2;
+            this.btnClearWhitesLog.Text = "Clear";
+            this.btnClearWhitesLog.UseVisualStyleBackColor = true;
+            this.btnClearWhitesLog.Click += new System.EventHandler(this.btnClearWhitesLog_Click);
+            // 
+            // btnSaveWhitesLog
+            // 
+            this.btnSaveWhitesLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSaveWhitesLog.Location = new System.Drawing.Point(628, 3);
+            this.btnSaveWhitesLog.Name = "btnSaveWhitesLog";
+            this.btnSaveWhitesLog.Size = new System.Drawing.Size(75, 23);
+            this.btnSaveWhitesLog.TabIndex = 3;
+            this.btnSaveWhitesLog.Text = "Save...";
+            this.btnSaveWhitesLog.UseVisualStyleBackColor = true;
+            this.btnSaveWhitesLog.Click += new System.EventHandler(this.btnSaveWhitesLog_Click);
+            // 
+            // chkBxAutoScrollWhitesLog
+            // 
+            this.chkBxAutoScrollWhitesLog.AutoSize = true;
+            this.chkBxAutoScrollWhitesLog.Checked = true;
+            this.chkBxAutoScrollWhitesLog.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkBxAutoScrollWhitesLog.Location = new System.Drawing.Point(3, 5);
+            this.chkBxAutoScrollWhitesLog.Name = "chkBxAutoScrollWhitesLog";
+            this.chkBxAutoScrollWhitesLog.Size = new System.Drawing.Size(77, 17);
+            this.chkBxAutoScrollWhitesLog.TabIndex = 1;
+            this.chkBxAutoScrollWhitesLog.Text = "Auto Scroll";
+            this.chkBxAutoScrollWhitesLog.UseVisualStyleBackColor = true;
             // 
             // lstWhiteAILog
             // 
@@ -430,20 +507,57 @@ namespace UvsChess.Gui
             this.lstWhiteAILog.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstWhiteAILog.FormattingEnabled = true;
             this.lstWhiteAILog.ItemHeight = 14;
-            this.lstWhiteAILog.Location = new System.Drawing.Point(3, 3);
+            this.lstWhiteAILog.Location = new System.Drawing.Point(0, 28);
             this.lstWhiteAILog.Name = "lstWhiteAILog";
-            this.lstWhiteAILog.Size = new System.Drawing.Size(784, 158);
+            this.lstWhiteAILog.Size = new System.Drawing.Size(787, 312);
             this.lstWhiteAILog.TabIndex = 0;
             // 
             // tabBlack
             // 
+            this.tabBlack.Controls.Add(this.btnClearBlacksLog);
+            this.tabBlack.Controls.Add(this.btnSaveBlacksLog);
+            this.tabBlack.Controls.Add(this.chkBxAutoScrollBlacksLog);
             this.tabBlack.Controls.Add(this.lstBlackAILog);
             this.tabBlack.Location = new System.Drawing.Point(4, 22);
             this.tabBlack.Name = "tabBlack";
-            this.tabBlack.Size = new System.Drawing.Size(790, 171);
+            this.tabBlack.Size = new System.Drawing.Size(790, 360);
             this.tabBlack.TabIndex = 1;
             this.tabBlack.Text = "Black\'s log";
             this.tabBlack.UseVisualStyleBackColor = true;
+            // 
+            // btnClearBlacksLog
+            // 
+            this.btnClearBlacksLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnClearBlacksLog.Location = new System.Drawing.Point(709, 3);
+            this.btnClearBlacksLog.Name = "btnClearBlacksLog";
+            this.btnClearBlacksLog.Size = new System.Drawing.Size(75, 23);
+            this.btnClearBlacksLog.TabIndex = 2;
+            this.btnClearBlacksLog.Text = "Clear";
+            this.btnClearBlacksLog.UseVisualStyleBackColor = true;
+            this.btnClearBlacksLog.Click += new System.EventHandler(this.btnClearBlacksLog_Click);
+            // 
+            // btnSaveBlacksLog
+            // 
+            this.btnSaveBlacksLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSaveBlacksLog.Location = new System.Drawing.Point(628, 3);
+            this.btnSaveBlacksLog.Name = "btnSaveBlacksLog";
+            this.btnSaveBlacksLog.Size = new System.Drawing.Size(75, 23);
+            this.btnSaveBlacksLog.TabIndex = 3;
+            this.btnSaveBlacksLog.Text = "Save...";
+            this.btnSaveBlacksLog.UseVisualStyleBackColor = true;
+            this.btnSaveBlacksLog.Click += new System.EventHandler(this.btnSaveBlacksLog_Click);
+            // 
+            // chkBxAutoScrollBlacksLog
+            // 
+            this.chkBxAutoScrollBlacksLog.AutoSize = true;
+            this.chkBxAutoScrollBlacksLog.Checked = true;
+            this.chkBxAutoScrollBlacksLog.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkBxAutoScrollBlacksLog.Location = new System.Drawing.Point(3, 5);
+            this.chkBxAutoScrollBlacksLog.Name = "chkBxAutoScrollBlacksLog";
+            this.chkBxAutoScrollBlacksLog.Size = new System.Drawing.Size(77, 17);
+            this.chkBxAutoScrollBlacksLog.TabIndex = 1;
+            this.chkBxAutoScrollBlacksLog.Text = "Auto Scroll";
+            this.chkBxAutoScrollBlacksLog.UseVisualStyleBackColor = true;
             // 
             // lstBlackAILog
             // 
@@ -453,14 +567,24 @@ namespace UvsChess.Gui
             this.lstBlackAILog.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstBlackAILog.FormattingEnabled = true;
             this.lstBlackAILog.ItemHeight = 14;
-            this.lstBlackAILog.Location = new System.Drawing.Point(0, 0);
+            this.lstBlackAILog.Location = new System.Drawing.Point(0, 28);
             this.lstBlackAILog.Name = "lstBlackAILog";
-            this.lstBlackAILog.Size = new System.Drawing.Size(787, 172);
+            this.lstBlackAILog.Size = new System.Drawing.Size(787, 312);
             this.lstBlackAILog.TabIndex = 0;
             // 
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
+            // 
+            // chessBoardControl
+            // 
+            this.chessBoardControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.chessBoardControl.IsLocked = false;
+            this.chessBoardControl.Location = new System.Drawing.Point(0, 0);
+            this.chessBoardControl.Name = "chessBoardControl";
+            this.chessBoardControl.Size = new System.Drawing.Size(333, 333);
+            this.chessBoardControl.TabIndex = 0;
+            this.chessBoardControl.TabStop = false;
             // 
             // WinGui
             // 
@@ -487,8 +611,11 @@ namespace UvsChess.Gui
             this.splitContainer2.ResumeLayout(false);
             this.tabLogs.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
             this.tabWhite.ResumeLayout(false);
+            this.tabWhite.PerformLayout();
             this.tabBlack.ResumeLayout(false);
+            this.tabBlack.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -531,5 +658,14 @@ namespace UvsChess.Gui
         private System.Windows.Forms.TabPage tabWhite;
         private System.Windows.Forms.ListBox lstWhiteAILog;
         private System.Windows.Forms.ListBox lstBlackAILog;
+        private System.Windows.Forms.CheckBox chkBxAutoScrollBlacksLog;
+        private System.Windows.Forms.CheckBox chkBxAutoScrollMainOutput;
+        private System.Windows.Forms.CheckBox chkBxAutoScrollWhitesLog;
+        private System.Windows.Forms.Button btnSaveMainOutputsLog;
+        private System.Windows.Forms.Button btnClearMainOutputsLog;
+        private System.Windows.Forms.Button btnClearWhitesLog;
+        private System.Windows.Forms.Button btnSaveWhitesLog;
+        private System.Windows.Forms.Button btnClearBlacksLog;
+        private System.Windows.Forms.Button btnSaveBlacksLog;
     }
 }

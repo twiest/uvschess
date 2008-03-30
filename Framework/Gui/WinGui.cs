@@ -126,7 +126,7 @@ namespace UvsChess.Gui
             {
                 StreamWriter writer = new StreamWriter(saveFileDialog1.FileName);
 
-                Logger.Log("Saving board to " + saveFileDialog1.FileName);
+                Logger.Log("Saving board to: " + saveFileDialog1.FileName);
 
 
                 HistoryItem item = (HistoryItem)lstHistory.SelectedItem;
@@ -146,7 +146,6 @@ namespace UvsChess.Gui
         #region Game menu
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            lstMainOutput.Items.Clear();
             clearHistoryToolStripMenuItem_Click(null, null);
         }
 
@@ -461,8 +460,13 @@ namespace UvsChess.Gui
                 lstMainOutput.BeginUpdate();
                 lstMainOutput.Items.AddRange(messages.ToArray());
                 lstMainOutput.Items.Add("----" + lstMainOutput.Items.Count.ToString() + "----" + messages.Count.ToString() + "----");
-                lstMainOutput.SelectedIndex = lstMainOutput.Items.Count - 1;
-                lstMainOutput.ClearSelected();
+
+                if (chkBxAutoScrollMainOutput.Checked)
+                {
+                    lstMainOutput.SelectedIndex = lstMainOutput.Items.Count - 1;
+                    lstMainOutput.ClearSelected();
+                }
+
                 lstMainOutput.EndUpdate();
             }
         }
@@ -478,8 +482,12 @@ namespace UvsChess.Gui
                 lstWhiteAILog.BeginUpdate();
                 lstWhiteAILog.Items.AddRange(messages.ToArray());
                 lstWhiteAILog.Items.Add("----" + lstWhiteAILog.Items.Count.ToString() + "----" + messages.Count.ToString() + "----");
-                lstWhiteAILog.SelectedIndex = lstWhiteAILog.Items.Count - 1;
-                lstWhiteAILog.ClearSelected();
+
+                if (chkBxAutoScrollWhitesLog.Checked)
+                {
+                    lstWhiteAILog.SelectedIndex = lstWhiteAILog.Items.Count - 1;
+                    lstWhiteAILog.ClearSelected();
+                }
                 lstWhiteAILog.EndUpdate();
             }
         }
@@ -495,8 +503,13 @@ namespace UvsChess.Gui
                 lstBlackAILog.BeginUpdate();
                 lstBlackAILog.Items.AddRange(messages.ToArray());
                 lstBlackAILog.Items.Add("----" + lstBlackAILog.Items.Count.ToString() + "----" + messages.Count.ToString() + "----");
-                lstBlackAILog.SelectedIndex = lstBlackAILog.Items.Count - 1;
-                lstBlackAILog.ClearSelected();
+
+                if (chkBxAutoScrollBlacksLog.Checked)
+                {
+                    lstBlackAILog.SelectedIndex = lstBlackAILog.Items.Count - 1;
+                    lstBlackAILog.ClearSelected();
+                }
+
                 lstBlackAILog.EndUpdate();
             }
         }
@@ -546,6 +559,78 @@ namespace UvsChess.Gui
             UpdateWinGuiOnTimer.StopGuiPolling();
 
             stopToolStripMenuItem_Click(null, null);
+        }
+
+        private void btnSaveMainOutputsLog_Click(object sender, EventArgs e)
+        {
+            saveFileDialog1.Filter = "Text Files (*.txt) | *.txt";
+            DialogResult result = saveFileDialog1.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                StreamWriter writer = new StreamWriter(saveFileDialog1.FileName);
+
+                Logger.Log("Saving MainOutput Log to: " + saveFileDialog1.FileName);
+
+                foreach (string curLine in lstMainOutput.Items)
+                {
+                    writer.WriteLine(curLine);
+                }
+
+                writer.Close();
+            }
+        }
+
+        private void btnSaveWhitesLog_Click(object sender, EventArgs e)
+        {
+            saveFileDialog1.Filter = "Text Files (*.txt) | *.txt";
+            DialogResult result = saveFileDialog1.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                StreamWriter writer = new StreamWriter(saveFileDialog1.FileName);
+
+                Logger.Log("Saving White AI's Log to: " + saveFileDialog1.FileName);
+
+                foreach (string curLine in lstWhiteAILog.Items)
+                {
+                    writer.WriteLine(curLine);
+                }
+
+                writer.Close();
+            }
+        }
+
+        private void btnSaveBlacksLog_Click(object sender, EventArgs e)
+        {
+            saveFileDialog1.Filter = "Text Files (*.txt) | *.txt";
+            DialogResult result = saveFileDialog1.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                StreamWriter writer = new StreamWriter(saveFileDialog1.FileName);
+
+                Logger.Log("Saving Black AI's Log to: " + saveFileDialog1.FileName);
+
+                foreach (string curLine in lstBlackAILog.Items)
+                {
+                    writer.WriteLine(curLine);
+                }
+
+                writer.Close();
+            }
+        }
+
+        private void btnClearMainOutputsLog_Click(object sender, EventArgs e)
+        {
+            lstMainOutput.Items.Clear();
+        }
+
+        private void btnClearWhitesLog_Click(object sender, EventArgs e)
+        {
+            lstWhiteAILog.Items.Clear();
+        }
+
+        private void btnClearBlacksLog_Click(object sender, EventArgs e)
+        {
+            lstBlackAILog.Items.Clear();
         }
     }
 }
