@@ -37,18 +37,18 @@ namespace UvsChess.Framework
         public static void Log(string msg)
         {
             //Console.WriteLine(msg);
-            UpdateWinGuiOnTimer.AddToMainOutput("[" + System.AppDomain.GetCurrentThreadId().ToString() + "] " + 
+            UpdateWinGuiOnTimer.AddToMainLog("[" + System.AppDomain.GetCurrentThreadId().ToString() + "] " + 
                                                 Environment.TickCount.ToString() + ": " + msg); 
         }
 
-        public static void AddToWhiteAILog(string msg)
+        public static void AddToWhitesLog(string msg)
         {
-            UpdateWinGuiOnTimer.AddToWhiteAILog(msg);
+            UpdateWinGuiOnTimer.AddToWhitesLog(msg);
         }
 
-        public static void AddToBlackAILog(string msg)
+        public static void AddToBlacksLog(string msg)
         {
-            UpdateWinGuiOnTimer.AddToBlackAILog(msg);
+            UpdateWinGuiOnTimer.AddToBlacksLog(msg);
         }
     }
 }

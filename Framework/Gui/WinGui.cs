@@ -449,68 +449,68 @@ namespace UvsChess.Gui
             }
         }
 
-        public void AddToMainOutput(List<string> messages)
+        public void AddToMainLog(List<string> messages)
         {
-            if (this.lstMainOutput.InvokeRequired)
+            if (this.lstMainLog.InvokeRequired)
             {
-                this.Invoke(new StringListParameterCallback(AddToMainOutput), new object[] { messages });
+                this.Invoke(new StringListParameterCallback(AddToMainLog), new object[] { messages });
             }
             else
             {
-                lstMainOutput.BeginUpdate();
-                lstMainOutput.Items.AddRange(messages.ToArray());
-                lstMainOutput.Items.Add("----" + lstMainOutput.Items.Count.ToString() + "----" + messages.Count.ToString() + "----");
+                lstMainLog.BeginUpdate();
+                lstMainLog.Items.AddRange(messages.ToArray());
+                lstMainLog.Items.Add("----" + lstMainLog.Items.Count.ToString() + "----" + messages.Count.ToString() + "----");
 
-                if (chkBxAutoScrollMainOutput.Checked)
+                if (chkBxAutoScrollMainLog.Checked)
                 {
-                    lstMainOutput.SelectedIndex = lstMainOutput.Items.Count - 1;
-                    lstMainOutput.ClearSelected();
+                    lstMainLog.SelectedIndex = lstMainLog.Items.Count - 1;
+                    lstMainLog.ClearSelected();
                 }
 
-                lstMainOutput.EndUpdate();
+                lstMainLog.EndUpdate();
             }
         }
 
-        public void AddToWhiteAILog(List<string> messages)
+        public void AddToWhitesLog(List<string> messages)
         {
-            if (this.lstWhiteAILog.InvokeRequired)
+            if (this.lstWhitesLog.InvokeRequired)
             {
-                this.Invoke(new StringListParameterCallback(AddToWhiteAILog), new object[] { messages });
+                this.Invoke(new StringListParameterCallback(AddToWhitesLog), new object[] { messages });
             }
             else
             {
-                lstWhiteAILog.BeginUpdate();
-                lstWhiteAILog.Items.AddRange(messages.ToArray());
-                lstWhiteAILog.Items.Add("----" + lstWhiteAILog.Items.Count.ToString() + "----" + messages.Count.ToString() + "----");
+                lstWhitesLog.BeginUpdate();
+                lstWhitesLog.Items.AddRange(messages.ToArray());
+                lstWhitesLog.Items.Add("----" + lstWhitesLog.Items.Count.ToString() + "----" + messages.Count.ToString() + "----");
 
                 if (chkBxAutoScrollWhitesLog.Checked)
                 {
-                    lstWhiteAILog.SelectedIndex = lstWhiteAILog.Items.Count - 1;
-                    lstWhiteAILog.ClearSelected();
+                    lstWhitesLog.SelectedIndex = lstWhitesLog.Items.Count - 1;
+                    lstWhitesLog.ClearSelected();
                 }
-                lstWhiteAILog.EndUpdate();
+                lstWhitesLog.EndUpdate();
             }
         }
 
-        public void AddToBlackAILog(List<string> messages)
+        public void AddToBlacksLog(List<string> messages)
         {
-            if (this.lstBlackAILog.InvokeRequired)
+            if (this.lstBlacksLog.InvokeRequired)
             {
-                this.Invoke(new StringListParameterCallback(AddToBlackAILog), new object[] { messages });
+                this.Invoke(new StringListParameterCallback(AddToBlacksLog), new object[] { messages });
             }
             else
             {
-                lstBlackAILog.BeginUpdate();
-                lstBlackAILog.Items.AddRange(messages.ToArray());
-                lstBlackAILog.Items.Add("----" + lstBlackAILog.Items.Count.ToString() + "----" + messages.Count.ToString() + "----");
+                lstBlacksLog.BeginUpdate();
+                lstBlacksLog.Items.AddRange(messages.ToArray());
+                lstBlacksLog.Items.Add("----" + lstBlacksLog.Items.Count.ToString() + "----" + messages.Count.ToString() + "----");
 
                 if (chkBxAutoScrollBlacksLog.Checked)
                 {
-                    lstBlackAILog.SelectedIndex = lstBlackAILog.Items.Count - 1;
-                    lstBlackAILog.ClearSelected();
+                    lstBlacksLog.SelectedIndex = lstBlacksLog.Items.Count - 1;
+                    lstBlacksLog.ClearSelected();
                 }
 
-                lstBlackAILog.EndUpdate();
+                lstBlacksLog.EndUpdate();
             }
         }
         #endregion
@@ -561,7 +561,7 @@ namespace UvsChess.Gui
             stopToolStripMenuItem_Click(null, null);
         }
 
-        private void btnSaveMainOutputsLog_Click(object sender, EventArgs e)
+        private void btnSaveMainLog_Click(object sender, EventArgs e)
         {
             saveFileDialog1.Filter = "Text Files (*.txt) | *.txt";
             DialogResult result = saveFileDialog1.ShowDialog();
@@ -569,9 +569,9 @@ namespace UvsChess.Gui
             {
                 StreamWriter writer = new StreamWriter(saveFileDialog1.FileName);
 
-                Logger.Log("Saving MainOutput Log to: " + saveFileDialog1.FileName);
+                Logger.Log("Saving Main Log to: " + saveFileDialog1.FileName);
 
-                foreach (string curLine in lstMainOutput.Items)
+                foreach (string curLine in lstMainLog.Items)
                 {
                     writer.WriteLine(curLine);
                 }
@@ -590,7 +590,7 @@ namespace UvsChess.Gui
 
                 Logger.Log("Saving White AI's Log to: " + saveFileDialog1.FileName);
 
-                foreach (string curLine in lstWhiteAILog.Items)
+                foreach (string curLine in lstWhitesLog.Items)
                 {
                     writer.WriteLine(curLine);
                 }
@@ -609,7 +609,7 @@ namespace UvsChess.Gui
 
                 Logger.Log("Saving Black AI's Log to: " + saveFileDialog1.FileName);
 
-                foreach (string curLine in lstBlackAILog.Items)
+                foreach (string curLine in lstBlacksLog.Items)
                 {
                     writer.WriteLine(curLine);
                 }
@@ -618,19 +618,19 @@ namespace UvsChess.Gui
             }
         }
 
-        private void btnClearMainOutputsLog_Click(object sender, EventArgs e)
+        private void btnClearMainLog_Click(object sender, EventArgs e)
         {
-            lstMainOutput.Items.Clear();
+            lstMainLog.Items.Clear();
         }
 
         private void btnClearWhitesLog_Click(object sender, EventArgs e)
         {
-            lstWhiteAILog.Items.Clear();
+            lstWhitesLog.Items.Clear();
         }
 
         private void btnClearBlacksLog_Click(object sender, EventArgs e)
         {
-            lstBlackAILog.Items.Clear();
+            lstBlacksLog.Items.Clear();
         }
     }
 }

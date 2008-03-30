@@ -58,8 +58,8 @@ namespace UvsChess.Framework
             LoadAI(BlackPlayer);
 
             // Hook up the AI Log methods to the GUI
-            WhitePlayer.AI.Log += Logger.AddToWhiteAILog;
-            BlackPlayer.AI.Log += Logger.AddToBlackAILog;
+            WhitePlayer.AI.Log += Logger.AddToWhitesLog;
+            BlackPlayer.AI.Log += Logger.AddToBlacksLog;
         }
 
         private ChessState mainChessState
@@ -123,8 +123,8 @@ namespace UvsChess.Framework
             }
 
             // Remove the AI Log methods from the GUI
-            WhitePlayer.AI.Log -= Logger.AddToWhiteAILog;
-            BlackPlayer.AI.Log -= Logger.AddToBlackAILog;
+            WhitePlayer.AI.Log -= Logger.AddToWhitesLog;
+            BlackPlayer.AI.Log -= Logger.AddToBlacksLog;
 
             Logger.Log("Game Over");
             //StopGame();
