@@ -40,7 +40,7 @@ namespace UvsChess.Gui
 
         public PieceMovedByHumanDelegate PieceMovedByHuman = null;
 
-        ChessBoard _board;
+        ChessBoard _board = new ChessBoard();
         int _boardWidth;
         int _boardHeight;
         int _tileWidth;
@@ -67,9 +67,7 @@ namespace UvsChess.Gui
 
         public GuiChessBoard()
         {
-            InitializeComponent();
-
-            _board = new ChessBoard();
+            InitializeComponent();            
 
             SetStyle(ControlStyles.DoubleBuffer, true);
             SetStyle(ControlStyles.UserPaint, true);
@@ -278,6 +276,25 @@ namespace UvsChess.Gui
             }
         }
 
+        private ChessBoard Board
+        {
+            get
+            {
+                lock (this._board)
+                {
+                    return _board;
+                }
+            }
+
+            set
+            {
+                lock (this._board)
+                {
+                    _board = value;
+                }
+            }
+        }
+
         public bool IsLocked
         {
             get { return _isLocked; }
@@ -334,7 +351,7 @@ namespace UvsChess.Gui
         {            
             if (_boardChanged)
             {
-                _boardBitmap = GetBoardImage(_board);
+                _boardBitmap = GetBoardImage(Board);
                 _boardChanged = false;
             }
 
@@ -363,14 +380,14 @@ namespace UvsChess.Gui
                 _pieceBeingMovedLocation = new ChessLocation((_mouseX - AdjustedVerticalBorderWidth) / AdjustedTileWidth,
                                                              (_mouseY - AdjustedHorizontalBorderHeight) / AdjustedTileHeight);
 
-                _pieceBeingMoved = _board[_pieceBeingMovedLocation];
+                _pieceBeingMoved = Board[_pieceBeingMovedLocation];
 
                 if (_pieceBeingMoved != ChessPiece.Empty)
                 {
                     // Only say the mouse is down if they clicked on a non-empty board square
                     _isDraggingPiece = true;
 
-                    _board[_pieceBeingMovedLocation] = ChessPiece.Empty;
+                    Board[_pieceBeingMovedLocation] = ChessPiece.Empty;
                     _boardChanged = true;
 
                     this.Invalidate();
@@ -393,7 +410,7 @@ namespace UvsChess.Gui
                     ChessLocation newLoc = new ChessLocation((_mouseX - AdjustedVerticalBorderWidth) / AdjustedTileWidth,
                                                              (_mouseY - AdjustedHorizontalBorderHeight) / AdjustedTileHeight);
 
-                    _board[newLoc] = _pieceBeingMoved;
+                    Board[newLoc] = _pieceBeingMoved;
 
                     _boardChanged = true;
 
@@ -409,7 +426,7 @@ namespace UvsChess.Gui
                 }
                 else
                 {
-                    _board[_pieceBeingMovedLocation] = _pieceBeingMoved;
+                    Board[_pieceBeingMovedLocation] = _pieceBeingMoved;
                     _boardChanged = true;
                 }
 
@@ -485,9 +502,12 @@ namespace UvsChess.Gui
         /// <param name="board"></param>
         public void ResetBoard(ChessBoard board)
         {
-            _board = board.Clone();
-            _boardChanged = true;
-            this.Invalidate();
+            if (Board != board)
+            {
+                Board = board.Clone();
+                _boardChanged = true;
+                this.Invalidate();
+            }
         }
 
         /// <summary>
