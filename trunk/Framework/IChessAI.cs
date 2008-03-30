@@ -43,10 +43,10 @@ namespace UvsChess
     {
         /// <summary>
         /// This is set to true when the framework starts running your AI. When the AI's time has run out,
-        /// the framework will set this variable to false, which the AI should detect and immediate exit 
-        /// and return your move to the framework. If the AI, for whatever reason, can exit early, it should 
-        /// set IsRunning to false. Your AI should NEVER set this property to true!
+        /// the framework will set this variable to false, which the AI should detect and immediatly exit 
+        /// and return your move to the framework. 
         /// 
+        /// You should NEVER EVER set this property, you should only read from it.
         /// IsRunning should be defined as an Automatic Property.
         /// IsRunning SHOULD NOT CONTAIN ANY CODE!!!
         /// </summary>

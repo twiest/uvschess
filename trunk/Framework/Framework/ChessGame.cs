@@ -33,18 +33,22 @@ namespace UvsChess.Framework
 {
     class ChessGame
     {
-        public delegate void GameUpdatedDelegate(string playerColor, string nextMove, string currentFen);
-        public GameUpdatedDelegate GameUpdated = null;
+        public delegate void UpdatedDelegate(string playerColor, string nextMove, string currentFen);
+        public UpdatedDelegate Updated = null;
+
+        public delegate void DeclareResultsDelegate(string results);
+        public DeclareResultsDelegate DeclareResults = null;
 
         ChessState _mainChessState = null;
-        public bool IsRunning = false;
+        public bool IsGameRunning = false;
+        string results = string.Empty;
 
         ChessPlayer WhitePlayer = null;
         ChessPlayer BlackPlayer = null;
         Thread _chessGameThread = null;
         
         public ChessGame(string fen, string whitePlayerName, string blackPlayerName)
-        {
+        {            
             mainChessState = new ChessState(fen);
 
             WhitePlayer = new ChessPlayer(ChessColor.White);
@@ -58,8 +62,15 @@ namespace UvsChess.Framework
             LoadAI(BlackPlayer);
 
             // Hook up the AI Log methods to the GUI
-            WhitePlayer.AI.Log += Logger.AddToWhitesLog;
-            BlackPlayer.AI.Log += Logger.AddToBlacksLog;
+            if (WhitePlayer.IsComputer)
+            {
+                WhitePlayer.AI.Log += Logger.AddToWhitesLog;
+            }
+
+            if (BlackPlayer.IsComputer)
+            {
+                BlackPlayer.AI.Log += Logger.AddToBlacksLog;
+            }
         }
 
         private ChessState mainChessState
@@ -76,7 +87,7 @@ namespace UvsChess.Framework
 
         public void StopGameEarly()
         {
-            IsRunning = false;            
+            IsGameRunning = false;            
 
             WhitePlayer.EndTurnEarly();
             BlackPlayer.EndTurnEarly();
@@ -103,11 +114,11 @@ namespace UvsChess.Framework
 
         void PlayInThread()
         {
-            //This method run in its own thread.
+            //This method run in its own thread.          
 
-            IsRunning = true;
+            IsGameRunning = true;
 
-            while (IsRunning)
+            while (IsGameRunning)
             {
                 if (mainChessState.CurrentPlayerColor == ChessColor.White)
                 {
@@ -123,9 +134,21 @@ namespace UvsChess.Framework
             }
 
             // Remove the AI Log methods from the GUI
-            WhitePlayer.AI.Log -= Logger.AddToWhitesLog;
-            BlackPlayer.AI.Log -= Logger.AddToBlacksLog;
+            if (WhitePlayer.IsComputer)
+            {
+                WhitePlayer.AI.Log -= Logger.AddToWhitesLog;
+            }
 
+            if (BlackPlayer.IsComputer)
+            {
+                BlackPlayer.AI.Log -= Logger.AddToBlacksLog;
+            }
+
+            if (DeclareResults != null)
+            {
+                DeclareResults(results);
+            }
+            
             Logger.Log("Game Over");
             //StopGame();
         }
@@ -141,9 +164,27 @@ namespace UvsChess.Framework
             {
                 nextMove = player.GetNextMove(mainChessState.CurrentBoard);
 
-                if (!IsRunning)
+                if (!this.IsGameRunning)
                 {
                     // if we're not running, leave the method
+                    return;
+                }
+
+                if ( (nextMove == null) || (!nextMove.IsBasicallyValid) )
+                {
+                    IsGameRunning = false;
+                    results = "The framework caught " + player.ColorAndName + " returning a completely invalid move, therefore " +
+                              player.ColorAndName + " loses!";
+
+                    if (nextMove == null)
+                    {
+                        Logger.Log(player.ColorAndName + " returned a null move object.");
+                    }
+                    else
+                    {
+                        Logger.Log(player.ColorAndName + "'s invalid move was: " + nextMove.ToString());
+                    }
+
                     return;
                 }
 
@@ -161,7 +202,7 @@ namespace UvsChess.Framework
                     }
                 }
 
-                //TODO
+                //TODO: Have a penalty for being over time.
 
                 //isValidMove = isValidMove && !isOverTime(player, thread_time, TurnWaitTime);
                 //isValidMove = isValidMove && !isOverTime(player, thread_time, PreferencesGUI.TurnLength);
@@ -174,7 +215,7 @@ namespace UvsChess.Framework
                 {
                     nextMove = player.GetNextMove(mainChessState.CurrentBoard.Clone());
 
-                    if (!IsRunning)
+                    if (!IsGameRunning)
                     {
                         // if we're not running, leave the method
                         return;
@@ -183,32 +224,24 @@ namespace UvsChess.Framework
                     newstate = mainChessState.Clone();
                     newstate.MakeMove(nextMove);
 
-                    // TODO: Fix NRE here when a human is playing another human
-                    isValidMove = opponent.AI.IsValidMove(newstate);
+                    if (opponent.IsHuman)
+                    {
+                        isValidMove = true;
+                    }
+                    else
+                    {
+                        isValidMove = opponent.AI.IsValidMove(newstate);
+                    }
                 }
             }
 
-            if ((isValidMove) &&
-                 (nextMove.Flag == ChessFlag.Checkmate))
+            if (isValidMove)
             {
-                // Checkmate on a valid move has been signaled.
-                IsRunning = false;
-                Logger.Log(String.Format("{0} has signaled that the game is a stalemate.",
-                                    (player.Color == ChessColor.Black) ? "Black" : "White"));
-            }
-            else if (isValidMove)
-            {
-                //update the board
-                //chessBoardControl.ResetBoard(newstate.CurrentBoard);
-                //AddToHistory(player.Color.ToString() + ": " + nextMove.ToString(), newstate.ToFenBoard());                
-
-                //update mainChessState for valid 
                 mainChessState = newstate;
 
                 if (player.Color == ChessColor.Black)
                 {
                     mainChessState.FullMoves++;//Increment fullmoves after black's turn
-                    //SetFullMoves(mainChessState.FullMoves);
                 }
 
                 //Determine if a pawn was moved or a kill was made.
@@ -221,31 +254,38 @@ namespace UvsChess.Framework
                     mainChessState.HalfMoves++;
                 }
 
-                //SetHalfMoves(mainChessState.HalfMoves);
-
-                if (GameUpdated != null)
+                if (Updated != null)
                 {
-                    GameUpdated(player.Color.ToString(), nextMove.ToString(), newstate.ToFenBoard());
+                    Updated(player.Color.ToString(), nextMove.ToString(), newstate.ToFenBoard());
                 }
 
-                Logger.Log(mainChessState.ToFenBoard());
+                if (nextMove.Flag == ChessFlag.Checkmate)
+                {
+                    // Checkmate on a valid move has been signaled.
+                    IsGameRunning = false;
+
+                    results = String.Format(player.ColorAndName + " has signaled that the game is a checkmate _and_ " +
+                                            opponent.ColorAndName + " said the last move was valid.");
+                }
             }
             else
             {
                 // It is either a stalemate or an invalid move. Either way, we're done running.
-                IsRunning = false;
+                IsGameRunning = false;
 
                 if (nextMove.Flag == ChessFlag.Stalemate)
                 {
-                    // A stalemate has occurred.
-                    Logger.Log(String.Format("{0} has signaled that the game is a stalemate.",
-                                        (player.Color == ChessColor.Black) ? "Black" : "White"));
+                    // A stalemate has occurred. Since stalemates can occur because the AI can't
+                    // make a move, we don't have the other AI check their move (because it would
+                    // probably just be an empty move).
+                    results = player.ColorAndName + " has signaled that the game is a stalemate.";
                 }
                 else
                 {
-                    Logger.Log(String.Format("{0} has signaled that {1} returned an invalid move returned, therefore {1} loses!",
-                                   (player.Color == ChessColor.Black) ? "White" : "Black",
-                                   (player.Color == ChessColor.Black) ? "Black" : "White"));
+                    results = opponent.ColorAndName + " has signaled that " + player.ColorAndName + 
+                              " returned an invalid move returned, therefore " + player.ColorAndName + " loses!";
+
+                    Logger.Log(player.ColorAndName + "'s invalid move was: " + nextMove.ToString());
                 }
             }
         }
