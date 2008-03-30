@@ -28,23 +28,18 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using UvsChess.Gui;
 
 namespace UvsChess.Framework
 {
     public class Logger
     {
-        public static UvsChess.Gui.WinGui.StringParameterCallback GuiWriteLine = null;
-
         public static void Log(string msg)
         {
-            if (GuiWriteLine == null)
-            {
-                Console.WriteLine(msg);
-            }
-            else
-            {
-                GuiWriteLine(msg);
-            }
+            //Console.WriteLine(msg);
+            //UvsChess.Gui.UpdateWinGuiOnTimer.AddToMainOutput(Environment.TickCount.ToString() + "-" + System.AppDomain.GetCurrentThreadId().ToString() + ": " + msg);
+            UpdateWinGuiOnTimer.AddToMainOutput("[" + System.AppDomain.GetCurrentThreadId().ToString() + "] " + 
+                                                Environment.TickCount.ToString() + ": " + msg);
         }
     }
 }

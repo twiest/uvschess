@@ -41,13 +41,14 @@ namespace UvsChess.Framework
         public IChessAI AI;
         public TimeSpan TimeOfLastMove = TimeSpan.MinValue;
 
+        private bool _forceAIToEndTurnEarly = false;
         private DateTime _startTime;
         private DateTime _endTime;
         private Thread _runAIThread;
         private bool _isMyTurn = false;
         private ChessBoard _currentBoard = null;
         private ChessMove _moveToReturn;
-        private ManualResetEvent _pieceMovedByHumanEvent = new ManualResetEvent(true);
+        private ManualResetEvent _waitForMoveEvent = new ManualResetEvent(true);
         private int Interval = 100;
         private Timer _pollAITimer;
 
@@ -68,86 +69,133 @@ namespace UvsChess.Framework
 
         public ChessMove GetNextMove(ChessBoard currentBoard)
         {
+            Logger.Log("In " + this.Color.ToString() + "'s GetNextMove.");
             _isMyTurn = true;
             _currentBoard = currentBoard.Clone();
 
             if (this.IsHuman)
             {
-                _pieceMovedByHumanEvent.Reset();
-                _pieceMovedByHumanEvent.WaitOne();
+                Logger.Log("In " + this.Color.ToString() + "'s GetNextMove and their human.");
+                _waitForMoveEvent.Reset();
+                _waitForMoveEvent.WaitOne();
             }
             else
             {
+                Logger.Log("In " + this.Color.ToString() + "'s GetNextMove and their an AI.");
                 _runAIThread = new Thread(GetNextAIMove);
 
                 _startTime = DateTime.Now;
                 _endTime = _startTime.AddMilliseconds(UvsChess.Gui.Preferences.Time);
                 _runAIThread.Start();
 
-                this.StartPollingAI();
+                Logger.Log("In " + this.Color.ToString() + "'s GetNextMove and calling StartPollAI().");
+                this.PollAIOnce();
 
-                _pieceMovedByHumanEvent.Reset();
-                _pieceMovedByHumanEvent.WaitOne();
+                Logger.Log("In " + this.Color.ToString() + "'s GetNextMove waiting for the resetEvent to trigger.");
+                _waitForMoveEvent.Reset();
+                _waitForMoveEvent.WaitOne();
+                Logger.Log("In " + this.Color.ToString() + "'s GetNextMove and just got the resetEvent.");
 
                 _runAIThread = null;
             }
 
-            _isMyTurn = false;
-
+            Logger.Log("In " + this.Color.ToString() + "'s GetNextMove and running GC Cleanup.");
             // Clean up the heap for the next player.
             // This doesn't cost the AI time 
             //(it's done after the AI's turn time has been calculated).
             GC.Collect();
             GC.WaitForPendingFinalizers();
 
+            _isMyTurn = false;
+
             return _moveToReturn;
         }
 
         public void EndTurnEarly()
         {
+            Logger.Log("In " + this.Color.ToString() + "'s EndTurnEarly.");
             if (this.IsHuman)
             {
-                _pieceMovedByHumanEvent.Set();
-            }
-            else if (_runAIThread != null)
-            {
-                StopPollingAI();
-                this.AI.EndTurn();
-                _runAIThread.Join();
-
-                _pieceMovedByHumanEvent.Set();
-            }
-        }
-
-        private void StartPollingAI()
-        {
-            _pollAITimer = new Timer(this.PollAI, null, Interval, Interval);
-        }
-
-        private void StopPollingAI()
-        {
-            _pollAITimer.Change(System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
-        }
-
-        private void PollAI(object state)
-        {
-            this.StopPollingAI();
-
-            if ((!this.AI.IsRunning) || 
-                (DateTime.Now > _endTime))
-            {
-                this.AI.EndTurn();
-                _runAIThread.Join();
-
-                TimeOfLastMove = DateTime.Now.Subtract(_startTime);
-
-                _pieceMovedByHumanEvent.Set();
+                Logger.Log("In " + this.Color.ToString() + "'s EndTurnEarly and their human and firing the _waitForMoveEvent.");
+                _waitForMoveEvent.Set();
             }
             else
             {
-                // poll again
-                StartPollingAI();
+                lock (this.AI)
+                {
+                    Logger.Log("In " + this.Color.ToString() + "'s EndTurnEarly and their an AI and setting the _forceAIToEndTurnEarly flag to true.");
+                    _forceAIToEndTurnEarly = true;
+                }
             }
+        }
+
+        private void PollAIOnce()
+        {
+            Logger.Log("In " + this.Color.ToString() + "'s StartPollAI.");
+            //if (_pollAITimer == null)
+            {
+                Logger.Log("In " + this.Color.ToString() + "'s StartPollAI and _pollAITimer == null. Starting the Timer.");
+                _pollAITimer = new Timer(this.PollAI, null, Interval, System.Threading.Timeout.Infinite);
+            }
+        }
+
+        //private void StopPollingAI()
+        //{
+        //    lock (this.AI)
+        //    {
+        //        Logger.Log("In " + this.Color.ToString() + "'s StopPollAI.");
+        //        if (_pollAITimer != null)
+        //        {
+        //            Logger.Log("In " + this.Color.ToString() + "'s StopPollAI and _pollAITimer != null. Stopping the Timer.");
+        //            _pollAITimer.Change(System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
+        //            _pollAITimer = null;
+        //        }
+        //    }
+        //}
+
+        private void PollAI(object state)
+        {
+            //Logger.Log("In " + this.Color.ToString() + "'s PollAI [Begin] and calling StopPollingAI.");
+            //this.StopPollingAI();
+
+            lock (this.AI)
+            {
+                if ( (_forceAIToEndTurnEarly) || (!this.AI.IsRunning) || (DateTime.Now > _endTime) )
+                {
+                    if (_forceAIToEndTurnEarly)
+                    {
+                        Logger.Log("In " + this.Color.ToString() + "'s PollAI and telling the AI to end it's turn because it's been forced to.");
+                    }
+                    else if (!this.AI.IsRunning)
+                    {
+                        Logger.Log("In " + this.Color.ToString() + "'s PollAI and telling the AI to end it's turn because it's done running, and it needs to cleanup.");
+                    }
+                    else
+                    {
+                        Logger.Log("In " + this.Color.ToString() + "'s PollAI and telling the AI to end it's turn because it's time is over.");
+                    }
+
+                    if (this.AI.IsRunning)
+                    {
+                        this.AI.EndTurn();
+                        Logger.Log("In " + this.Color.ToString() + "'s PollAI and Joining _runAIThread");
+                        _runAIThread.Join();
+                    }
+
+                    TimeOfLastMove = DateTime.Now.Subtract(_startTime);
+
+                    Logger.Log("In " + this.Color.ToString() + "'s PollAI and firing the _waitForMoveEvent.");
+                    _waitForMoveEvent.Set();
+                }
+                else
+                {
+                    Logger.Log("In " + this.Color.ToString() + "'s PollAI and starting polling again.");
+                    // poll again
+                    PollAIOnce();
+                }
+            }
+
+            Logger.Log("In " + this.Color.ToString() + "'s PollAI [End].");
         }
 
         public void HumanMovedPieceEvent(ChessMove move)
@@ -156,7 +204,7 @@ namespace UvsChess.Framework
             {
                 Logger.Log("Human Playing " + Color.ToString() + " moved:");
                 _moveToReturn = move;
-                _pieceMovedByHumanEvent.Set();
+                _waitForMoveEvent.Set();
             }
         }
 

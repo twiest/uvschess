@@ -43,7 +43,7 @@ namespace UvsChess.Framework
             _chessGameThread.Start();
         }
 
-        public void StopGame()
+        public void StopGameEarly()
         {
             IsRunning = false;            
 
@@ -191,7 +191,6 @@ namespace UvsChess.Framework
                 }
 
                 Logger.Log(mainChessState.ToFenBoard());
-
             }
             else
             {
