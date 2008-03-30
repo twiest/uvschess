@@ -259,13 +259,18 @@ namespace UvsChess.Framework
                     Updated(player.Color.ToString(), nextMove.ToString(), newstate.ToFenBoard());
                 }
 
+                if (nextMove.Flag == ChessFlag.Check)
+                {
+                    Logger.Log(player.ColorAndName + " has put " + opponent.ColorAndName + " in Check!");
+                }
+
                 if (nextMove.Flag == ChessFlag.Checkmate)
                 {
                     // Checkmate on a valid move has been signaled.
                     IsGameRunning = false;
 
-                    results = String.Format(player.ColorAndName + " has signaled that the game is a checkmate _and_ " +
-                                            opponent.ColorAndName + " said the last move was valid.");
+                    results = player.ColorAndName + " has signaled that the game is a checkmate _and_ " +
+                              opponent.ColorAndName + " said the last move was valid.";
                 }
             }
             else
