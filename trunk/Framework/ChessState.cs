@@ -187,7 +187,7 @@ namespace UvsChess
         public string ToFenBoard()
         {
             StringBuilder strBuild = new StringBuilder();
-            strBuild.Append(CurrentBoard.ToFenBoard());
+            strBuild.Append(CurrentBoard.ToPartialFenBoard());
 
             if (CurrentPlayerColor == ChessColor.White)
             {
