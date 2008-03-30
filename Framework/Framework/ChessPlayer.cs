@@ -84,9 +84,11 @@ namespace UvsChess.Framework
                 Logger.Log("In " + this.Color.ToString() + "'s GetNextMove and their an AI.");
                 _runAIThread = new Thread(GetNextAIMove);
 
+                // NO LOGGING ALLOWED between here
                 _startTime = DateTime.Now;
                 _endTime = _startTime.AddMilliseconds(UvsChess.Gui.Preferences.Time);
                 _runAIThread.Start();
+                // AND HERE because it would count against the AI's time.
 
                 Logger.Log("In " + this.Color.ToString() + "'s GetNextMove and calling StartPollAI().");
                 this.PollAIOnce();
@@ -121,11 +123,8 @@ namespace UvsChess.Framework
             }
             else
             {
-                lock (this.AI)
-                {
-                    Logger.Log("In " + this.Color.ToString() + "'s EndTurnEarly and their an AI and setting the _forceAIToEndTurnEarly flag to true.");
-                    _forceAIToEndTurnEarly = true;
-                }
+                Logger.Log("In " + this.Color.ToString() + "'s EndTurnEarly and their an AI and setting the _forceAIToEndTurnEarly flag to true.");
+                _forceAIToEndTurnEarly = true;
             }
         }
 
@@ -139,60 +138,42 @@ namespace UvsChess.Framework
             }
         }
 
-        //private void StopPollingAI()
-        //{
-        //    lock (this.AI)
-        //    {
-        //        Logger.Log("In " + this.Color.ToString() + "'s StopPollAI.");
-        //        if (_pollAITimer != null)
-        //        {
-        //            Logger.Log("In " + this.Color.ToString() + "'s StopPollAI and _pollAITimer != null. Stopping the Timer.");
-        //            _pollAITimer.Change(System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
-        //            _pollAITimer = null;
-        //        }
-        //    }
-        //}
-
         private void PollAI(object state)
         {
-            //Logger.Log("In " + this.Color.ToString() + "'s PollAI [Begin] and calling StopPollingAI.");
-            //this.StopPollingAI();
-
-            lock (this.AI)
+            // NO LOGGING ALLOWED between here
+            if ( (_forceAIToEndTurnEarly) || (!this.AI.IsRunning) || (DateTime.Now > _endTime) )
             {
-                if ( (_forceAIToEndTurnEarly) || (!this.AI.IsRunning) || (DateTime.Now > _endTime) )
+                //if (_forceAIToEndTurnEarly)
+                //{
+                //    Logger.Log("In " + this.Color.ToString() + "'s PollAI and telling the AI to end it's turn because it's been forced to.");
+                //}
+                //else if (!this.AI.IsRunning)
+                //{
+                //    Logger.Log("In " + this.Color.ToString() + "'s PollAI and telling the AI to end it's turn because it's done running, and it needs to cleanup.");
+                //}
+                //else
+                //{
+                //    Logger.Log("In " + this.Color.ToString() + "'s PollAI and telling the AI to end it's turn because it's time is over.");
+                //}
+
+                if (this.AI.IsRunning)
                 {
-                    if (_forceAIToEndTurnEarly)
-                    {
-                        Logger.Log("In " + this.Color.ToString() + "'s PollAI and telling the AI to end it's turn because it's been forced to.");
-                    }
-                    else if (!this.AI.IsRunning)
-                    {
-                        Logger.Log("In " + this.Color.ToString() + "'s PollAI and telling the AI to end it's turn because it's done running, and it needs to cleanup.");
-                    }
-                    else
-                    {
-                        Logger.Log("In " + this.Color.ToString() + "'s PollAI and telling the AI to end it's turn because it's time is over.");
-                    }
-
-                    if (this.AI.IsRunning)
-                    {
-                        this.AI.EndTurn();
-                        Logger.Log("In " + this.Color.ToString() + "'s PollAI and Joining _runAIThread");
-                        _runAIThread.Join();
-                    }
-
-                    TimeOfLastMove = DateTime.Now.Subtract(_startTime);
-
-                    Logger.Log("In " + this.Color.ToString() + "'s PollAI and firing the _waitForMoveEvent.");
-                    _waitForMoveEvent.Set();
+                    this.AI.IsRunning = false;
+                    //Logger.Log("In " + this.Color.ToString() + "'s PollAI and Joining _runAIThread");
+                    _runAIThread.Join();                    
                 }
-                else
-                {
-                    Logger.Log("In " + this.Color.ToString() + "'s PollAI and starting polling again.");
-                    // poll again
-                    PollAIOnce();
-                }
+
+                TimeOfLastMove = DateTime.Now.Subtract(_startTime);
+                // AND HERE because it would count against the AI's time.
+
+                //Logger.Log("In " + this.Color.ToString() + "'s PollAI and firing the _waitForMoveEvent.");
+                _waitForMoveEvent.Set();
+            }
+            else
+            {
+                Logger.Log("In " + this.Color.ToString() + "'s PollAI and setting it to poll one more time.");
+                // poll again
+                PollAIOnce();
             }
 
             Logger.Log("In " + this.Color.ToString() + "'s PollAI [End].");
@@ -210,6 +191,7 @@ namespace UvsChess.Framework
 
         private void GetNextAIMove()
         {
+            this.AI.IsRunning = true;
             _moveToReturn = this.AI.GetNextMove(_currentBoard, this.Color);
         }
     }

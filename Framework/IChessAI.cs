@@ -34,12 +34,20 @@ namespace UvsChess
     public interface IChessAI
     {
         /// <summary>
-        /// Returns true if your AI is currently running
+        /// This is set to true when the framework starts running your AI. When the AI's time has run out,
+        /// the framework will set this variable to false, which the AI should detect and immediate exit 
+        /// and return your move to the framework. If the AI, for whatever reason, can exit early, it should 
+        /// set IsRunning to false. Your AI should NEVER set this property to true!
+        /// 
+        /// IsRunning should be defined as an Automatic Property.
+        /// IsRunning SHOULD NOT CONTAIN ANY CODE!!!
         /// </summary>
         bool IsRunning
         {
             get;
+            set;
         }
+
 
         /// <summary>
         /// The name of your AI
@@ -64,12 +72,6 @@ namespace UvsChess
         /// <param name="currentState">ChessState, including previous state, previous move. </param>
         /// <returns>Returns true if the opponents move was valid</returns>
         bool IsValidMove(ChessState currentState);
-
-        /// <summary>
-        /// This is called when the framework detects that your turn is over. Once this is called,
-        /// you must immidiately exit and return your move to the framework.
-        /// </summary>
-        void EndTurn();
 
         /// <summary>
         /// Call this method to print out debug information. The framework subscribes to this event
