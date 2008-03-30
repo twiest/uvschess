@@ -75,8 +75,6 @@ namespace ExampleAI
         /// <returns> Returns the best chess move for the given chess board</returns>
         public ChessMove GetNextMove(ChessBoard board, ChessColor myColor)
         {
-            //IsGameRunning = false;
-            return null;
             ChessMove myNextMove = null;
 
             while (IsRunning)
@@ -86,6 +84,9 @@ namespace ExampleAI
                     myNextMove = MoveAPawn(board, myColor);
                     this.Log(myColor.ToString() + " (" + this.Name + ") just moved.");
                     this.Log(string.Empty);
+
+                    // Since I have a move, break out of loop
+                    break;
                 }               
             }
 

@@ -97,8 +97,21 @@ namespace UvsChess
         {
             if (move.IsBasicallyValid)
             {
-                this._board[move.To.X, move.To.Y] = this._board[move.From.X, move.From.Y];                            
-                this._board[move.From.X, move.From.Y] = ChessPiece.Empty;
+                // Handle Queening
+                if ((this[move.From] == ChessPiece.WhitePawn) && (move.From.Y == 1) && (move.To.Y == 0))
+                {
+                    this[move.To] = ChessPiece.WhiteQueen;
+                }
+                else if ((this[move.From] == ChessPiece.BlackPawn) && (move.From.Y == 6) && (move.To.Y == 7))
+                {
+                    this[move.To] = ChessPiece.BlackQueen;
+                }
+                else
+                {
+                    this[move.To] = this[move.From];                    
+                }
+
+                this[move.From] = ChessPiece.Empty;
             }
         }
 
@@ -108,7 +121,7 @@ namespace UvsChess
         //       "< empty == white" logic.
         public bool IsTileEmpty(ChessLocation location)
         {
-            return (_board[location.X, location.Y] == ChessPiece.Empty);
+            return (this[location] == ChessPiece.Empty);
         }
 
         /// <summary>
@@ -187,7 +200,7 @@ namespace UvsChess
             }
         }
 
-        public string ToFenBoard()
+        public string ToPartialFenBoard()
         {
             StringBuilder strBuild = new StringBuilder();
             for (int y = 0; y < ChessBoard.NumberOfRows; ++y)
@@ -264,7 +277,7 @@ namespace UvsChess
 
         public override int GetHashCode()
         {
-            return this.ToFenBoard().GetHashCode();
+            return this.ToPartialFenBoard().GetHashCode();
         }
         #endregion
     }

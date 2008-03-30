@@ -55,7 +55,6 @@ namespace UvsChess
     public enum ChessFlag
     {
         NoFlag,
-        Queening,
         Check,
         Checkmate,
         Stalemate,
