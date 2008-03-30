@@ -34,80 +34,66 @@ namespace ExampleAI
 {
     public class ExampleAI : IChessAI
     {
-        bool running = false;
-
         #region IChessAI Members
-        public bool IsRunning
-        {
-            get { return running; }
-        }
 
+        /// <summary>
+        /// This is set to true when the framework starts running your AI. When the AI's time has run out,
+        /// the framework will set this variable to false, which the AI should detect and immediate exit 
+        /// and return your move to the framework. If the AI, for whatever reason, can exit early, it should 
+        /// set IsRunning to false. Your AI should NEVER set this property to true!
+        /// 
+        /// IsRunning should be defined as an Automatic Property.
+        /// IsRunning SHOULD NOT CONTAIN ANY CODE!!!
+        /// </summary>
+        public bool IsRunning { get; set; }
+
+        /// <summary>
+        /// The name of your AI
+        /// </summary>
         public string Name
         {
             get { return "ExampleAI"; }
         }
 
-
+        /// <summary>
+        /// Evaluates the chess board and decided which move to make. This is the main method of the AI.
+        /// The framework will call this method when it's your turn.
+        /// </summary>
+        /// <param name="board">Current chess board</param>
+        /// <param name="yourColor">Your color</param>
+        /// <returns> Returns the best chess move for the given chess board</returns>
         public ChessMove GetNextMove(ChessBoard board, ChessColor myColor)
         {
-        
-            running = true;
             ChessMove myNextMove = null;
 
-            //if (currentState.PreviousMove.Flag == ChessFlag.Checkmate)
-            //{
-            //    myNextMove = new ChessMove();
-
-            //    // Normally I would run my move validator on their move 
-            //    // to make sure they made a valid move. If they did,
-            //    // and I agree that I'm checkmated, then I surrender.
-            //    // Otherwise I set "Invalid Move" on them
-            //    return myNextMove;
-            //}
-
-            while (running)
+            while (IsRunning)
             {
-                //if (currentState.PreviousBoard == null)
-                //{
-                //    // 1st move of the game
-                //    myNextMove = FindAMove(currentState);
-                //}
-                //else
-                //{
-                    //myNextMove = new ChessMove();
-                    //myNextMove.From = currentState.PreviousMove.From;
-                    //myNextMove.From.Row = myNextMove.From.Row - 7;
-
-                    //myNextMove.To = currentState.PreviousMove.To;
-                    //myNextMove.To.Row = myNextMove.To.Row - 7;
-                //}
-
-                //myNextMove = FindAMove(board, myColor);
-
                 if (myNextMove == null)
                 {
                     myNextMove = MoveAPawn(board, myColor);
-                    running = false;
-                }
-
-                
+                    this.Log(this.Name + " just moved");
+                    IsRunning = false;
+                }               
             }
 
             return myNextMove;
         }
 
+        /// <summary>
+        /// Validates a move. The framework will use this to validate your opponents move.
+        /// </summary>
+        /// <param name="currentState">ChessState, including previous state, previous move. </param>
+        /// <returns>Returns true if the move was valid</returns>
         public bool IsValidMove(ChessState currentState)
         {
             return true;
         }
 
-        // This Method gets called when time has run out on your turn.
-        public void EndTurn()
-        {
-            running = false;
-            Log("AI was told to end turn at: " + System.DateTime.Now.ToString());
-        }
-
+        /// <summary>
+        /// Call this method to print out debug information. The framework subscribes to this event
+        /// and will provide a log window for your debug messages.
+        /// </summary>
+        /// <param name="message"></param>
         public void Log(string message)
         {
         }
@@ -115,17 +101,22 @@ namespace ExampleAI
 
 
         #region My AI Logic
-        ChessMove MoveAPawn(ChessBoard currentBoard, ChessColor currentColor)
+        /// <summary>
+        /// This method generates a ChessMove to move a pawn.
+        /// </summary>
+        /// <param name="currentBoard">This is the current board to generate the move for.</param>
+        /// <param name="myColor">This is the color of the player that should generate the move.</param>
+        /// <returns>A chess move.</returns>
+        ChessMove MoveAPawn(ChessBoard currentBoard, ChessColor myColor)
         {
-            // This logic only moves pawns one space forward. It does not move any other pieces.
-        
+            // This logic only moves pawns one space forward. It does not move any other pieces.        
             ChessMove newMove = null;
 
             for (int Y = 1; Y < ChessBoard.NumberOfRows - 1; Y++)
             {
                 for (int X = 0; X < ChessBoard.NumberOfColumns; X++)
                 {
-                    if (currentColor == ChessColor.White)
+                    if (myColor == ChessColor.White)
                     {
                         if ((currentBoard[X, Y-1] == ChessPiece.Empty) &&
                             (currentBoard[X, Y] == ChessPiece.WhitePawn))
@@ -137,7 +128,7 @@ namespace ExampleAI
                             return newMove;
                         }
                     }
-                    else // player is black
+                    else // myColor is black
                     {
                         if ((currentBoard[X, Y+1] == ChessPiece.Empty) &&
                             (currentBoard[X, Y] == ChessPiece.BlackPawn))
@@ -155,9 +146,7 @@ namespace ExampleAI
             // If I couldn't find a valid move easily, 
             // I'll just create an empty move and flag a stalemate.
             newMove = new ChessMove();
-            newMove.Flag = ChessFlag.Stalemate;
-
-            this.Log("ExampleAI just moved");
+            newMove.Flag = ChessFlag.Stalemate;            
 
             return newMove;
         }
