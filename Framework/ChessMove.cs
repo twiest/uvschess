@@ -51,6 +51,40 @@ namespace UvsChess
             set { _to = value; }
         }
 
+        /// <summary>
+        /// This property is used by the framework to see if the move is on the board,
+        /// has a non-null To and From, etc. This property should NOT be used by students
+        /// as it doesn't actually check the move to see if it is actually a valid chess
+        /// move.
+        /// </summary>
+        public bool IsBasicallyValid
+        {
+            get
+            {
+                if (this.Flag == ChessFlag.Stalemate)
+                {
+                    return true;
+                }
+
+                if ((this.To == null) || (this.From == null))
+                {
+                    return false;
+                }
+
+                if ((!this.To.IsValid) || (!this.From.IsValid))
+                {
+                    return false;
+                }
+
+                if (this.From == this.To)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+        }
+
 
         public ChessMove Clone()
         {
@@ -75,7 +109,54 @@ namespace UvsChess
 
         public override string ToString()
         {
-            return "From: [" + this.From.X + ", " + this.From.Y + "]   To: [" + this.To.X + ", " + this.To.Y + "]";
+            string moveText = string.Empty;
+
+            if (this.From == null)
+            {
+                moveText += "The Move's From field was null. ";
+            }
+            else
+            {
+                if (!this.From.IsValid)
+                {
+                    moveText += "The Move's From field was outside the bounds of the board coordinates. ";
+                }
+            }
+
+            if (this.To == null)
+            {
+                moveText += "The Move's To field was null. ";
+            }
+            else
+            {
+                if (!this.To.IsValid)
+                {
+                    moveText += "The Move's To field was outside the bounds of the board coordinates. ";
+                }
+            }
+
+            if (this.From == this.To)
+            {
+                moveText += "The Move's From and To fields are equal. ";
+            }
+
+            if ( (moveText != string.Empty) && (this.Flag != ChessFlag.NoFlag) )
+            {
+                moveText += "Flag: " + this.Flag.ToString();
+            }
+            else
+            {
+                moveText = "From: [" + this.From.X + ", " + this.From.Y + "]   To: [" + this.To.X + ", " + this.To.Y + "] ";
+
+                if (this.Flag != ChessFlag.NoFlag)
+                {
+                    moveText += "Flag: " + this.Flag.ToString(); ;
+                }
+            }
+
+            moveText.TrimEnd();
+
+            return moveText;
         }
     }
 }

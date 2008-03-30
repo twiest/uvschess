@@ -38,10 +38,10 @@ namespace ExampleAI
 
         /// <summary>
         /// This is set to true when the framework starts running your AI. When the AI's time has run out,
-        /// the framework will set this variable to false, which the AI should detect and immediate exit 
-        /// and return your move to the framework. If the AI, for whatever reason, can exit early, it should 
-        /// set IsRunning to false. Your AI should NEVER set this property to true!
+        /// the framework will set this variable to false, which the AI should detect and immediatly exit 
+        /// and return your move to the framework.
         /// 
+        /// You should NEVER EVER set this property, you should only read from it.
         /// IsRunning should be defined as an Automatic Property.
         /// IsRunning SHOULD NOT CONTAIN ANY CODE!!!
         /// </summary>
@@ -75,6 +75,8 @@ namespace ExampleAI
         /// <returns> Returns the best chess move for the given chess board</returns>
         public ChessMove GetNextMove(ChessBoard board, ChessColor myColor)
         {
+            //IsGameRunning = false;
+            return null;
             ChessMove myNextMove = null;
 
             while (IsRunning)
@@ -84,9 +86,6 @@ namespace ExampleAI
                     myNextMove = MoveAPawn(board, myColor);
                     this.Log(myColor.ToString() + " (" + this.Name + ") just moved.");
                     this.Log(string.Empty);
-
-                    // Since we have a move, exit early
-                    IsRunning = false;
                 }               
             }
 
@@ -149,7 +148,8 @@ namespace ExampleAI
             // If I couldn't find a valid move easily, 
             // I'll just create an empty move and flag a stalemate.
             newMove = new ChessMove();
-            newMove.Flag = ChessFlag.Stalemate;            
+            //newMove.Flag = ChessFlag.Stalemate;
+            newMove.Flag = ChessFlag.Stalemate;
 
             return newMove;
         }

@@ -35,51 +35,73 @@ namespace UvsChess.Gui
     {
         public static WinGui Gui = null;
         
-        private static int Interval = 10;
+        private static int Interval = 50;
         private static object _updateGuiDataLockObject = new object();
         private static object _updateGuiLockObject = new object();
-        private static List<string> AddToMainLog_Parameter1 = new List<string>();
-        private static List<string> AddToWhitesLog_Parameter1 = new List<string>();
-        private static List<string> AddToBlacksLog_Parameter1 = new List<string>();
-        private static List<string> AddToHistory_Parameter1 = new List<string>();
-        private static List<string> AddToHistory_Parameter2 = new List<string>();        
+
+        private static List<string> _DeclareResults_Parameter1 = new List<string>();
+        private static List<string> _AddToMainLog_Parameter1 = new List<string>();
+        private static List<string> _AddToWhitesLog_Parameter1 = new List<string>();
+        private static List<string> _AddToBlacksLog_Parameter1 = new List<string>();
+        private static List<string> _AddToHistory_Parameter1 = new List<string>();
+        private static List<string> _AddToHistory_Parameter2 = new List<string>();
+        private static bool? _isSwitchIntoGameMode_Parameter1 = null;
+
         private static Timer _pollGuiTimer = null;
 
-        public static void AddToMainLog(string param1)
+        public static void DeclareResults(string results)
         {
             lock (_updateGuiDataLockObject)
             {
-                AddToMainLog_Parameter1.Add(param1);
+                _DeclareResults_Parameter1.Add(results);
             }
         }
 
-        public static void AddToWhitesLog(string param1)
+        public static void SwitchWinGuiMode(bool isSwitchIntoGameMode)
         {
             lock (_updateGuiDataLockObject)
             {
-                AddToWhitesLog_Parameter1.Add(param1);
+                _isSwitchIntoGameMode_Parameter1 = isSwitchIntoGameMode;
             }
         }
 
-        public static void AddToBlacksLog(string param1)
+        public static void AddToMainLog(string messages)
         {
             lock (_updateGuiDataLockObject)
             {
-                AddToBlacksLog_Parameter1.Add(param1);
+                _AddToMainLog_Parameter1.Add(messages);
             }
         }
 
-        public static void AddToHistory(string param1, string param2)
+        public static void AddToWhitesLog(string messages)
         {
             lock (_updateGuiDataLockObject)
             {
-                AddToHistory_Parameter1.Add(param1);
-                AddToHistory_Parameter2.Add(param2);
+                _AddToWhitesLog_Parameter1.Add(messages);
+            }
+        }
+
+        public static void AddToBlacksLog(string messages)
+        {
+            lock (_updateGuiDataLockObject)
+            {
+                _AddToBlacksLog_Parameter1.Add(messages);
+            }
+        }
+
+        public static void AddToHistory(string messages, string fenboards)
+        {
+            lock (_updateGuiDataLockObject)
+            {
+                _AddToHistory_Parameter1.Add(messages);
+                _AddToHistory_Parameter2.Add(fenboards);
             }
         }
 
         public static void PollGuiOnce()
         {
+            // Run UpdateGui in <interval> ms, exactly one time. 
+            // In UpdateGui, I'll tell it to run me again, exactly once.
             _pollGuiTimer = new Timer(UpdateGui, null, Interval, System.Threading.Timeout.Infinite);
         }
 
@@ -94,40 +116,53 @@ namespace UvsChess.Gui
 
         private static void UpdateGui(object state)
         {
-            //StopGuiPolling();
+
+            List<string> tmpDeclareResults_Parameter1 = null;
             List<string> tmpAddToMainLog_Parameter1 = null;
             List<string> tmpAddToWhitesLog_Parameter1 = null;
             List<string> tmpAddToBlacksLog_Parameter1 = null;
             List<string> tmpAddToHistory_Parameter1 = null;
             List<string> tmpAddToHistory_Parameter2 = null;
+            bool? tmpIsSwitchIntoGameMode = null;
 
             // This should guarantee that we won't lose any data.
             lock (_updateGuiDataLockObject)
-            {                
-                if (AddToMainLog_Parameter1.Count > 0)
+            {
+                if (_DeclareResults_Parameter1.Count > 0)
                 {
-                    tmpAddToMainLog_Parameter1 = new List<string>(AddToMainLog_Parameter1);
-                    AddToMainLog_Parameter1.Clear();
+                    tmpDeclareResults_Parameter1 = new List<string>(_DeclareResults_Parameter1);
+                    _DeclareResults_Parameter1.Clear();
                 }
 
-                if (AddToWhitesLog_Parameter1.Count > 0)
+                if (_isSwitchIntoGameMode_Parameter1 != null)
                 {
-                    tmpAddToWhitesLog_Parameter1 = new List<string>(AddToWhitesLog_Parameter1);
-                    AddToWhitesLog_Parameter1.Clear();
+                    tmpIsSwitchIntoGameMode = _isSwitchIntoGameMode_Parameter1.Value;
                 }
 
-                if (AddToBlacksLog_Parameter1.Count > 0)
+                if (_AddToMainLog_Parameter1.Count > 0)
                 {
-                    tmpAddToBlacksLog_Parameter1 = new List<string>(AddToBlacksLog_Parameter1);
-                    AddToBlacksLog_Parameter1.Clear();
+                    tmpAddToMainLog_Parameter1 = new List<string>(_AddToMainLog_Parameter1);
+                    _AddToMainLog_Parameter1.Clear();
                 }
 
-                if (AddToHistory_Parameter1.Count > 0)
+                if (_AddToWhitesLog_Parameter1.Count > 0)
                 {
-                    tmpAddToHistory_Parameter1 = new List<string>(AddToHistory_Parameter1);
-                    tmpAddToHistory_Parameter2 = new List<string>(AddToHistory_Parameter2);
-                    AddToHistory_Parameter1.Clear();
-                    AddToHistory_Parameter2.Clear();
+                    tmpAddToWhitesLog_Parameter1 = new List<string>(_AddToWhitesLog_Parameter1);
+                    _AddToWhitesLog_Parameter1.Clear();
+                }
+
+                if (_AddToBlacksLog_Parameter1.Count > 0)
+                {
+                    tmpAddToBlacksLog_Parameter1 = new List<string>(_AddToBlacksLog_Parameter1);
+                    _AddToBlacksLog_Parameter1.Clear();
+                }
+
+                if (_AddToHistory_Parameter1.Count > 0)
+                {
+                    tmpAddToHistory_Parameter1 = new List<string>(_AddToHistory_Parameter1);
+                    tmpAddToHistory_Parameter2 = new List<string>(_AddToHistory_Parameter2);
+                    _AddToHistory_Parameter1.Clear();
+                    _AddToHistory_Parameter2.Clear();
                 }
             }
 
@@ -135,6 +170,16 @@ namespace UvsChess.Gui
             {                
                 try
                 {
+                    if (tmpIsSwitchIntoGameMode != null)
+                    {
+                        Gui.SwitchWinGuiMode(tmpIsSwitchIntoGameMode.Value);
+                    }
+
+                    if ((tmpDeclareResults_Parameter1 != null) && (tmpDeclareResults_Parameter1.Count > 0))
+                    {
+                        Gui.DeclareResults(tmpDeclareResults_Parameter1);                        
+                    }                    
+
                     if ( (tmpAddToMainLog_Parameter1 != null) && (tmpAddToMainLog_Parameter1.Count > 0) )
                     {
                         Gui.AddToMainLog(tmpAddToMainLog_Parameter1);                        

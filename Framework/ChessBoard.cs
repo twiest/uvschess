@@ -95,15 +95,10 @@ namespace UvsChess
 
         public void MakeMove(ChessMove move)
         {
-            if ( (move.To.IsValid) && (move.From.IsValid) )
+            if (move.IsBasicallyValid)
             {
-                if (move.From != move.To)
-                {
-                    this._board[move.To.X, move.To.Y] = this._board[move.From.X, move.From.Y];                            
-                    this._board[move.From.X, move.From.Y] = ChessPiece.Empty;
-                }
-
-                //Program.Log("Piece Moved: " + move.ToString());
+                this._board[move.To.X, move.To.Y] = this._board[move.From.X, move.From.Y];                            
+                this._board[move.From.X, move.From.Y] = ChessPiece.Empty;
             }
         }
 

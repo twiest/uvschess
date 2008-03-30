@@ -52,6 +52,14 @@ namespace UvsChess.Framework
         private int Interval = 100;
         private Timer _pollAITimer;
 
+        public string ColorAndName
+        {
+            get
+            {
+                return this.Color.ToString() + " (" + this.AIName + ")";
+            }
+        }
+
         public ChessPlayer(ChessColor color)
         {
             Color = color;
@@ -82,7 +90,7 @@ namespace UvsChess.Framework
             else
             {
                 Logger.Log("In " + this.Color.ToString() + "'s GetNextMove and their an AI.");
-                _runAIThread = new Thread(GetNextAIMove);
+                _runAIThread = new Thread(GetNextAIMoveInThread);
 
                 // NO LOGGING ALLOWED between here
                 _startTime = DateTime.Now;
@@ -147,7 +155,7 @@ namespace UvsChess.Framework
                 //{
                 //    Logger.Log("In " + this.Color.ToString() + "'s PollAI and telling the AI to end it's turn because it's been forced to.");
                 //}
-                //else if (!this.AI.IsRunning)
+                //else if (!this.AI.IsGameRunning)
                 //{
                 //    Logger.Log("In " + this.Color.ToString() + "'s PollAI and telling the AI to end it's turn because it's done running, and it needs to cleanup.");
                 //}
@@ -189,10 +197,11 @@ namespace UvsChess.Framework
             }
         }
 
-        private void GetNextAIMove()
+        private void GetNextAIMoveInThread()
         {
             this.AI.IsRunning = true;
             _moveToReturn = this.AI.GetNextMove(_currentBoard, this.Color);
+            this.AI.IsRunning = false;
         }
     }
 

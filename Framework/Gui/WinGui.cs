@@ -51,6 +51,7 @@ namespace UvsChess.Gui
         public delegate void PlayCompletedHandler();
         protected delegate void PlayDelegate();
 
+        public delegate void StringParameterCallback(string text);
         public delegate void StringListParameterCallback(List<string> text);
         public delegate void TwoStringListParameterCallback(List<string> text1, List<string> text2);
         public delegate string CmbBoxParamaterCallback(ComboBox cmb);
@@ -153,15 +154,13 @@ namespace UvsChess.Gui
         {
             // TODO: CHANGE COLOR OF GUI SO USER KNOWS IT'S RUNNING
 
-
-            RemoveHistoryAfterSelected();
+            SwitchWinGuiMode(true);
 
             HistoryItem item = (HistoryItem)lstHistory.SelectedItem;
 
             _mainGame = new ChessGame(item.fenboard, WhitePlayerName, BlackPlayerName);
 
-            DisableMenuItemsDuringPlay();
-            DisableRadioBtnsAndComboBoxes();
+
 
             // Remove WinGui from the GuiChessBoard updates
             chessBoardControl.PieceMovedByHuman -= GuiChessBoardChangedByHuman;
@@ -170,8 +169,11 @@ namespace UvsChess.Gui
             chessBoardControl.PieceMovedByHuman += _mainGame.WhitePlayer_HumanMovedPieceEvent;
             chessBoardControl.PieceMovedByHuman += _mainGame.BlackPlayer_HumanMovedPieceEvent;
 
-            // Add WinGui to the ChessGame updates
-            _mainGame.GameUpdated += GameUpdated;
+            // Add WinGui to the ChessGame updates event
+            _mainGame.Updated += OnChessGameUpdated;
+
+            // Add WinGui to the DeclareResults event
+            _mainGame.DeclareResults += OnChessGameDeclareResults;
 
             _mainGame.StartGame();
         }
@@ -184,8 +186,11 @@ namespace UvsChess.Gui
                 chessBoardControl.PieceMovedByHuman -= _mainGame.WhitePlayer_HumanMovedPieceEvent;
                 chessBoardControl.PieceMovedByHuman -= _mainGame.BlackPlayer_HumanMovedPieceEvent;
 
-                // Remove WinGui from the ChessGame updates
-                _mainGame.GameUpdated -= GameUpdated;
+                // Remove WinGui from the ChessGame updates event
+                _mainGame.Updated -= OnChessGameUpdated;
+
+                // Remove WinGui from the DeclareResults event
+                _mainGame.DeclareResults -= OnChessGameDeclareResults;
 
                 _mainGame.StopGameEarly();
                 _mainGame = null;
@@ -195,8 +200,7 @@ namespace UvsChess.Gui
 
                 chessBoardControl.IsLocked = false;
 
-                EnableMenuItemsAfterPlay();
-                EnableRadioBtnsAndComboBoxes();
+                SwitchWinGuiMode(false);
             }
         }
 
@@ -337,7 +341,45 @@ namespace UvsChess.Gui
         #endregion
 
         #region Game play methods and events
-        public void GameUpdated(string playerColor, string nextMove, string fen)
+        public void DeclareResults(List<string> results)
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new StringListParameterCallback(DeclareResults), new object[] { results });
+            }
+            else
+            {
+                foreach (string curResult in results)
+                {
+                    System.Windows.Forms.MessageBox.Show(this, curResult);
+                }
+            }
+        }
+
+        public void OnChessGameDeclareResults(string results)
+        {
+            UpdateWinGuiOnTimer.DeclareResults(results);
+            UpdateWinGuiOnTimer.SwitchWinGuiMode(false);
+        }
+
+        public void SwitchWinGuiMode(bool isSwitchIntoGameMode)
+        {            
+            if (isSwitchIntoGameMode)
+            {
+                RemoveHistoryAfterSelected();
+                DisableMenuItemsDuringPlay();
+                DisableRadioBtnsAndComboBoxes();
+                DisableHistoryWindowClicking();
+            }
+            else
+            {
+                EnableMenuItemsAfterPlay();
+                EnableRadioBtnsAndComboBoxes();
+                EnableHistoryWindowClicking();
+            }
+        }
+
+        public void OnChessGameUpdated(string playerColor, string nextMove, string fen)
         {
             UpdateWinGuiOnTimer.AddToHistory(playerColor + ": " + nextMove, fen);
         }
@@ -362,17 +404,48 @@ namespace UvsChess.Gui
             lstHistory.Items[lstHistory.SelectedIndex] = item;
         }
 
+        private void DisableHistoryWindowClicking()
+        {
+            if (this.lstHistory.InvokeRequired)
+            {
+                this.Invoke(new NoParameterCallback(DisableHistoryWindowClicking), null);
+            }
+            else
+            {
+                lstHistory.Enabled = false;
+            }
+        }
+
+        private void EnableHistoryWindowClicking()
+        {
+            if (this.lstHistory.InvokeRequired)
+            {
+                this.Invoke(new NoParameterCallback(EnableHistoryWindowClicking), null);
+            }
+            else
+            {
+                lstHistory.Enabled = true;
+            }
+        }
+
         private void RemoveHistoryAfterSelected()
         {
-            int sel = lstHistory.SelectedIndex;
-
-            if (sel < 0)
+            if (this.lstHistory.InvokeRequired)
             {
-                return;
+                this.Invoke(new NoParameterCallback(RemoveHistoryAfterSelected), null);
             }
-            while(lstHistory.Items.Count > sel + 1)
+            else
             {
-                lstHistory.Items.RemoveAt(lstHistory.Items.Count-1);
+                int sel = lstHistory.SelectedIndex;
+
+                if (sel < 0)
+                {
+                    return;
+                }
+                while (lstHistory.Items.Count > sel + 1)
+                {
+                    lstHistory.Items.RemoveAt(lstHistory.Items.Count - 1);
+                }
             }
         }
 
@@ -529,6 +602,9 @@ namespace UvsChess.Gui
                 radBlack_SetChecked();
             }
 
+            SetFullMoves(tmpState.FullMoves);
+            SetHalfMoves(tmpState.HalfMoves);
+
             chessBoardControl.ResetBoard(new ChessBoard(item.fenboard));
         }
 
@@ -552,13 +628,6 @@ namespace UvsChess.Gui
         private void cmbBlack_SelectedIndexChanged(object sender, EventArgs e)
         {
             BlackPlayerName = cmbBlack.SelectedItem.ToString();
-        }
-
-        private void WinGui_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            UpdateWinGuiOnTimer.StopGuiPolling();
-
-            stopToolStripMenuItem_Click(null, null);
         }
 
         private void btnSaveMainLog_Click(object sender, EventArgs e)
@@ -631,6 +700,13 @@ namespace UvsChess.Gui
         private void btnClearBlacksLog_Click(object sender, EventArgs e)
         {
             lstBlacksLog.Items.Clear();
+        }
+
+        private void WinGui_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            UpdateWinGuiOnTimer.StopGuiPolling();
+
+            stopToolStripMenuItem_Click(null, null);
         }
     }
 }
