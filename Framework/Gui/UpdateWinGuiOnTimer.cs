@@ -39,6 +39,8 @@ namespace UvsChess.Gui
         private static object _updateGuiDataLockObject = new object();
         private static object _updateGuiLockObject = new object();
         private static List<string> AddToMainOutput_Parameter1 = new List<string>();
+        private static List<string> AddToWhiteAILog_Parameter1 = new List<string>();
+        private static List<string> AddToBlackAILog_Parameter1 = new List<string>();
         private static List<string> AddToHistory_Parameter1 = new List<string>();
         private static List<string> AddToHistory_Parameter2 = new List<string>();        
         private static Timer _pollGuiTimer = null;
@@ -48,6 +50,22 @@ namespace UvsChess.Gui
             lock (_updateGuiDataLockObject)
             {
                 AddToMainOutput_Parameter1.Add(param1);
+            }
+        }
+
+        public static void AddToWhiteAILog(string param1)
+        {
+            lock (_updateGuiDataLockObject)
+            {
+                AddToWhiteAILog_Parameter1.Add(param1);
+            }
+        }
+
+        public static void AddToBlackAILog(string param1)
+        {
+            lock (_updateGuiDataLockObject)
+            {
+                AddToBlackAILog_Parameter1.Add(param1);
             }
         }
 
@@ -78,16 +96,30 @@ namespace UvsChess.Gui
         {
             //StopGuiPolling();
             List<string> tmpAddToMainOutput_Parameter1 = null;
+            List<string> tmpAddToWhiteAILog_Parameter1 = null;
+            List<string> tmpAddToBlackAILog_Parameter1 = null;
             List<string> tmpAddToHistory_Parameter1 = null;
             List<string> tmpAddToHistory_Parameter2 = null;
 
+            // This should guarantee that we won't lose any data.
             lock (_updateGuiDataLockObject)
-            {
-                // This should guarantee that we won't lose any data.
+            {                
                 if (AddToMainOutput_Parameter1.Count > 0)
                 {
                     tmpAddToMainOutput_Parameter1 = new List<string>(AddToMainOutput_Parameter1);
                     AddToMainOutput_Parameter1.Clear();
+                }
+
+                if (AddToWhiteAILog_Parameter1.Count > 0)
+                {
+                    tmpAddToWhiteAILog_Parameter1 = new List<string>(AddToWhiteAILog_Parameter1);
+                    AddToWhiteAILog_Parameter1.Clear();
+                }
+
+                if (AddToBlackAILog_Parameter1.Count > 0)
+                {
+                    tmpAddToBlackAILog_Parameter1 = new List<string>(AddToBlackAILog_Parameter1);
+                    AddToBlackAILog_Parameter1.Clear();
                 }
 
                 if (AddToHistory_Parameter1.Count > 0)
@@ -106,6 +138,16 @@ namespace UvsChess.Gui
                     if ( (tmpAddToMainOutput_Parameter1 != null) && (tmpAddToMainOutput_Parameter1.Count > 0) )
                     {
                         Gui.AddToMainOutput(tmpAddToMainOutput_Parameter1);                        
+                    }
+
+                    if ((tmpAddToWhiteAILog_Parameter1 != null) && (tmpAddToWhiteAILog_Parameter1.Count > 0))
+                    {
+                        Gui.AddToWhiteAILog(tmpAddToWhiteAILog_Parameter1);
+                    }
+
+                    if ((tmpAddToBlackAILog_Parameter1 != null) && (tmpAddToBlackAILog_Parameter1.Count > 0))
+                    {
+                        Gui.AddToBlackAILog(tmpAddToBlackAILog_Parameter1);
                     }
 
                     if ((tmpAddToHistory_Parameter1 != null) && (tmpAddToHistory_Parameter1.Count > 0))

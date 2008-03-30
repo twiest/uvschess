@@ -466,6 +466,40 @@ namespace UvsChess.Gui
                 lstMainOutput.EndUpdate();
             }
         }
+
+        public void AddToWhiteAILog(List<string> messages)
+        {
+            if (this.lstWhiteAILog.InvokeRequired)
+            {
+                this.Invoke(new StringListParameterCallback(AddToWhiteAILog), new object[] { messages });
+            }
+            else
+            {
+                lstWhiteAILog.BeginUpdate();
+                lstWhiteAILog.Items.AddRange(messages.ToArray());
+                lstWhiteAILog.Items.Add("----" + lstWhiteAILog.Items.Count.ToString() + "----" + messages.Count.ToString() + "----");
+                lstWhiteAILog.SelectedIndex = lstWhiteAILog.Items.Count - 1;
+                lstWhiteAILog.ClearSelected();
+                lstWhiteAILog.EndUpdate();
+            }
+        }
+
+        public void AddToBlackAILog(List<string> messages)
+        {
+            if (this.lstBlackAILog.InvokeRequired)
+            {
+                this.Invoke(new StringListParameterCallback(AddToBlackAILog), new object[] { messages });
+            }
+            else
+            {
+                lstBlackAILog.BeginUpdate();
+                lstBlackAILog.Items.AddRange(messages.ToArray());
+                lstBlackAILog.Items.Add("----" + lstBlackAILog.Items.Count.ToString() + "----" + messages.Count.ToString() + "----");
+                lstBlackAILog.SelectedIndex = lstBlackAILog.Items.Count - 1;
+                lstBlackAILog.ClearSelected();
+                lstBlackAILog.EndUpdate();
+            }
+        }
         #endregion
         
         private void lstHistory_SelectedIndexChanged(object sender, EventArgs e)

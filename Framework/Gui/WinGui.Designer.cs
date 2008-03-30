@@ -80,16 +80,16 @@ namespace UvsChess.Gui
             this.cmbWhite = new System.Windows.Forms.ComboBox();
             this.lstHistory = new System.Windows.Forms.ListBox();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.chessBoardControl = new UvsChess.Gui.GuiChessBoard();
+            this.tabLogs = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.lstMainOutput = new System.Windows.Forms.ListBox();
             this.tabWhite = new System.Windows.Forms.TabPage();
-            this.listBox1 = new System.Windows.Forms.ListBox();
+            this.lstWhiteAILog = new System.Windows.Forms.ListBox();
             this.tabBlack = new System.Windows.Forms.TabPage();
-            this.listBox2 = new System.Windows.Forms.ListBox();
+            this.lstBlackAILog = new System.Windows.Forms.ListBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.chessBoardControl = new UvsChess.Gui.GuiChessBoard();
             this.menuStrip1.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -97,7 +97,7 @@ namespace UvsChess.Gui
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
-            this.tabControl1.SuspendLayout();
+            this.tabLogs.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabWhite.SuspendLayout();
             this.tabBlack.SuspendLayout();
@@ -129,7 +129,7 @@ namespace UvsChess.Gui
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
             this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
@@ -145,7 +145,7 @@ namespace UvsChess.Gui
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -164,7 +164,7 @@ namespace UvsChess.Gui
             // 
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
             this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.newToolStripMenuItem.Text = "New";
             this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
             // 
@@ -172,7 +172,7 @@ namespace UvsChess.Gui
             // 
             this.startToolStripMenuItem.Name = "startToolStripMenuItem";
             this.startToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
-            this.startToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.startToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.startToolStripMenuItem.Text = "Start";
             this.startToolStripMenuItem.Click += new System.EventHandler(this.startToolStripMenuItem_Click);
             // 
@@ -181,14 +181,14 @@ namespace UvsChess.Gui
             this.stopToolStripMenuItem.Enabled = false;
             this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
             this.stopToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-            this.stopToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.stopToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.stopToolStripMenuItem.Text = "Stop";
             this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
             // 
             // clearHistoryToolStripMenuItem
             // 
             this.clearHistoryToolStripMenuItem.Name = "clearHistoryToolStripMenuItem";
-            this.clearHistoryToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.clearHistoryToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.clearHistoryToolStripMenuItem.Text = "Clear History";
             this.clearHistoryToolStripMenuItem.Click += new System.EventHandler(this.clearHistoryToolStripMenuItem_Click);
             // 
@@ -362,24 +362,33 @@ namespace UvsChess.Gui
             // 
             // splitContainer2.Panel2
             // 
-            this.splitContainer2.Panel2.Controls.Add(this.tabControl1);
+            this.splitContainer2.Panel2.Controls.Add(this.tabLogs);
             this.splitContainer2.Size = new System.Drawing.Size(798, 726);
             this.splitContainer2.SplitterDistance = 522;
             this.splitContainer2.TabIndex = 0;
             // 
-            // tabControl1
+            // chessBoardControl
             // 
-            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.chessBoardControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.chessBoardControl.IsLocked = false;
+            this.chessBoardControl.Location = new System.Drawing.Point(0, 0);
+            this.chessBoardControl.Name = "chessBoardControl";
+            this.chessBoardControl.Size = new System.Drawing.Size(522, 522);
+            this.chessBoardControl.TabIndex = 0;
+            // 
+            // tabLogs
+            // 
+            this.tabLogs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabWhite);
-            this.tabControl1.Controls.Add(this.tabBlack);
-            this.tabControl1.Location = new System.Drawing.Point(0, 3);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(798, 197);
-            this.tabControl1.TabIndex = 0;
+            this.tabLogs.Controls.Add(this.tabPage1);
+            this.tabLogs.Controls.Add(this.tabWhite);
+            this.tabLogs.Controls.Add(this.tabBlack);
+            this.tabLogs.Location = new System.Drawing.Point(0, 3);
+            this.tabLogs.Name = "tabLogs";
+            this.tabLogs.SelectedIndex = 0;
+            this.tabLogs.Size = new System.Drawing.Size(798, 197);
+            this.tabLogs.TabIndex = 0;
             // 
             // tabPage1
             // 
@@ -405,7 +414,7 @@ namespace UvsChess.Gui
             // 
             // tabWhite
             // 
-            this.tabWhite.Controls.Add(this.listBox1);
+            this.tabWhite.Controls.Add(this.lstWhiteAILog);
             this.tabWhite.Location = new System.Drawing.Point(4, 22);
             this.tabWhite.Name = "tabWhite";
             this.tabWhite.Size = new System.Drawing.Size(790, 171);
@@ -413,20 +422,22 @@ namespace UvsChess.Gui
             this.tabWhite.Text = "White\'s log";
             this.tabWhite.UseVisualStyleBackColor = true;
             // 
-            // listBox1
+            // lstWhiteAILog
             // 
-            this.listBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.lstWhiteAILog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(3, 3);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(784, 160);
-            this.listBox1.TabIndex = 0;
+            this.lstWhiteAILog.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lstWhiteAILog.FormattingEnabled = true;
+            this.lstWhiteAILog.ItemHeight = 14;
+            this.lstWhiteAILog.Location = new System.Drawing.Point(3, 3);
+            this.lstWhiteAILog.Name = "lstWhiteAILog";
+            this.lstWhiteAILog.Size = new System.Drawing.Size(784, 158);
+            this.lstWhiteAILog.TabIndex = 0;
             // 
             // tabBlack
             // 
-            this.tabBlack.Controls.Add(this.listBox2);
+            this.tabBlack.Controls.Add(this.lstBlackAILog);
             this.tabBlack.Location = new System.Drawing.Point(4, 22);
             this.tabBlack.Name = "tabBlack";
             this.tabBlack.Size = new System.Drawing.Size(790, 171);
@@ -434,29 +445,22 @@ namespace UvsChess.Gui
             this.tabBlack.Text = "Black\'s log";
             this.tabBlack.UseVisualStyleBackColor = true;
             // 
-            // listBox2
+            // lstBlackAILog
             // 
-            this.listBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.lstBlackAILog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.listBox2.FormattingEnabled = true;
-            this.listBox2.Location = new System.Drawing.Point(0, 0);
-            this.listBox2.Name = "listBox2";
-            this.listBox2.Size = new System.Drawing.Size(787, 173);
-            this.listBox2.TabIndex = 0;
+            this.lstBlackAILog.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lstBlackAILog.FormattingEnabled = true;
+            this.lstBlackAILog.ItemHeight = 14;
+            this.lstBlackAILog.Location = new System.Drawing.Point(0, 0);
+            this.lstBlackAILog.Name = "lstBlackAILog";
+            this.lstBlackAILog.Size = new System.Drawing.Size(787, 172);
+            this.lstBlackAILog.TabIndex = 0;
             // 
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
-            // 
-            // chessBoardControl
-            // 
-            this.chessBoardControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.chessBoardControl.IsLocked = false;
-            this.chessBoardControl.Location = new System.Drawing.Point(0, 0);
-            this.chessBoardControl.Name = "chessBoardControl";
-            this.chessBoardControl.Size = new System.Drawing.Size(522, 522);
-            this.chessBoardControl.TabIndex = 0;
             // 
             // WinGui
             // 
@@ -481,7 +485,7 @@ namespace UvsChess.Gui
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel2.ResumeLayout(false);
             this.splitContainer2.ResumeLayout(false);
-            this.tabControl1.ResumeLayout(false);
+            this.tabLogs.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabWhite.ResumeLayout(false);
             this.tabBlack.ResumeLayout(false);
@@ -511,7 +515,7 @@ namespace UvsChess.Gui
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.SplitContainer splitContainer2;
         private GuiChessBoard chessBoardControl;
-        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabControl tabLogs;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.ListBox lstMainOutput;
         private System.Windows.Forms.Label label2;
@@ -525,7 +529,7 @@ namespace UvsChess.Gui
         private System.Windows.Forms.ToolStripMenuItem clearHistoryToolStripMenuItem;
         private System.Windows.Forms.TabPage tabBlack;
         private System.Windows.Forms.TabPage tabWhite;
-        private System.Windows.Forms.ListBox listBox1;
-        private System.Windows.Forms.ListBox listBox2;
+        private System.Windows.Forms.ListBox lstWhiteAILog;
+        private System.Windows.Forms.ListBox lstBlackAILog;
     }
 }

@@ -28,6 +28,14 @@
 namespace UvsChess
 {
     /// <summary>
+    /// This is the delegate that defines the Log callback. You should not need to use this. This is
+    /// here solely for the Log property to use as it's return value.
+    /// </summary>
+    /// <param name="text">This is a string parameter that the Log callback uses to pass the message to the framework.</param>
+    public delegate void AILoggerCallback(string message);
+
+
+    /// <summary>
     /// This is the interface that your AI must implement in order to be used by the chess framework.
     /// The framework will call these methods to signal your AI to do work.
     /// </summary>
@@ -48,6 +56,19 @@ namespace UvsChess
             set;
         }
 
+        /// <summary>
+        /// Call this method to print out debug information. The framework subscribes to this event
+        /// and will provide a log window for your debug messages.
+        /// 
+        /// Log should be defined as an Automatic Property.
+        /// Log SHOULD NOT CONTAIN ANY CODE!!!
+        /// </summary>
+        /// <param name="message"></param>
+        AILoggerCallback Log
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// The name of your AI
@@ -72,12 +93,5 @@ namespace UvsChess
         /// <param name="currentState">ChessState, including previous state, previous move. </param>
         /// <returns>Returns true if the opponents move was valid</returns>
         bool IsValidMove(ChessState currentState);
-
-        /// <summary>
-        /// Call this method to print out debug information. The framework subscribes to this event
-        /// and will provide a log window for your debug messages.
-        /// </summary>
-        /// <param name="message"></param>
-        void Log(string message);
     }
 }

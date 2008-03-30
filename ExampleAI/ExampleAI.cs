@@ -48,6 +48,17 @@ namespace ExampleAI
         public bool IsRunning { get; set; }
 
         /// <summary>
+        /// Call this method to print out debug information. The framework subscribes to this event
+        /// and will provide a log window for your debug messages.
+        /// 
+        /// Log should be defined as an Automatic Property.
+        /// Log SHOULD NOT CONTAIN ANY CODE!!!
+        /// </summary>
+        /// <param name="message"></param>
+        public AILoggerCallback Log { get; set; }
+        #endregion
+
+        /// <summary>
         /// The name of your AI
         /// </summary>
         public string Name
@@ -71,7 +82,10 @@ namespace ExampleAI
                 if (myNextMove == null)
                 {
                     myNextMove = MoveAPawn(board, myColor);
-                    this.Log(this.Name + " just moved");
+                    this.Log(myColor.ToString() + " (" + this.Name + ") just moved.");
+                    this.Log(string.Empty);
+
+                    // Since we have a move, exit early
                     IsRunning = false;
                 }               
             }
@@ -88,17 +102,6 @@ namespace ExampleAI
         {
             return true;
         }
-
-        /// <summary>
-        /// Call this method to print out debug information. The framework subscribes to this event
-        /// and will provide a log window for your debug messages.
-        /// </summary>
-        /// <param name="message"></param>
-        public void Log(string message)
-        {
-        }
-        #endregion
-
 
         #region My AI Logic
         /// <summary>
