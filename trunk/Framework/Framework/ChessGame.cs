@@ -56,6 +56,10 @@ namespace UvsChess.Framework
             //Load the AI if it isn't loaded already
             LoadAI(WhitePlayer);
             LoadAI(BlackPlayer);
+
+            // Hook up the AI Log methods to the GUI
+            WhitePlayer.AI.Log += Logger.AddToWhiteAILog;
+            BlackPlayer.AI.Log += Logger.AddToBlackAILog;
         }
 
         private ChessState mainChessState
@@ -79,7 +83,11 @@ namespace UvsChess.Framework
 
             _chessGameThread.Join();
 
+
+            // Explicitly get rid of the AI and Player objects
+            WhitePlayer.AI = null;
             WhitePlayer = null;
+            BlackPlayer.AI = null;
             BlackPlayer = null;           
         }
 
@@ -98,7 +106,6 @@ namespace UvsChess.Framework
             //This method run in its own thread.
 
             IsRunning = true;
-            //ChessMove currentMove = null;
 
             while (IsRunning)
             {
@@ -115,7 +122,11 @@ namespace UvsChess.Framework
                 }
             }
 
-            //Logger.Log("Game Over");
+            // Remove the AI Log methods from the GUI
+            WhitePlayer.AI.Log -= Logger.AddToWhiteAILog;
+            BlackPlayer.AI.Log -= Logger.AddToBlackAILog;
+
+            Logger.Log("Game Over");
             //StopGame();
         }
 
