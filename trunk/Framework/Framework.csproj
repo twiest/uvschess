@@ -92,6 +92,7 @@
     <Compile Include="Gui\Preferences.Designer.cs">
       <DependentUpon>Preferences.cs</DependentUpon>
     </Compile>
+    <Compile Include="Gui\UpdateWinGuiOnTimer.cs" />
     <Compile Include="IChessAI.cs" />
     <Compile Include="Framework\Logger.cs" />
     <Compile Include="Framework\Program.cs" />

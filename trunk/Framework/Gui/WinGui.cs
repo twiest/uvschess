@@ -51,8 +51,8 @@ namespace UvsChess.Gui
         public delegate void PlayCompletedHandler();
         protected delegate void PlayDelegate();
 
-        public delegate void StringParameterCallback(string text);
-        public delegate void TwoStringParameterCallback(string text1,string text2);
+        public delegate void StringListParameterCallback(List<string> text);
+        public delegate void TwoStringListParameterCallback(List<string> text1, List<string> text2);
         public delegate string CmbBoxParamaterCallback(ComboBox cmb);
         private delegate void RadioBtnParameterCallback(RadioButton rad);
         delegate void NoParameterCallback();
@@ -64,7 +64,8 @@ namespace UvsChess.Gui
         {
             InitializeComponent();
 
-            Logger.GuiWriteLine = AddToMainOutput;
+            UpdateWinGuiOnTimer.Gui = this;
+            UpdateWinGuiOnTimer.PollGuiOnce();
 
             // Setup history lstBox
             clearHistoryToolStripMenuItem_Click(null, null);
@@ -145,6 +146,7 @@ namespace UvsChess.Gui
         #region Game menu
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            lstMainOutput.Items.Clear();
             clearHistoryToolStripMenuItem_Click(null, null);
         }
 
@@ -186,7 +188,7 @@ namespace UvsChess.Gui
                 // Remove WinGui from the ChessGame updates
                 _mainGame.GameUpdated -= GameUpdated;
 
-                _mainGame.StopGame();
+                _mainGame.StopGameEarly();
                 _mainGame = null;
 
                 // Add WinGui to the GuiChessBoard updates
@@ -338,7 +340,7 @@ namespace UvsChess.Gui
         #region Game play methods and events
         public void GameUpdated(string playerColor, string nextMove, string fen)
         {
-            AddToHistory(playerColor + ": " + nextMove, fen); 
+            UpdateWinGuiOnTimer.AddToHistory(playerColor + ": " + nextMove, fen);
         }
 
         public void GuiChessBoardChangedByHuman(ChessMove move)
@@ -420,32 +422,48 @@ namespace UvsChess.Gui
                 lblFullMoves.Text = fullmoves.ToString();
             }
         }
+
+        public void AddToHistory(string message, string fenboards)
+        {
+            AddToHistory(new List<string>() { message }, new List<string>() { fenboards });
+        }
     
-        public void AddToHistory(string message,string fenboard)
+        public void AddToHistory(List<string> messages, List<string> fenboards)
         {
             if (this.lstHistory.InvokeRequired)
             {
-                this.Invoke(new TwoStringParameterCallback(AddToHistory), new object[] { message, fenboard });
+                this.Invoke(new TwoStringListParameterCallback(AddToHistory), new object[] { messages, fenboards });
             }
             else
             {
-                HistoryItem item = new HistoryItem(message,fenboard);
-                lstHistory.Items.Add(item);
+                List<HistoryItem> items = new List<HistoryItem>();
+
+                for (int ix = 0; ix < messages.Count; ix++)
+                {
+                    items.Add(new HistoryItem(lstHistory.Items.Count.ToString() + ". " + messages[ix], fenboards[ix]));
+                }
+
+                lstHistory.BeginUpdate();
+                lstHistory.Items.AddRange(items.ToArray());
                 lstHistory.SelectedIndex = lstHistory.Items.Count - 1;
+                lstHistory.EndUpdate();
             }
         }
 
-        public void AddToMainOutput(string message)
+        public void AddToMainOutput(List<string> messages)
         {
             if (this.lstMainOutput.InvokeRequired)
             {
-                this.Invoke(new StringParameterCallback(AddToMainOutput), new object[] { message });
+                this.Invoke(new StringListParameterCallback(AddToMainOutput), new object[] { messages });
             }
             else
             {
-                lstMainOutput.Items.Add(message);
+                lstMainOutput.BeginUpdate();
+                lstMainOutput.Items.AddRange(messages.ToArray());
+                lstMainOutput.Items.Add("----" + lstMainOutput.Items.Count.ToString() + "----" + messages.Count.ToString() + "----");
                 lstMainOutput.SelectedIndex = lstMainOutput.Items.Count - 1;
                 lstMainOutput.ClearSelected();
+                lstMainOutput.EndUpdate();
             }
         }
         #endregion
@@ -491,6 +509,8 @@ namespace UvsChess.Gui
 
         private void WinGui_FormClosing(object sender, FormClosingEventArgs e)
         {
+            UpdateWinGuiOnTimer.StopGuiPolling();
+
             stopToolStripMenuItem_Click(null, null);
         }
     }
