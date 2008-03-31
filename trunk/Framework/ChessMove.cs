@@ -61,7 +61,7 @@ namespace UvsChess
         {
             get
             {
-                if (this.Flag == ChessFlag.Stalemate)
+                if ( (this.Flag == ChessFlag.Stalemate) || (this.Flag == ChessFlag.AIWentOverTime) )
                 {
                     return true;
                 }
