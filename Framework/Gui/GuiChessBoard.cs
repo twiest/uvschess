@@ -417,6 +417,7 @@ namespace UvsChess.Gui
                         // They picked up a piece and put it back down
                         Board[_pieceBeingMovedLocation] = _pieceBeingMoved;
                         _boardChanged = true;
+                        this.Invalidate();
                     }
                     else if (PieceMovedByHuman != null)
                     {
@@ -438,6 +439,7 @@ namespace UvsChess.Gui
                         // WinGui subs to this event.
                         Board[newLoc] = _pieceBeingMoved;
                         _boardChanged = true;
+                        this.Invalidate();
                     }
                 }
                 else
@@ -445,9 +447,8 @@ namespace UvsChess.Gui
                      // they drug a piece off the board. Put it back to where it was.
                      Board[_pieceBeingMovedLocation] = _pieceBeingMoved;
                      _boardChanged = true;
-                }
-
-                this.Invalidate();
+                     this.Invalidate();
+                }                
             }
         }
 
