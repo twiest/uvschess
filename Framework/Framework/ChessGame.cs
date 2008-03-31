@@ -188,32 +188,38 @@ namespace UvsChess.Framework
                     return;
                 }
 
+                if (nextMove.Flag == ChessFlag.AIWentOverTime)
+                {
+                    // the AI went over it's time limit.
+                    IsGameRunning = false;
+                    results = player.ColorAndName + " went over the time limit and grace period. Total move time was: " + player.TimeOfLastMove.ToString();
+                    return;
+                }
+
                 if (nextMove.Flag != ChessFlag.Stalemate)
                 {
+                    // The move is not a stale mate, and it's basically valid,
+                    // so, let's see if the move is actually valid.
                     newstate = mainChessState.Clone();
                     newstate.MakeMove(nextMove);
+
                     if (opponent.IsComputer)
                     {
                         isValidMove = opponent.AI.IsValidMove(newstate);
                     }
                     else
                     {
+                        // All moves are valid against a human, as there's no
+                        // way for the human to object to a move.
                         isValidMove = true;
                     }
                 }
-
-                //TODO: Have a penalty for being over time.
-
-                //isValidMove = isValidMove && !isOverTime(player, thread_time, TurnWaitTime);
-                //isValidMove = isValidMove && !isOverTime(player, thread_time, PreferencesGUI.TurnLength);
-                //isValidMove = isValidMove && !isOverTime(player, thread_time, UserPrefs.Time);
-
             }
             else //player is human
             {
                 while (!isValidMove)
                 {
-                    nextMove = player.GetNextMove(mainChessState.CurrentBoard.Clone());
+                    nextMove = player.GetNextMove(mainChessState.CurrentBoard);
 
                     if (!IsGameRunning)
                     {

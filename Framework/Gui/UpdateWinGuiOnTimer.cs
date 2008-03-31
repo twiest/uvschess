@@ -170,6 +170,12 @@ namespace UvsChess.Gui
             {                
                 try
                 {
+                    // History MUST be on top, since it's the one that updates the GuiChessBoard control
+                    if ((tmpAddToHistory_Parameter1 != null) && (tmpAddToHistory_Parameter1.Count > 0))
+                    {
+                        Gui.AddToHistory(tmpAddToHistory_Parameter1, tmpAddToHistory_Parameter2);
+                    }
+
                     if (tmpIsSwitchIntoGameMode != null)
                     {
                         Gui.SwitchWinGuiMode(tmpIsSwitchIntoGameMode.Value);
@@ -193,11 +199,6 @@ namespace UvsChess.Gui
                     if ((tmpAddToBlacksLog_Parameter1 != null) && (tmpAddToBlacksLog_Parameter1.Count > 0))
                     {
                         Gui.AddToBlacksLog(tmpAddToBlacksLog_Parameter1);
-                    }
-
-                    if ((tmpAddToHistory_Parameter1 != null) && (tmpAddToHistory_Parameter1.Count > 0))
-                    {
-                        Gui.AddToHistory(tmpAddToHistory_Parameter1, tmpAddToHistory_Parameter2);
                     }
                 }
                 catch

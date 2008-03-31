@@ -41,6 +41,7 @@ namespace UvsChess.Framework
         public IChessAI AI;
         public TimeSpan TimeOfLastMove = TimeSpan.MinValue;
 
+        private bool _aiWentOverTime = false;
         private bool _forceAIToEndTurnEarly = false;
         private DateTime _startTime;
         private DateTime _endTime;
@@ -138,12 +139,8 @@ namespace UvsChess.Framework
 
         private void PollAIOnce()
         {
-            Logger.Log("In " + this.Color.ToString() + "'s StartPollAI.");
-            //if (_pollAITimer == null)
-            {
-                Logger.Log("In " + this.Color.ToString() + "'s StartPollAI and _pollAITimer == null. Starting the Timer.");
-                _pollAITimer = new Timer(this.PollAI, null, Interval, System.Threading.Timeout.Infinite);
-            }
+            Logger.Log("In " + this.Color.ToString() + "'s StartPollAI and _pollAITimer == null. Starting the Timer.");
+            _pollAITimer = new Timer(this.PollAI, null, Interval, System.Threading.Timeout.Infinite);
         }
 
         private void PollAI(object state)
@@ -166,9 +163,12 @@ namespace UvsChess.Framework
 
                 if (this.AI.IsRunning)
                 {
-                    this.AI.IsRunning = false;
+                    int gracePeriod = Gui.Preferences.GracePeriod;
+                    _pollAITimer = new Timer(this.GracePeriodTimer, null, gracePeriod, System.Threading.Timeout.Infinite);
+
                     //Logger.Log("In " + this.Color.ToString() + "'s PollAI and Joining _runAIThread");
-                    _runAIThread.Join();                    
+                    _runAIThread.Join();
+                    this.AI.IsRunning = false;
                 }
 
                 TimeOfLastMove = DateTime.Now.Subtract(_startTime);
@@ -187,6 +187,19 @@ namespace UvsChess.Framework
             Logger.Log("In " + this.Color.ToString() + "'s PollAI [End].");
         }
 
+        private void GracePeriodTimer(object state)
+        {
+            if (this.AI.IsRunning)
+            {
+                // The AI is still running, even after the grace period.
+                // They've now lost!
+                Logger.Log(this.ColorAndName + " has gone over the time limit and grace period. Having to abort his AI thread.");
+                _moveToReturn = new ChessMove();
+                _moveToReturn.Flag = ChessFlag.AIWentOverTime;
+                _runAIThread.Abort();
+            }
+        }
+
         public void HumanMovedPieceEvent(ChessMove move)
         {
             if ( (_isMyTurn) && (this.IsHuman) )
@@ -199,6 +212,7 @@ namespace UvsChess.Framework
 
         private void GetNextAIMoveInThread()
         {
+            // This is the only place that IsRunning should be set to true.
             this.AI.IsRunning = true;
             _moveToReturn = this.AI.GetNextMove(_currentBoard, this.Color);
             this.AI.IsRunning = false;

@@ -77,7 +77,7 @@ namespace ExampleAI
         {
             ChessMove myNextMove = null;
 
-            while (IsRunning)
+            while (IsRunning)            
             {
                 if (myNextMove == null)
                 {
