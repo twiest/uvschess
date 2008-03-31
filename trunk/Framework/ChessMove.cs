@@ -158,5 +158,31 @@ namespace UvsChess
 
             return moveText;
         }
+        public override bool Equals(object obj)
+        {
+            if (!(obj is ChessMove))
+            {
+                return false;
+            }
+            ChessMove move2 = (ChessMove)obj;
+            if (this.Flag != move2.Flag)
+            {
+                return false;
+            }
+            if ((this.From != move2.From) || (this.To != move2.To))
+            {
+                return false;
+            }
+            return true;
+        }
+        public static bool operator ==(ChessMove move1, ChessMove move2)
+        {
+            return move1.Equals(move2);
+        }
+        public static bool operator !=(ChessMove move1, ChessMove move2)
+        {
+            return !move1.Equals(move2);
+        }
+
     }
 }
