@@ -401,33 +401,50 @@ namespace UvsChess.Gui
                  (_isDraggingPiece) )
             {
                 _isDraggingPiece = false;
+                _mouseX = e.X;
+                _mouseY = e.Y;
 
-                 if ((e.X > AdjustedVerticalBorderWidth) &&
-                     (e.Y > AdjustedHorizontalBorderHeight) &&
-                     (e.X < this.Width) &&
-                     (e.Y < this.Height))
+                if ( (_mouseX > AdjustedVerticalBorderWidth) &&
+                     (_mouseY > AdjustedHorizontalBorderHeight) &&
+                     (_mouseX < this.Width) &&
+                     (_mouseY < this.Height))
                 {
                     ChessLocation newLoc = new ChessLocation((_mouseX - AdjustedVerticalBorderWidth) / AdjustedTileWidth,
                                                              (_mouseY - AdjustedHorizontalBorderHeight) / AdjustedTileHeight);
 
-                    Board[newLoc] = _pieceBeingMoved;
-
-                    _boardChanged = true;
-
-                    if ( (_pieceBeingMovedLocation != newLoc) && 
-                         (PieceMovedByHuman != null) )
+                    if (_pieceBeingMovedLocation == newLoc)
                     {
+                        // They picked up a piece and put it back down
+                        Board[_pieceBeingMovedLocation] = _pieceBeingMoved;
+                        _boardChanged = true;
+                    }
+                    else if (PieceMovedByHuman != null)
+                    {
+                        // Someone has subscribed to the event, so it's their
+                        // responsibility to call my ResetBoard methods to update the board
+                        // Fire the event, and forget
                         ChessMove humanMove = new ChessMove();
                         humanMove.From = _pieceBeingMovedLocation;
                         humanMove.To = newLoc;
 
                         PieceMovedByHuman(humanMove);
                     }
+                    else
+                    {
+                        // At this point, they didn't just pick up a piece and put it back down,
+                        // _and_ noone is subscribed to the event, so I have to update the
+                        // board myself.
+                        // This should never really happen 'cause when the game is stopped,
+                        // WinGui subs to this event.
+                        Board[newLoc] = _pieceBeingMoved;
+                        _boardChanged = true;
+                    }
                 }
                 else
                 {
-                    Board[_pieceBeingMovedLocation] = _pieceBeingMoved;
-                    _boardChanged = true;
+                     // they drug a piece off the board. Put it back to where it was.
+                     Board[_pieceBeingMovedLocation] = _pieceBeingMoved;
+                     _boardChanged = true;
                 }
 
                 this.Invalidate();
