@@ -160,6 +160,10 @@ namespace UvsChess
         }
         public override bool Equals(object obj)
         {
+            if (obj == null)
+            {
+                return false;
+            }
             if (!(obj is ChessMove))
             {
                 return false;
@@ -173,15 +177,25 @@ namespace UvsChess
             {
                 return false;
             }
+
             return true;
         }
         public static bool operator ==(ChessMove move1, ChessMove move2)
         {
+            if ((((object)move1) == null) && (((object)move2) == null))
+            {
+                return true;
+            }
+            if (((object)move1) == null)
+            {
+                return false;
+            }
             return move1.Equals(move2);
         }
+
         public static bool operator !=(ChessMove move1, ChessMove move2)
         {
-            return !move1.Equals(move2);
+            return !(move1 == move2);
         }
 
     }
