@@ -33,8 +33,10 @@ namespace UvsChess.Framework
 {
     class ChessGame
     {
-        public delegate void UpdatedDelegate(string playerColor, string nextMove, string currentFen);
-        public UpdatedDelegate Updated = null;
+        //public delegate void UpdatedDelegate(string playerColor, string nextMove, string currentFen);
+        public delegate void UpdatedStateDelegate(ChessState state);
+        //public UpdatedDelegate Updated = null;
+        public UpdatedStateDelegate UpdatedState = null;
 
         public delegate void DeclareResultsDelegate(string results);
         public DeclareResultsDelegate DeclareResults = null;
@@ -46,11 +48,10 @@ namespace UvsChess.Framework
         ChessPlayer WhitePlayer = null;
         ChessPlayer BlackPlayer = null;
         Thread _chessGameThread = null;
-        
-        public ChessGame(string fen, string whitePlayerName, string blackPlayerName)
-        {            
-            mainChessState = new ChessState(fen);
 
+        public ChessGame(ChessState state, string whitePlayerName, string blackPlayerName)
+        {
+            mainChessState = state;
             WhitePlayer = new ChessPlayer(ChessColor.White);
             BlackPlayer = new ChessPlayer(ChessColor.Black);
 
@@ -71,6 +72,33 @@ namespace UvsChess.Framework
             {
                 BlackPlayer.AI.Log += Logger.AddToBlacksLog;
             }
+        }
+        public ChessGame(string fen, string whitePlayerName, string blackPlayerName)
+            : this(new ChessState(fen), whitePlayerName, blackPlayerName)
+        {
+
+            //mainChessState = new ChessState(fen);
+
+            //WhitePlayer = new ChessPlayer(ChessColor.White);
+            //BlackPlayer = new ChessPlayer(ChessColor.Black);
+
+            //WhitePlayer.AIName = whitePlayerName;
+            //BlackPlayer.AIName = blackPlayerName;
+
+            ////Load the AI if it isn't loaded already
+            //LoadAI(WhitePlayer);
+            //LoadAI(BlackPlayer);
+
+            //// Hook up the AI Log methods to the GUI
+            //if (WhitePlayer.IsComputer)
+            //{
+            //    WhitePlayer.AI.Log += Logger.AddToWhitesLog;
+            //}
+
+            //if (BlackPlayer.IsComputer)
+            //{
+            //    BlackPlayer.AI.Log += Logger.AddToBlacksLog;
+            //}
         }
 
         private ChessState mainChessState
@@ -260,9 +288,10 @@ namespace UvsChess.Framework
                     mainChessState.HalfMoves++;
                 }
 
-                if (Updated != null)
+                if (UpdatedState != null)
                 {
-                    Updated(player.Color.ToString(), nextMove.ToString(), newstate.ToFenBoard());
+                    //Updated(player.Color.ToString(), nextMove.ToString(), newstate.ToFenBoard());
+                    UpdatedState(newstate);
                 }
 
                 if (nextMove.Flag == ChessFlag.Check)

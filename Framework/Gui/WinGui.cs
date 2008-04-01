@@ -54,6 +54,7 @@ namespace UvsChess.Gui
         public delegate void StringParameterCallback(string text);
         public delegate void StringListParameterCallback(List<string> text);
         public delegate void TwoStringListParameterCallback(List<string> text1, List<string> text2);
+        public delegate void ChessStateListParameterCallback(List<ChessState> states);
         public delegate string CmbBoxParamaterCallback(ComboBox cmb);
         private delegate void RadioBtnParameterCallback(RadioButton rad);
         delegate void NoParameterCallback();
@@ -101,11 +102,13 @@ namespace UvsChess.Gui
                 string line = reader.ReadLine();
 
                 lstHistory.Items.Clear();
-                AddToHistory("Start of Game", line);
 
                 chessBoardControl.ResetBoard(line);
 
                 ChessState tmpState = new ChessState(line);
+
+                //AddToHistory(tmpState);
+                AddToHistory(new List<ChessState>() { tmpState });
                 if (tmpState.CurrentPlayerColor == ChessColor.White)
                 {
                     radWhite.Checked = true;
@@ -130,8 +133,8 @@ namespace UvsChess.Gui
                 Logger.Log("Saving board to: " + saveFileDialog1.FileName);
 
 
-                HistoryItem item = (HistoryItem)lstHistory.SelectedItem;
-                string fenboard = item.fenboard;
+                ChessState item = (ChessState)lstHistory.SelectedItem;
+                string fenboard = item.ToFenBoard();
 
                 writer.WriteLine(fenboard);
                 writer.Close();
@@ -156,9 +159,10 @@ namespace UvsChess.Gui
 
             SwitchWinGuiMode(true);
 
-            HistoryItem item = (HistoryItem)lstHistory.SelectedItem;
+            ChessState item = (ChessState)lstHistory.SelectedItem;
 
-            _mainGame = new ChessGame(item.fenboard, WhitePlayerName, BlackPlayerName);
+            _mainGame = new ChessGame(item, WhitePlayerName, BlackPlayerName);
+            //_mainGame = new ChessGame(item.fenboard, WhitePlayerName, BlackPlayerName);
 
 
 
@@ -170,7 +174,8 @@ namespace UvsChess.Gui
             chessBoardControl.PieceMovedByHuman += _mainGame.BlackPlayer_HumanMovedPieceEvent;
 
             // Add WinGui to the ChessGame updates event
-            _mainGame.Updated += OnChessGameUpdated;
+            //_mainGame.Updated += OnChessGameUpdated;
+            _mainGame.UpdatedState += OnChessGameUpdated;
 
             // Add WinGui to the DeclareResults event
             _mainGame.DeclareResults += OnChessGameDeclareResults;
@@ -187,7 +192,8 @@ namespace UvsChess.Gui
                 chessBoardControl.PieceMovedByHuman -= _mainGame.BlackPlayer_HumanMovedPieceEvent;
 
                 // Remove WinGui from the ChessGame updates event
-                _mainGame.Updated -= OnChessGameUpdated;
+                //_mainGame.Updated -= OnChessGameUpdated;
+                _mainGame.UpdatedState -= OnChessGameUpdated;
 
                 // Remove WinGui from the DeclareResults event
                 _mainGame.DeclareResults -= OnChessGameDeclareResults;
@@ -211,7 +217,7 @@ namespace UvsChess.Gui
 
             lstHistory.Items.Clear();
 
-            AddToHistory("Start of Game", ChessState.FenStartState);
+            AddToHistory(new List<ChessState>() {new ChessState()});
         }
         #endregion
 
@@ -232,8 +238,8 @@ namespace UvsChess.Gui
         #region AISelector controls
         private void radWhiteBlack_CheckedChanged(object sender, EventArgs e)
         {
-            HistoryItem item = (HistoryItem)lstHistory.SelectedItem;
-            ChessState tmpState = new ChessState(item.fenboard);
+            ChessState tmpState = (ChessState)lstHistory.SelectedItem;
+            //ChessState tmpState = new ChessState(item.fenboard);
 
             if (radWhite.Checked)
             {
@@ -244,9 +250,9 @@ namespace UvsChess.Gui
                 tmpState.CurrentPlayerColor = ChessColor.Black;
             }
 
-            item.fenboard = tmpState.ToFenBoard();
+            //item.fenboard = tmpState.ToFenBoard();
 
-            lstHistory.Items[lstHistory.SelectedIndex] = item;
+            lstHistory.Items[lstHistory.SelectedIndex] = tmpState;
         }
 
         private void radWhite_SetChecked()
@@ -379,15 +385,19 @@ namespace UvsChess.Gui
             }
         }
 
-        public void OnChessGameUpdated(string playerColor, string nextMove, string fen)
+        //public void OnChessGameUpdated(string playerColor, string nextMove, string fen)
+        //{
+        //    UpdateWinGuiOnTimer.AddToHistory(playerColor + ": " + nextMove, fen);
+        //}
+        public void OnChessGameUpdated(ChessState state)
         {
-            UpdateWinGuiOnTimer.AddToHistory(playerColor + ": " + nextMove, fen);
+            UpdateWinGuiOnTimer.AddToHistory(state);
         }
 
         public void GuiChessBoardChangedByHuman(ChessMove move)
         {
-            HistoryItem item = (HistoryItem)lstHistory.SelectedItem;
-            ChessState tmpState = new ChessState(item.fenboard);
+            ChessState tmpState = (ChessState)lstHistory.SelectedItem;
+            //ChessState tmpState = new ChessState(item.fenboard);
             tmpState.MakeMove(move);
 
             if (radWhite.Checked)
@@ -399,9 +409,9 @@ namespace UvsChess.Gui
                 tmpState.CurrentPlayerColor = ChessColor.Black;
             }
 
-            item.fenboard = tmpState.ToFenBoard();
+            //item.fenboard = tmpState.ToFenBoard();
 
-            lstHistory.Items[lstHistory.SelectedIndex] = item;
+            lstHistory.Items[lstHistory.SelectedIndex] = tmpState;
         }
 
         private void DisableHistoryWindowClicking()
@@ -494,33 +504,53 @@ namespace UvsChess.Gui
                 lblFullMoves.Text = fullmoves.ToString();
             }
         }
-
-        public void AddToHistory(string message, string fenboards)
-        {
-            AddToHistory(new List<string>() { message }, new List<string>() { fenboards });
-        }
-    
-        public void AddToHistory(List<string> messages, List<string> fenboards)
+        public void AddToHistory(List<ChessState> states)
         {
             if (this.lstHistory.InvokeRequired)
             {
-                this.Invoke(new TwoStringListParameterCallback(AddToHistory), new object[] { messages, fenboards });
+                this.Invoke(new ChessStateListParameterCallback(AddToHistory), new object[] { states });
             }
             else
             {
-                List<HistoryItem> items = new List<HistoryItem>();
-
-                for (int ix = 0; ix < messages.Count; ix++)
-                {
-                    items.Add(new HistoryItem(lstHistory.Items.Count.ToString() + ". " + messages[ix], fenboards[ix]));
-                }
-
                 lstHistory.BeginUpdate();
-                lstHistory.Items.AddRange(items.ToArray());
+                //lstHistory.Items.AddRange(states.ToArray());
+                foreach (ChessState state in states)
+                {
+                    lstHistory.Items.Add(state);
+                }
+                //lstHistory.Items.Add("hello");
                 lstHistory.SelectedIndex = lstHistory.Items.Count - 1;
                 lstHistory.EndUpdate();
             }
+
         }
+
+        //public void AddToHistory(string message, string fenboards)
+        //{
+        //    AddToHistory(new List<string>() { message }, new List<string>() { fenboards });
+        //}
+    
+        //public void AddToHistory(List<string> messages, List<string> fenboards)
+        //{
+        //    if (this.lstHistory.InvokeRequired)
+        //    {
+        //        this.Invoke(new TwoStringListParameterCallback(AddToHistory), new object[] { messages, fenboards });
+        //    }
+        //    else
+        //    {
+        //        List<HistoryItem> items = new List<HistoryItem>();
+
+        //        for (int ix = 0; ix < messages.Count; ix++)
+        //        {
+        //            items.Add(new HistoryItem(lstHistory.Items.Count.ToString() + ". " + messages[ix], fenboards[ix]));
+        //        }
+
+        //        lstHistory.BeginUpdate();
+        //        lstHistory.Items.AddRange(items.ToArray());
+        //        lstHistory.SelectedIndex = lstHistory.Items.Count - 1;
+        //        lstHistory.EndUpdate();
+        //    }
+        //}
 
         public void AddToMainLog(List<string> messages)
         {
@@ -590,8 +620,8 @@ namespace UvsChess.Gui
         
         private void lstHistory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            HistoryItem item = (HistoryItem)lstHistory.SelectedItem;
-            ChessState tmpState = new ChessState(item.fenboard);
+            ChessState tmpState = (ChessState)lstHistory.SelectedItem;
+            //ChessState tmpState = new ChessState(item.fenboard);
 
             if (tmpState.CurrentPlayerColor == ChessColor.White)
             {
@@ -605,7 +635,7 @@ namespace UvsChess.Gui
             SetFullMoves(tmpState.FullMoves);
             SetHalfMoves(tmpState.HalfMoves);
 
-            chessBoardControl.ResetBoard(new ChessBoard(item.fenboard));
+            chessBoardControl.ResetBoard(tmpState.CurrentBoard);
         }
 
         private void SelectRadio(RadioButton rad)

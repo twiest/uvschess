@@ -233,19 +233,19 @@ namespace UvsChess.Framework
         }
     }
 
-    class HistoryItem
-    {
-        public string message;
-        public string fenboard;
-        public HistoryItem(string message, string fen)
-        {
-            this.message = message;
-            this.fenboard = fen;
-        }
-        public override string ToString()
-        {
-            return message;
-        }
-    }
+    //class HistoryItem
+    //{
+    //    public string message;
+    //    public string fenboard;
+    //    public HistoryItem(string message, string fen)
+    //    {
+    //        this.message = message;
+    //        this.fenboard = fen;
+    //    }
+    //    public override string ToString()
+    //    {
+    //        return message;
+    //    }
+    //}
 
 }
