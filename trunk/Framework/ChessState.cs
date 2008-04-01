@@ -271,6 +271,23 @@ namespace UvsChess
 
         #endregion
 
+
+        public override string ToString()
+        {
+            if (this.PreviousMove == null)
+            {
+                return "Start of Game";
+            }
+            else
+            {
+                ChessColor color = ChessColor.White;
+                if (CurrentPlayerColor == ChessColor.White)
+                {
+                    color = ChessColor.Black;
+                }
+                return string.Format("{0}: {1}",color,PreviousMove.ToString());
+            }
+        }
         #endregion
     }
 }
