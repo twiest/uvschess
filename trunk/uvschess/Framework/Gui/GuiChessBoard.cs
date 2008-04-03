@@ -424,9 +424,7 @@ namespace UvsChess.Gui
                         // Someone has subscribed to the event, so it's their
                         // responsibility to call my ResetBoard methods to update the board
                         // Fire the event, and forget
-                        ChessMove humanMove = new ChessMove();
-                        humanMove.From = _pieceBeingMovedLocation;
-                        humanMove.To = newLoc;
+                        ChessMove humanMove = new ChessMove(_pieceBeingMovedLocation, newLoc);
 
                         PieceMovedByHuman(humanMove);
                     }

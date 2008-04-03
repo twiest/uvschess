@@ -31,7 +31,18 @@ namespace UvsChess
     {        
         private ChessLocation _from;
         private ChessLocation _to;        
-        private ChessFlag _flag = ChessFlag.NoFlag;
+        private ChessFlag _flag;
+
+        public ChessMove(ChessLocation from, ChessLocation to):this(from, to, ChessFlag.NoFlag)
+        {
+        }
+
+        public ChessMove(ChessLocation from, ChessLocation to, ChessFlag flag)
+        {
+            From = from;
+            To = to;
+            Flag = flag;
+        }
 
         public ChessFlag Flag
         {
@@ -88,16 +99,12 @@ namespace UvsChess
 
         public ChessMove Clone()
         {
-            ChessMove newMove = new ChessMove();
+            ChessMove newMove = new ChessMove(null, null);
 
-            if (this.To == null)
-                newMove.To = null;
-            else
+            if (this.To != null)
                 newMove.To = this.To.Clone();
 
-            if (this.From == null)
-                newMove.From = null;
-            else
+            if (this.From != null)
                 newMove.From = this.From.Clone();
 
             newMove.Flag = this.Flag;

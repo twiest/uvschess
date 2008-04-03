@@ -124,9 +124,7 @@ namespace ExampleAI
                         if ((currentBoard[X, Y-1] == ChessPiece.Empty) &&
                             (currentBoard[X, Y] == ChessPiece.WhitePawn))
                         {
-                            newMove = new ChessMove();
-                            newMove.From = new ChessLocation(X, Y);
-                            newMove.To = new ChessLocation(X, Y - 1);
+                            newMove = new ChessMove(new ChessLocation(X, Y), new ChessLocation(X, Y - 1));
 
                             return newMove;
                         }
@@ -136,9 +134,7 @@ namespace ExampleAI
                         if ((currentBoard[X, Y+1] == ChessPiece.Empty) &&
                             (currentBoard[X, Y] == ChessPiece.BlackPawn))
                         {
-                            newMove = new ChessMove();
-                            newMove.From = new ChessLocation(X, Y);
-                            newMove.To = new ChessLocation(X, Y + 1);
+                            newMove = new ChessMove(new ChessLocation(X, Y), new ChessLocation(X, Y + 1));
 
                             return newMove;
                         }
@@ -148,7 +144,7 @@ namespace ExampleAI
 
             // If I couldn't find a valid move easily, 
             // I'll just create an empty move and flag a stalemate.
-            newMove = new ChessMove();
+            newMove = new ChessMove(null, null);
             //newMove.Flag = ChessFlag.Stalemate;
             newMove.Flag = ChessFlag.Stalemate;
 

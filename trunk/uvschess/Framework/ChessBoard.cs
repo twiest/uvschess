@@ -75,6 +75,11 @@ namespace UvsChess
             get { return _board[x, y]; }
             set { _board[x, y] = value; }
         }
+
+        public ChessPiece[,] RawBoard
+        {
+            get { return (ChessPiece[,])_board.Clone(); }
+        }
         #endregion
 
         #region Methods and Operators

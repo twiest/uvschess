@@ -194,7 +194,7 @@ namespace UvsChess.Framework
                 // The AI is still running, even after the grace period.
                 // They've now lost!
                 Logger.Log(this.ColorAndName + " has gone over the time limit and grace period. Having to abort his AI thread.");
-                _moveToReturn = new ChessMove();
+                _moveToReturn = new ChessMove(null, null);
                 _moveToReturn.Flag = ChessFlag.AIWentOverTime;
                 _runAIThread.Abort();
             }
