@@ -56,7 +56,6 @@ namespace ExampleAI
         /// </summary>
         /// <param name="message"></param>
         public AILoggerCallback Log { get; set; }
-        #endregion
 
         /// <summary>
         /// The name of your AI
@@ -102,6 +101,7 @@ namespace ExampleAI
         {
             return true;
         }
+        #endregion
 
         #region My AI Logic
         /// <summary>
