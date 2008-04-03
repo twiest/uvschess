@@ -36,20 +36,20 @@ namespace UvsChess
     }
 
     public enum ChessPiece
-    {
-        WhitePawn,
-        WhiteRook,
-        WhiteKnight,
-        WhiteBishop,
-        WhiteQueen,
-        WhiteKing,
-        Empty,
+    {        
         BlackPawn,
         BlackRook,
         BlackKnight,
         BlackBishop,
         BlackQueen,
-        BlackKing
+        BlackKing,
+        Empty,
+        WhitePawn,
+        WhiteRook,
+        WhiteKnight,
+        WhiteBishop,
+        WhiteQueen,
+        WhiteKing
     }
 
     public enum ChessFlag
