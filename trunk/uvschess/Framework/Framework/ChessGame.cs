@@ -285,7 +285,16 @@ namespace UvsChess.Framework
                 }
                 else
                 {
-                    mainChessState.HalfMoves++;
+                    if (mainChessState.HalfMoves < 50)
+                    {
+                        mainChessState.HalfMoves++;
+                    }
+                    else
+                    {
+                        //end of game: 50 move rule
+                        IsGameRunning = false;
+                        results = "Game is a stalemate. 50 moves were made without a kill or a pawn advancement.";
+                    }
                 }
 
                 if (UpdatedState != null)
