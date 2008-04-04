@@ -66,6 +66,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Framework\AI.cs" />
     <Compile Include="Framework\ChessGame.cs" />
     <Compile Include="Gui\AboutUvsChess.cs">
       <SubType>Form</SubType>
