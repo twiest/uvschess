@@ -407,7 +407,11 @@ namespace UvsChess.Gui
 
             //item.fenboard = tmpState.ToFenBoard();
 
-            lstHistory.Items[lstHistory.SelectedIndex] = tmpState;
+            // This causes the "selected index changed event"
+            //lstHistory.Items[lstHistory.SelectedIndex] = tmpState;
+            lstHistory.SelectedItem = tmpState;
+
+            lstHistory_SelectedIndexChanged(null, null);
         }
 
         private void DisableHistoryWindowClicking()
