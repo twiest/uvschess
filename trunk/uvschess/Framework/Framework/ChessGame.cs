@@ -38,6 +38,9 @@ namespace UvsChess.Framework
         //public UpdatedDelegate Updated = null;
         public UpdatedStateDelegate UpdatedState = null;
 
+        public delegate void SetGuiChessBoard_IsLockedDelegate(bool isLocked);
+        public SetGuiChessBoard_IsLockedDelegate SetGuiChessBoard_IsLocked = null;
+
         public delegate void DeclareResultsDelegate(string results);
         public DeclareResultsDelegate DeclareResults = null;
 
@@ -245,6 +248,7 @@ namespace UvsChess.Framework
             }
             else //player is human
             {
+                this.SetGuiChessBoard_IsLocked(false);                
                 while (!isValidMove)
                 {
                     nextMove = player.GetNextMove(mainChessState.CurrentBoard);
@@ -267,6 +271,7 @@ namespace UvsChess.Framework
                         isValidMove = opponent.AI.IsValidMove(newstate);
                     }
                 }
+                this.SetGuiChessBoard_IsLocked(true);
             }
 
             if (isValidMove)

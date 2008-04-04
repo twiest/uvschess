@@ -47,14 +47,24 @@ namespace UvsChess.Gui
         private static List<string> _AddToHistory_Parameter2 = new List<string>();
         private static List<ChessState> _AddToHistory_ChessState = new List<ChessState>();
         private static bool? _isSwitchIntoGameMode_Parameter1 = null;
+        private static bool? _guiChessBoard_IsLocked = null;
 
         private static Timer _pollGuiTimer = null;
+        
 
         public static void DeclareResults(string results)
         {
             lock (_updateGuiDataLockObject)
             {
                 _DeclareResults_Parameter1.Add(results);
+            }
+        }
+
+        public static void SetGuiChessBoard_IsLocked(bool isLocked)
+        {
+            lock (_updateGuiDataLockObject)
+            {
+                _guiChessBoard_IsLocked = isLocked;
             }
         }
 
@@ -134,6 +144,7 @@ namespace UvsChess.Gui
             List<string> tmpAddToHistory_Parameter2 = null;
             List<ChessState> tmpAddToHistory_ChessState = null;
             bool? tmpIsSwitchIntoGameMode = null;
+            bool? tmpGuiChessBoard_IsLocked = null;
 
             // This should guarantee that we won't lose any data.
             lock (_updateGuiDataLockObject)
@@ -142,6 +153,12 @@ namespace UvsChess.Gui
                 {
                     tmpDeclareResults_Parameter1 = new List<string>(_DeclareResults_Parameter1);
                     _DeclareResults_Parameter1.Clear();
+                }
+
+                if (_guiChessBoard_IsLocked != null)
+                {
+                    tmpGuiChessBoard_IsLocked = _guiChessBoard_IsLocked.Value;
+                    _guiChessBoard_IsLocked = null;
                 }
 
                 if (_isSwitchIntoGameMode_Parameter1 != null)
@@ -196,6 +213,11 @@ namespace UvsChess.Gui
                     if ((tmpAddToHistory_ChessState != null) && (tmpAddToHistory_ChessState.Count > 0))
                     {
                         Gui.AddToHistory(tmpAddToHistory_ChessState);
+                    }
+
+                    if (tmpGuiChessBoard_IsLocked != null)
+                    {
+                        Gui.SetGuiChessBoard_IsLocked(tmpGuiChessBoard_IsLocked.Value);
                     }
 
                     if (tmpIsSwitchIntoGameMode != null)
