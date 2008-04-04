@@ -41,6 +41,7 @@ namespace UvsChess.Framework
         public IChessAI AI;
         public TimeSpan TimeOfLastMove = TimeSpan.MinValue;
 
+        private bool _hasAIEndedTurn = false;
         private bool _aiWentOverTime = false;
         private bool _forceAIToEndTurnEarly = false;
         private DateTime _startTime;
@@ -135,17 +136,23 @@ namespace UvsChess.Framework
         private void PollAI(object state)
         {
             // NO LOGGING ALLOWED between here
-            if ( (_forceAIToEndTurnEarly) || (!this.AI.IsRunning) || (DateTime.Now > _endTime) )
+            if ((_forceAIToEndTurnEarly) || (_hasAIEndedTurn) || (DateTime.Now > _endTime))
             {
-                if (this.AI.IsRunning)
-                {
-                    this.AI.IsRunning = false;
+                this.AI.IsRunning = false;
 
+                if (! _hasAIEndedTurn)
+                {
                     int gracePeriod = Gui.Preferences.GracePeriod;
+
+                    // Start the grace period timer
                     _pollAITimer = new Timer(this.GracePeriodTimer, null, gracePeriod, System.Threading.Timeout.Infinite);
 
                     _runAIThread.Join();
-                    
+
+                    // Turn off the grace period timer
+                    _pollAITimer = new Timer(this.GracePeriodTimer, null, System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
+
+                    _hasAIEndedTurn = true;
                 }
 
                 TimeOfLastMove = DateTime.Now.Subtract(_startTime);
@@ -162,7 +169,7 @@ namespace UvsChess.Framework
 
         private void GracePeriodTimer(object state)
         {
-            if (this.AI.IsRunning)
+            if (! _hasAIEndedTurn)
             {
                 // The AI is still running, even after the grace period.
                 // They've now lost!
@@ -185,8 +192,11 @@ namespace UvsChess.Framework
         {
             // This is the only place that IsRunning should be set to true.
             this.AI.IsRunning = true;
+            _hasAIEndedTurn = false;
+
             _moveToReturn = this.AI.GetNextMove(_currentBoard, this.Color);
-            this.AI.IsRunning = false;
+
+            _hasAIEndedTurn = true;
         }
     }
 
