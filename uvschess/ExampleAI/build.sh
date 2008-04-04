@@ -22,7 +22,7 @@ echo Building $AI_NAME
 echo
 
 # Compile the project into a dll. See the man pages for gmcs for info about the options
-$MONO_EXE -t:library -out:$AI_NAME.dll ./*.cs -r:../Framework/UvsChess.exe 
+$MONO_EXE -t:library -out:$AI_NAME.dll -langversion:linq ./*.cs -r:../Framework/UvsChess.exe 
 
 if [ $? -ne 0 ]
 then

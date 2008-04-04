@@ -24,7 +24,7 @@ do
 done
 cd ..
 
-$MONO_EXE -t:exe -out:UvsChess.exe ./*.cs -pkg:gtk-sharp-2.0 $resources
+$MONO_EXE -t:exe -out:UvsChess.exe ./*.cs Gui/*.cs Framework/*.cs -langversion:linq -pkg:dotnet $resources
 
 if [ $? -eq 0 ]
 then
