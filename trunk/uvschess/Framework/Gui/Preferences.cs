@@ -38,13 +38,15 @@ namespace UvsChess.Gui
     {
         #region Members
 
-        private static string TIME = "time";
-        private static string GRACEPERIOD = "graceperiod";
+        private const string TIME = "time";
+        private const string GRACEPERIOD = "graceperiod";
 
         private static int time_default = 5000;
         private static int grace_default = 1000;
 
-        static Dictionary<string, string> items = null;
+        private static int _time = 5000;
+        private static int _grace = 1000;
+
         private static string inifile = AppDomain.CurrentDomain.BaseDirectory + "UvsChess.ini";
 
         #endregion
@@ -53,13 +55,14 @@ namespace UvsChess.Gui
 
         public static int Time
         {
-            get { return Convert.ToInt32(items[TIME]); }
-            set { items[TIME] = value.ToString(); }
+            get { return 
+                _time; }
+            set { _time = value; }
         }
         public static int GracePeriod
         {
-            get { return Convert.ToInt32(items[GRACEPERIOD]); }
-            set { items[GRACEPERIOD] = value.ToString(); }
+            get { return _grace; }
+            set { _grace = value; }
         }
         #endregion
 
@@ -83,37 +86,54 @@ namespace UvsChess.Gui
         }
         public static void LoadFromFile()
         {
-
-            items = new Dictionary<string, string>();
             if (!File.Exists(inifile))
             {
                 Time = time_default;
                 GracePeriod = grace_default;
                 return;
             }
-            StreamReader infile = new StreamReader(inifile);
+            try
+            {
+                StreamReader infile = new StreamReader(inifile);
 
-            string line = infile.ReadLine();
-            while (line != null)
-            {
-                if (line == string.Empty)
+                string line = infile.ReadLine();
+                while (line != null)
                 {
+                    if (line == string.Empty)
+                    {
+                        line = infile.ReadLine();
+                        continue;
+                    }
+                    string[] sections = line.Split('=');
+                    switch (sections[0])
+                    {
+                        case TIME:
+                            Time = Convert.ToInt32(sections[1]);
+                            break;
+                        case GRACEPERIOD:
+                            GracePeriod = Convert.ToInt32(sections[1]);
+                            break;
+                    }
                     line = infile.ReadLine();
-                    continue;
                 }
-                string[] sections = line.Split('=');
-                items[sections[0]] = sections[1];
-                line = infile.ReadLine();
+                infile.Close();
             }
-            infile.Close();
-        }
-        public static void SavePreferences()
-        {
-            StreamWriter outfile = new StreamWriter(inifile);
-            foreach (string key in items.Keys)
+            catch (Exception ex)
             {
-                outfile.WriteLine("{0}={1}", key, items[key]);
+                MessageBox.Show(ex.ToString());
+
+                Time = time_default;
+                GracePeriod = grace_default;
             }
+        }
+        public void SavePreferences()
+        {
+
+            StreamWriter outfile = new StreamWriter(inifile);
+            Time = Convert.ToInt32(txtTime.Text);
+            GracePeriod = Convert.ToInt32(txtGrace.Text);
+            outfile.WriteLine("{0}={1}", TIME, Time);
+            outfile.WriteLine("{0}={1}", GRACEPERIOD, GracePeriod);
             outfile.Close();
         }
 
@@ -123,5 +143,10 @@ namespace UvsChess.Gui
         }
 
         #endregion
+
+        private void btnSavePrefs_Click(object sender, EventArgs e)
+        {
+            this.Close();//this should call FormClosing event, which should save prefs
+        }
     }
 }
