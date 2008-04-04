@@ -52,6 +52,7 @@ namespace UvsChess.Gui
         public delegate void PlayCompletedHandler();
         protected delegate void PlayDelegate();
 
+        public delegate void BoolParameterCallback(bool val);
         public delegate void StringParameterCallback(string text);
         public delegate void StringListParameterCallback(List<string> text);
         public delegate void TwoStringListParameterCallback(List<string> text1, List<string> text2);
@@ -151,6 +152,8 @@ namespace UvsChess.Gui
             {
                 // TODO: CHANGE COLOR OF GUI SO USER KNOWS IT'S RUNNING
 
+                UpdateWinGuiOnTimer.SetGuiChessBoard_IsLocked(true);
+
                 SwitchWinGuiMode(true);
 
                 ChessState item = (ChessState)lstHistory.SelectedItem;
@@ -170,6 +173,8 @@ namespace UvsChess.Gui
                 // Add WinGui to the ChessGame updates event
                 //_mainGame.Updated += OnChessGameUpdated;
                 _mainGame.UpdatedState += OnChessGameUpdated;
+
+                _mainGame.SetGuiChessBoard_IsLocked += UpdateWinGuiOnTimer.SetGuiChessBoard_IsLocked;
 
                 // Add WinGui to the DeclareResults event
                 _mainGame.DeclareResults += OnChessGameDeclareResults;
@@ -193,6 +198,8 @@ namespace UvsChess.Gui
                     //_mainGame.Updated -= OnChessGameUpdated;
                     _mainGame.UpdatedState -= OnChessGameUpdated;
 
+                    _mainGame.SetGuiChessBoard_IsLocked -= UpdateWinGuiOnTimer.SetGuiChessBoard_IsLocked;
+
                     // Remove WinGui from the DeclareResults event
                     _mainGame.DeclareResults -= OnChessGameDeclareResults;
 
@@ -202,7 +209,7 @@ namespace UvsChess.Gui
                     // Add WinGui to the GuiChessBoard updates
                     chessBoardControl.PieceMovedByHuman += GuiChessBoardChangedByHuman;
 
-                    chessBoardControl.IsLocked = false;
+                    UpdateWinGuiOnTimer.SetGuiChessBoard_IsLocked(false);
 
                     SwitchWinGuiMode(false);
                 }
@@ -343,6 +350,18 @@ namespace UvsChess.Gui
         #endregion
 
         #region Game play methods and events
+        public void SetGuiChessBoard_IsLocked(bool isLocked)
+        {
+            if (chessBoardControl.InvokeRequired)
+            {
+                chessBoardControl.Invoke(new BoolParameterCallback(SetGuiChessBoard_IsLocked), new object[] { isLocked });
+            }
+            else
+            {
+                chessBoardControl.IsLocked = isLocked;
+            }
+        }
+
         public void DeclareResults(List<string> results)
         {
             if (this.InvokeRequired)
@@ -411,6 +430,7 @@ namespace UvsChess.Gui
             //lstHistory.Items[lstHistory.SelectedIndex] = tmpState;
             lstHistory.SelectedItem = tmpState;
 
+            // Force update the lstHistory and the GuiChessBoard
             lstHistory_SelectedIndexChanged(null, null);
         }
 
