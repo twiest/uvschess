@@ -41,6 +41,7 @@ namespace UvsChess.Gui
     {
         #region Members
         ChessGame _mainGame = null;
+        Object _startStopGame_LockObj = new object();
 
         string WhitePlayerName = string.Empty;
         string BlackPlayerName = string.Empty;
@@ -107,16 +108,7 @@ namespace UvsChess.Gui
 
                 ChessState tmpState = new ChessState(line);
 
-                //AddToHistory(tmpState);
                 AddToHistory(new List<ChessState>() { tmpState });
-                if (tmpState.CurrentPlayerColor == ChessColor.White)
-                {
-                    radWhite.Checked = true;
-                }
-                else
-                {
-                    radBlack.Checked = true;
-                }
 
                 reader.Close();                
             }
@@ -155,66 +147,70 @@ namespace UvsChess.Gui
 
         private void startToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // TODO: CHANGE COLOR OF GUI SO USER KNOWS IT'S RUNNING
+            lock (_startStopGame_LockObj)
+            {
+                // TODO: CHANGE COLOR OF GUI SO USER KNOWS IT'S RUNNING
 
-            SwitchWinGuiMode(true);
+                SwitchWinGuiMode(true);
 
-            ChessState item = (ChessState)lstHistory.SelectedItem;
+                ChessState item = (ChessState)lstHistory.SelectedItem;
 
-            _mainGame = new ChessGame(item, WhitePlayerName, BlackPlayerName);
-            //_mainGame = new ChessGame(item.fenboard, WhitePlayerName, BlackPlayerName);
+                _mainGame = new ChessGame(item, WhitePlayerName, BlackPlayerName);
+                //_mainGame = new ChessGame(item.fenboard, WhitePlayerName, BlackPlayerName);
 
 
 
-            // Remove WinGui from the GuiChessBoard updates
-            chessBoardControl.PieceMovedByHuman -= GuiChessBoardChangedByHuman;
+                // Remove WinGui from the GuiChessBoard updates
+                chessBoardControl.PieceMovedByHuman -= GuiChessBoardChangedByHuman;
 
-            // Add the ChessGame to the GuiChessBoard updates
-            chessBoardControl.PieceMovedByHuman += _mainGame.WhitePlayer_HumanMovedPieceEvent;
-            chessBoardControl.PieceMovedByHuman += _mainGame.BlackPlayer_HumanMovedPieceEvent;
+                // Add the ChessGame to the GuiChessBoard updates
+                chessBoardControl.PieceMovedByHuman += _mainGame.WhitePlayer_HumanMovedPieceEvent;
+                chessBoardControl.PieceMovedByHuman += _mainGame.BlackPlayer_HumanMovedPieceEvent;
 
-            // Add WinGui to the ChessGame updates event
-            //_mainGame.Updated += OnChessGameUpdated;
-            _mainGame.UpdatedState += OnChessGameUpdated;
+                // Add WinGui to the ChessGame updates event
+                //_mainGame.Updated += OnChessGameUpdated;
+                _mainGame.UpdatedState += OnChessGameUpdated;
 
-            // Add WinGui to the DeclareResults event
-            _mainGame.DeclareResults += OnChessGameDeclareResults;
+                // Add WinGui to the DeclareResults event
+                _mainGame.DeclareResults += OnChessGameDeclareResults;
 
-            _mainGame.StartGame();
+                _mainGame.StartGame();
+            }
+        
         }
 
         private void stopToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (_mainGame != null)
             {
-                // Remove the ChessGame from the GuiChessBoard updates
-                chessBoardControl.PieceMovedByHuman -= _mainGame.WhitePlayer_HumanMovedPieceEvent;
-                chessBoardControl.PieceMovedByHuman -= _mainGame.BlackPlayer_HumanMovedPieceEvent;
+                lock (_startStopGame_LockObj)
+                {
+                    // Remove the ChessGame from the GuiChessBoard updates
+                    chessBoardControl.PieceMovedByHuman -= _mainGame.WhitePlayer_HumanMovedPieceEvent;
+                    chessBoardControl.PieceMovedByHuman -= _mainGame.BlackPlayer_HumanMovedPieceEvent;
 
-                // Remove WinGui from the ChessGame updates event
-                //_mainGame.Updated -= OnChessGameUpdated;
-                _mainGame.UpdatedState -= OnChessGameUpdated;
+                    // Remove WinGui from the ChessGame updates event
+                    //_mainGame.Updated -= OnChessGameUpdated;
+                    _mainGame.UpdatedState -= OnChessGameUpdated;
 
-                // Remove WinGui from the DeclareResults event
-                _mainGame.DeclareResults -= OnChessGameDeclareResults;
+                    // Remove WinGui from the DeclareResults event
+                    _mainGame.DeclareResults -= OnChessGameDeclareResults;
 
-                _mainGame.StopGameEarly();
-                _mainGame = null;
+                    _mainGame.StopGameEarly();
+                    _mainGame = null;
 
-                // Add WinGui to the GuiChessBoard updates
-                chessBoardControl.PieceMovedByHuman += GuiChessBoardChangedByHuman;
+                    // Add WinGui to the GuiChessBoard updates
+                    chessBoardControl.PieceMovedByHuman += GuiChessBoardChangedByHuman;
 
-                chessBoardControl.IsLocked = false;
+                    chessBoardControl.IsLocked = false;
 
-                SwitchWinGuiMode(false);
+                    SwitchWinGuiMode(false);
+                }
             }
         }
 
         private void clearHistoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            radWhite.Checked = true;
-            radBlack.Checked = false;
-
             lstHistory.Items.Clear();
 
             AddToHistory(new List<ChessState>() {new ChessState()});

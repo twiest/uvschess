@@ -147,6 +147,7 @@ namespace UvsChess.Gui
                 if (_isSwitchIntoGameMode_Parameter1 != null)
                 {
                     tmpIsSwitchIntoGameMode = _isSwitchIntoGameMode_Parameter1.Value;
+                    _isSwitchIntoGameMode_Parameter1 = null;
                 }
 
                 if (_AddToMainLog_Parameter1.Count > 0)
