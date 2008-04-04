@@ -59,6 +59,7 @@ namespace UvsChess.Gui
             this.label2 = new System.Windows.Forms.Label();
             this.txtTime = new System.Windows.Forms.TextBox();
             this.txtGrace = new System.Windows.Forms.TextBox();
+            this.btnSavePrefs = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -93,11 +94,22 @@ namespace UvsChess.Gui
             this.txtGrace.Size = new System.Drawing.Size(100, 20);
             this.txtGrace.TabIndex = 6;
             // 
+            // btnSavePrefs
+            // 
+            this.btnSavePrefs.Location = new System.Drawing.Point(136, 104);
+            this.btnSavePrefs.Name = "btnSavePrefs";
+            this.btnSavePrefs.Size = new System.Drawing.Size(94, 23);
+            this.btnSavePrefs.TabIndex = 7;
+            this.btnSavePrefs.Text = "Save";
+            this.btnSavePrefs.UseVisualStyleBackColor = true;
+            this.btnSavePrefs.Click += new System.EventHandler(this.btnSavePrefs_Click);
+            // 
             // Preferences
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(262, 112);
+            this.ClientSize = new System.Drawing.Size(262, 139);
+            this.Controls.Add(this.btnSavePrefs);
             this.Controls.Add(this.txtGrace);
             this.Controls.Add(this.txtTime);
             this.Controls.Add(this.label2);
@@ -117,5 +129,6 @@ namespace UvsChess.Gui
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtTime;
         private System.Windows.Forms.TextBox txtGrace;
+        private System.Windows.Forms.Button btnSavePrefs;
     }
 }
