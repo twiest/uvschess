@@ -221,33 +221,4 @@ namespace UvsChess.Framework
         }
     }
 
-    // TODO: Separate all classes into their own files.
-    // Students don't need to see this class
-    class AI
-    {
-        public string FullName;
-        public string ShortName;
-        public string FileName;
-
-        public AI(string shortName)
-        {
-            ShortName = shortName;
-        }
-    }
-
-    //class HistoryItem
-    //{
-    //    public string message;
-    //    public string fenboard;
-    //    public HistoryItem(string message, string fen)
-    //    {
-    //        this.message = message;
-    //        this.fenboard = fen;
-    //    }
-    //    public override string ToString()
-    //    {
-    //        return message;
-    //    }
-    //}
-
 }
