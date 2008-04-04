@@ -163,12 +163,14 @@ namespace UvsChess.Framework
 
                 if (this.AI.IsRunning)
                 {
+                    this.AI.IsRunning = false;
+
                     int gracePeriod = Gui.Preferences.GracePeriod;
                     _pollAITimer = new Timer(this.GracePeriodTimer, null, gracePeriod, System.Threading.Timeout.Infinite);
 
                     //Logger.Log("In " + this.Color.ToString() + "'s PollAI and Joining _runAIThread");
                     _runAIThread.Join();
-                    this.AI.IsRunning = false;
+                    
                 }
 
                 TimeOfLastMove = DateTime.Now.Subtract(_startTime);
