@@ -66,6 +66,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChessColor.cs" />
+    <Compile Include="ChessPiece.cs" />
     <Compile Include="Framework\AI.cs" />
     <Compile Include="Framework\ChessGame.cs" />
     <Compile Include="Gui\AboutUvsChess.cs">
@@ -84,7 +86,6 @@
       <DependentUpon>GuiChessBoard.cs</DependentUpon>
     </Compile>
     <Compile Include="ChessState.cs" />
-    <Compile Include="ChessEnums.cs" />
     <Compile Include="ChessLocation.cs" />
     <Compile Include="ChessMove.cs" />
     <Compile Include="Gui\Preferences.cs">
@@ -97,6 +98,7 @@
     <Compile Include="IChessAI.cs" />
     <Compile Include="Framework\Logger.cs" />
     <Compile Include="Framework\Program.cs" />
+    <Compile Include="ChessFlag.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Gui\WinGui.cs">
       <SubType>Form</SubType>
