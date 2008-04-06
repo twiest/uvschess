@@ -70,17 +70,16 @@ namespace UvsChess.Gui
             this.preferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutUvsChessToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.lblFullMoves = new System.Windows.Forms.Label();
+            this.numHalfMoves = new System.Windows.Forms.NumericUpDown();
+            this.numFullMoves = new System.Windows.Forms.NumericUpDown();
             this.cmbBlack = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.radBlack = new System.Windows.Forms.RadioButton();
             this.label2 = new System.Windows.Forms.Label();
-            this.lblHalfMoves = new System.Windows.Forms.Label();
             this.radWhite = new System.Windows.Forms.RadioButton();
             this.cmbWhite = new System.Windows.Forms.ComboBox();
             this.lstHistory = new System.Windows.Forms.ListBox();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.chessBoardControl = new UvsChess.Gui.GuiChessBoard();
             this.tabLogs = new System.Windows.Forms.TabControl();
             this.tabMainLog = new System.Windows.Forms.TabPage();
             this.btnSaveMainLog = new System.Windows.Forms.Button();
@@ -99,10 +98,13 @@ namespace UvsChess.Gui
             this.lstBlacksLog = new System.Windows.Forms.ListBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.chessBoardControl = new UvsChess.Gui.GuiChessBoard();
             this.menuStrip1.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numHalfMoves)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numFullMoves)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
@@ -239,12 +241,12 @@ namespace UvsChess.Gui
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.lblFullMoves);
+            this.splitContainer1.Panel1.Controls.Add(this.numHalfMoves);
+            this.splitContainer1.Panel1.Controls.Add(this.numFullMoves);
             this.splitContainer1.Panel1.Controls.Add(this.cmbBlack);
             this.splitContainer1.Panel1.Controls.Add(this.label1);
             this.splitContainer1.Panel1.Controls.Add(this.radBlack);
             this.splitContainer1.Panel1.Controls.Add(this.label2);
-            this.splitContainer1.Panel1.Controls.Add(this.lblHalfMoves);
             this.splitContainer1.Panel1.Controls.Add(this.radWhite);
             this.splitContainer1.Panel1.Controls.Add(this.cmbWhite);
             this.splitContainer1.Panel1.Controls.Add(this.lstHistory);
@@ -256,15 +258,26 @@ namespace UvsChess.Gui
             this.splitContainer1.SplitterDistance = 262;
             this.splitContainer1.TabIndex = 1;
             // 
-            // lblFullMoves
+            // numHalfMoves
             // 
-            this.lblFullMoves.AutoSize = true;
-            this.lblFullMoves.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblFullMoves.Location = new System.Drawing.Point(179, 69);
-            this.lblFullMoves.Name = "lblFullMoves";
-            this.lblFullMoves.Size = new System.Drawing.Size(13, 13);
-            this.lblFullMoves.TabIndex = 3;
-            this.lblFullMoves.Text = "1";
+            this.numHalfMoves.Location = new System.Drawing.Point(79, 67);
+            this.numHalfMoves.Name = "numHalfMoves";
+            this.numHalfMoves.Size = new System.Drawing.Size(51, 20);
+            this.numHalfMoves.TabIndex = 6;
+            this.numHalfMoves.ValueChanged += new System.EventHandler(this.numHalfMoves_ValueChanged);
+            // 
+            // numFullMoves
+            // 
+            this.numFullMoves.Location = new System.Drawing.Point(179, 67);
+            this.numFullMoves.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.numFullMoves.Name = "numFullMoves";
+            this.numFullMoves.Size = new System.Drawing.Size(52, 20);
+            this.numFullMoves.TabIndex = 5;
+            this.numFullMoves.ValueChanged += new System.EventHandler(this.numFullMoves_ValueChanged);
             // 
             // cmbBlack
             // 
@@ -308,16 +321,6 @@ namespace UvsChess.Gui
             this.label2.Size = new System.Drawing.Size(61, 13);
             this.label2.TabIndex = 1;
             this.label2.Text = "Half Moves";
-            // 
-            // lblHalfMoves
-            // 
-            this.lblHalfMoves.AutoSize = true;
-            this.lblHalfMoves.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblHalfMoves.Location = new System.Drawing.Point(89, 69);
-            this.lblHalfMoves.Name = "lblHalfMoves";
-            this.lblHalfMoves.Size = new System.Drawing.Size(13, 13);
-            this.lblHalfMoves.TabIndex = 0;
-            this.lblHalfMoves.Text = "0";
             // 
             // radWhite
             // 
@@ -376,16 +379,6 @@ namespace UvsChess.Gui
             this.splitContainer2.Size = new System.Drawing.Size(798, 726);
             this.splitContainer2.SplitterDistance = 333;
             this.splitContainer2.TabIndex = 0;
-            // 
-            // chessBoardControl
-            // 
-            this.chessBoardControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.chessBoardControl.IsLocked = false;
-            this.chessBoardControl.Location = new System.Drawing.Point(0, 0);
-            this.chessBoardControl.Name = "chessBoardControl";
-            this.chessBoardControl.Size = new System.Drawing.Size(333, 333);
-            this.chessBoardControl.TabIndex = 0;
-            this.chessBoardControl.TabStop = false;
             // 
             // tabLogs
             // 
@@ -586,6 +579,16 @@ namespace UvsChess.Gui
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
+            // chessBoardControl
+            // 
+            this.chessBoardControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.chessBoardControl.IsLocked = false;
+            this.chessBoardControl.Location = new System.Drawing.Point(0, 0);
+            this.chessBoardControl.Name = "chessBoardControl";
+            this.chessBoardControl.Size = new System.Drawing.Size(333, 333);
+            this.chessBoardControl.TabIndex = 0;
+            this.chessBoardControl.TabStop = false;
+            // 
             // WinGui
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -606,6 +609,8 @@ namespace UvsChess.Gui
             this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.numHalfMoves)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numFullMoves)).EndInit();
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel2.ResumeLayout(false);
             this.splitContainer2.ResumeLayout(false);
@@ -646,8 +651,6 @@ namespace UvsChess.Gui
         private System.Windows.Forms.TabPage tabMainLog;
         private System.Windows.Forms.ListBox lstMainLog;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label lblHalfMoves;
-        private System.Windows.Forms.Label lblFullMoves;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem1;
@@ -667,5 +670,7 @@ namespace UvsChess.Gui
         private System.Windows.Forms.Button btnSaveWhitesLog;
         private System.Windows.Forms.Button btnClearBlacksLog;
         private System.Windows.Forms.Button btnSaveBlacksLog;
+        private System.Windows.Forms.NumericUpDown numHalfMoves;
+        private System.Windows.Forms.NumericUpDown numFullMoves;
     }
 }
