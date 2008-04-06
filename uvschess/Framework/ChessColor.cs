@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2008 Rusty Howell, Thomas Wiest
 *
@@ -25,41 +25,12 @@
 // 		Thomas Wiest  twiest@users.sourceforge.net
 //		Rusty Howell  rhowell@users.sourceforge.net
 
-
-
 namespace UvsChess
 {
+
     public enum ChessColor
     {
         White,
         Black
-    }
-
-    public enum ChessPiece
-    {        
-        BlackPawn,
-        BlackRook,
-        BlackKnight,
-        BlackBishop,
-        BlackQueen,
-        BlackKing,
-        Empty,
-        WhitePawn,
-        WhiteRook,
-        WhiteKnight,
-        WhiteBishop,
-        WhiteQueen,
-        WhiteKing
-    }
-
-    public enum ChessFlag
-    {
-        NoFlag,
-        Check,
-        Checkmate,
-        Stalemate,
-        AIWentOverTime  // Students should NEVER use this flag. This is for the framework to use to flag that an AI went over time.
-        //Castling,   //These are not supported. Maybe in future releases.
-        //EnPassaint
     }
 }
