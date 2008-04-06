@@ -294,6 +294,8 @@ namespace UvsChess.Gui
                 this.radWhite.Enabled = false;
                 this.cmbBlack.Enabled = false;
                 this.cmbWhite.Enabled = false;
+                this.numFullMoves.Enabled = false;
+                this.numHalfMoves.Enabled = false;
             }
         }
 
@@ -309,6 +311,8 @@ namespace UvsChess.Gui
                 this.radWhite.Enabled = true;
                 this.cmbBlack.Enabled = true;
                 this.cmbWhite.Enabled = true;
+                this.numFullMoves.Enabled = true;
+                this.numHalfMoves.Enabled = true;
             }
         }
         private void DisableMenuItemsDuringPlay()
@@ -327,6 +331,7 @@ namespace UvsChess.Gui
                 saveToolStripMenuItem.Enabled = false;
 
                 stopToolStripMenuItem.Enabled = true;
+
             }
         }
         private void EnableMenuItemsAfterPlay()
@@ -501,27 +506,29 @@ namespace UvsChess.Gui
         #region GUI update methods
         public void SetHalfMoves(int halfmoves)
         {
-            if (this.lblHalfMoves.InvokeRequired)
+            if (this.numHalfMoves.InvokeRequired)
             {
                 IntParameterCallback cb = new IntParameterCallback(SetHalfMoves);
                 this.Invoke(cb, new object[] { halfmoves });
             }
             else
             {
-                lblHalfMoves.Text = halfmoves.ToString();
+                //lblHalfMoves.Text = halfmoves.ToString();
+                numHalfMoves.Value = halfmoves;
             }
         }
 
         public void SetFullMoves(int fullmoves)
         {
-            if (this.lblFullMoves.InvokeRequired)
+            if (this.numFullMoves.InvokeRequired)
             {
                 IntParameterCallback cb = new IntParameterCallback(SetFullMoves);
                 this.Invoke(cb, new object[] { fullmoves });
             }
             else
             {
-                lblFullMoves.Text = fullmoves.ToString();
+                //lblFullMoves.Text = fullmoves.ToString();
+                numFullMoves.Value = fullmoves;
             }
         }
         public void AddToHistory(List<ChessState> states)
@@ -757,6 +764,18 @@ namespace UvsChess.Gui
             UpdateWinGuiOnTimer.StopGuiPolling();
 
             stopToolStripMenuItem_Click(null, null);
+        }
+
+        private void numHalfMoves_ValueChanged(object sender, EventArgs e)
+        {
+            ChessState state = (ChessState)lstHistory.SelectedItem;
+            state.HalfMoves = Convert.ToInt32(numHalfMoves.Value);
+        }
+
+        private void numFullMoves_ValueChanged(object sender, EventArgs e)
+        {
+            ChessState state = (ChessState)lstHistory.SelectedItem;
+            state.FullMoves = Convert.ToInt32(numFullMoves.Value);
         }
     }
 }
