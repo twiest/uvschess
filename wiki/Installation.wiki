@@ -6,6 +6,7 @@ Google Code uses Subversion as its source code control server. You will need a s
 
 Once you have an svn client, you should check out the project code from svn. Go to the "Source" tab for instructions on how to check out the project.
 
+This project was built with Visual Studio 2008 C# Express. 
 You will also need to install the latest Mono release before you can compile the project.
 You can get that from http://www.mono-project.com
 
@@ -13,9 +14,12 @@ You can get that from http://www.mono-project.com
 = Details =
 
 ==For Windows==
-After Mono is installed, add the Mono 'bin' directory to the system path. The bin directory path should look similar to "C:\Program Files\Mono-1.2.3.1\bin"
+You will want to have Visual Studio 2008. You can get [http://www.microsoft.com/express/vcsharp/ Visual C# 2008 Express] version of Visual Studio for free. 
 
-Open the UvsChess.sln solution file in MS Visual Studio. You may have to refresh the References in the Framework project (atk-sharp,gdk-sharp,glib-sharp,gtk-sharp,gtk-dotnet).
+Open the UvsChess.sln solution file, and compile.
 
-==For Linux==
+==For Linux, Mac==
+You will need a C# IDE to code and debug. For Linux and Mac, we recommend MonoDevelop. You can get the latest version at [http://www.go-mono.com/mono-downloads/download.html mono-project.com] or from [http://www.monodevelop.com/Download monodevelop.com]
+
+Open the UvsChess.sln file, and compile.
 Run the build.sh script to compile the project from the command line. You can also use tools like Mono Develop.
