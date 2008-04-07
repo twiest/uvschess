@@ -2,24 +2,36 @@
 
 = Introduction =
 
-Google Code uses Subversion as its source code control server. You will need a subversion (svn) client in order to get the code. For windows, we recommend TortoiseSVN (http://tortoisesvn.tigris.org/).
+Google Code uses Subversion (svn) as its source code control server. You will need a subversion client in order to get the code. You will need a C# IDE to code and debug your AI.
 
 Once you have an svn client, you should check out the project code from svn. Go to the "Source" tab for instructions on how to check out the project.
 
 This project was built with Visual Studio 2008 C# Express. 
-You will also need to install the latest Mono release before you can compile the project.
-You can get that from http://www.mono-project.com
-
 
 = Details =
 
 ==For Windows==
+For windows, we recommend using TortoiseSVN (http://tortoisesvn.tigris.org/) as your svn client. See the Source Tab for instructions on checking out the source from svn.
+
 You will want to have Visual Studio 2008. You can get [http://www.microsoft.com/express/vcsharp/ Visual C# 2008 Express] version of Visual Studio for free. 
 
 Open the UvsChess.sln solution file, and compile.
 
-==For Linux, Mac==
-You will need a C# IDE to code and debug. For Linux and Mac, we recommend MonoDevelop. You can get the latest version at [http://www.go-mono.com/mono-downloads/download.html mono-project.com] or from [http://www.monodevelop.com/Download monodevelop.com]
+==For Linux==
+
+For Linux, you may need to install the svn package. Depending on your distro, it may or may not be installed by default. Using your distro's package manager (apt-get, yum, zypper), install svn. See the Source Tab for instructions on checking out the source from svn.
+
+
+we recommend using MonoDevelop as the IDE. It's free! You can get the latest version at [http://www.go-mono.com/mono-downloads/download.html mono-project.com] or from [http://www.monodevelop.com/Download monodevelop.com]
 
 Open the UvsChess.sln file, and compile.
-Run the build.sh script to compile the project from the command line. You can also use tools like Mono Develop.
+You can also run the build.sh script to compile the project from the command line.
+
+==Mac==
+
+For the Mac, the svn command line tool is installed by default. See the Source Tab for instructions on checking out the source from svn.
+
+We recommend using MonoDevelop as the IDE. It's free! You can get the latest version at [http://www.go-mono.com/mono-downloads/download.html mono-project.com] or from [http://www.monodevelop.com/Download monodevelop.com]
+
+Open the UvsChess.sln file, and compile.
+You can also run the build.sh script to compile the project from the command line.
