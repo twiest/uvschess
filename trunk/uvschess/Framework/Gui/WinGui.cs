@@ -105,8 +105,6 @@ namespace UvsChess.Gui
 
                 lstHistory.Items.Clear();
 
-                chessBoardControl.ResetBoard(line);
-
                 ChessState tmpState = new ChessState(line);
 
                 AddToHistory(new List<ChessState>() { tmpState });
@@ -419,6 +417,8 @@ namespace UvsChess.Gui
             ChessState tmpState = (ChessState)lstHistory.SelectedItem;
             //ChessState tmpState = new ChessState(item.fenboard);
             tmpState.MakeMove(move);
+            tmpState.PreviousMove = null;
+            tmpState.PreviousBoard = null;
 
             if (radWhite.Checked)
             {
@@ -662,7 +662,7 @@ namespace UvsChess.Gui
             SetFullMoves(tmpState.FullMoves);
             SetHalfMoves(tmpState.HalfMoves);
 
-            chessBoardControl.ResetBoard(tmpState.CurrentBoard);
+            chessBoardControl.ResetBoard(tmpState.CurrentBoard, tmpState.PreviousMove);
         }
 
         private void SelectRadio(RadioButton rad)
