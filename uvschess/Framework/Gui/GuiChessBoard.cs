@@ -41,6 +41,7 @@ namespace UvsChess.Gui
         public PieceMovedByHumanDelegate PieceMovedByHuman = null;
 
         ChessBoard _board = new ChessBoard();
+        ChessMove _lastMove = null;
         int _boardWidth;
         int _boardHeight;
         int _tileWidth;
@@ -64,6 +65,7 @@ namespace UvsChess.Gui
         Bitmap _cornerBorder;
         Bitmap _darkTile;
         Bitmap _lightTile;
+        Bitmap _yellowTile;
 
         public GuiChessBoard()
         {
@@ -85,6 +87,11 @@ namespace UvsChess.Gui
             {
                 switch (curRes)
                 {
+                    case "UvsChess.Images.Chess_YellowBackground.png":
+                        _yellowTile = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _yellowTile.SetResolution(res, res);                        
+                        break;
+                        
                     case "UvsChess.Images.Chess_DarkBackground.png":
                         _darkTile = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
                         _darkTile.SetResolution(res, res);                        
@@ -495,6 +502,17 @@ namespace UvsChess.Gui
                         boardGraphics.DrawImage(_darkTile, curX, curY);
                     }
 
+                    if (_lastMove != null)
+                    {
+                        ChessLocation curLoc = new ChessLocation(x, y);
+
+                        if ((_lastMove.From == curLoc) ||
+                            (_lastMove.To == curLoc))
+                        {
+                            boardGraphics.DrawImage(_yellowTile, curX, curY);                            
+                        }
+                    }
+
                     if (board[x, y] != ChessPiece.Empty)
                     {
                         boardGraphics.DrawImage(_pieceBitmaps[(int)board[x, y]], curX, curY);
@@ -518,30 +536,23 @@ namespace UvsChess.Gui
         /// <param name="board"></param>
         public void ResetBoard(ChessBoard board)
         {
-            if (Board != board)
-            {
-                Board = board.Clone();
-                _boardChanged = true;
-                this.Invalidate();
-            }
+            ResetBoard(board, null);
         }
 
         /// <summary>
         /// Resets the chess board to the given state
         /// </summary>
-        /// <param name="fenboard"></param>
-        public void ResetBoard(string fenboard)
+        /// <param name="board"></param>
+        public void ResetBoard(ChessBoard board, ChessMove lastMove)
         {
-            ResetBoard(new ChessState(fenboard).CurrentBoard);
-        }
+            if (Board != board)
+            {
+                Board = board.Clone();
+                _boardChanged = true;
+                _lastMove = lastMove;
 
-        /// <summary>
-        /// Resets the chess board to the standard starting state
-        /// </summary>
-        /// <param name="fenboard"></param>        
-        public void ResetBoard()
-        {
-            ResetBoard(new ChessBoard());
+                this.Invalidate();
+            }
         }
     }
 }
