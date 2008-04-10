@@ -197,7 +197,7 @@ namespace UvsChess.Framework
 
                 if (!this.IsGameRunning)
                 {
-                    // if we're not running, leave the method
+                    // if we're no longer running, leave the method
                     return;
                 }
 
@@ -248,30 +248,36 @@ namespace UvsChess.Framework
             }
             else //player is human
             {
-                this.SetGuiChessBoard_IsLocked(false);                
-                while (!isValidMove)
+                this.SetGuiChessBoard_IsLocked(false);
+
+                nextMove = player.GetNextMove(mainChessState.CurrentBoard);
+
+                if (!IsGameRunning)
                 {
-                    nextMove = player.GetNextMove(mainChessState.CurrentBoard);
-
-                    if (!IsGameRunning)
-                    {
-                        // if we're not running, leave the method
-                        return;
-                    }
-
-                    newstate = mainChessState.Clone();
-                    newstate.MakeMove(nextMove);
-
-                    if (opponent.IsHuman)
-                    {
-                        isValidMove = true;
-                    }
-                    else
-                    {
-                        isValidMove = opponent.AI.IsValidMove(newstate);
-                    }
+                    // if we're no longer running, leave the method
+                    return;
                 }
+
+                newstate = mainChessState.Clone();
+                newstate.MakeMove(nextMove);
+
+                if (opponent.IsHuman)
+                {
+                    isValidMove = true;
+                }
+                else
+                {
+                    isValidMove = opponent.AI.IsValidMove(newstate);
+                }
+
                 this.SetGuiChessBoard_IsLocked(true);
+            }
+                        
+            if (UpdatedState != null)
+            {
+                // If someone is sub'd to our update delegate, 
+                // update them with the new state.
+                UpdatedState(newstate);
             }
 
             if (isValidMove)
@@ -300,12 +306,6 @@ namespace UvsChess.Framework
                         IsGameRunning = false;
                         results = "Game is a stalemate. 50 moves were made without a kill or a pawn advancement.";
                     }
-                }
-
-                if (UpdatedState != null)
-                {
-                    //Updated(player.Color.ToString(), nextMove.ToString(), newstate.ToFenBoard());
-                    UpdatedState(newstate);
                 }
 
                 if (nextMove.Flag == ChessFlag.Check)
@@ -337,7 +337,7 @@ namespace UvsChess.Framework
                 else
                 {
                     results = opponent.ColorAndName + " has signaled that " + player.ColorAndName + 
-                              " returned an invalid move returned, therefore " + player.ColorAndName + " loses!";
+                              " returned an invalid move!";
 
                     Logger.Log(player.ColorAndName + "'s invalid move was: " + nextMove.ToString());
                 }
