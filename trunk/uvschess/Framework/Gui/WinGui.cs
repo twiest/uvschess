@@ -148,34 +148,31 @@ namespace UvsChess.Gui
         {
             lock (_startStopGame_LockObj)
             {
-                // TODO: CHANGE COLOR OF GUI SO USER KNOWS IT'S RUNNING
+                // TODO: CHANGE COLOR OF GUI SO USER KNOWS IT'S RUNNING                
 
-                UpdateWinGuiOnTimer.SetGuiChessBoard_IsLocked(true);
-
-                SwitchWinGuiMode(true);
+                //SwitchWinGuiMode(true);
 
                 ChessState item = (ChessState)lstHistory.SelectedItem;
 
                 _mainGame = new ChessGame(item, WhitePlayerName, BlackPlayerName);
-                //_mainGame = new ChessGame(item.fenboard, WhitePlayerName, BlackPlayerName);
 
+                SwitchWinGuiMode(true);
 
+                //// Remove WinGui from the GuiChessBoard updates
+                //chessBoardControl.PieceMovedByHuman -= GuiChessBoardChangedByHuman;
 
-                // Remove WinGui from the GuiChessBoard updates
-                chessBoardControl.PieceMovedByHuman -= GuiChessBoardChangedByHuman;
+                //// Add the ChessGame to the GuiChessBoard updates
+                //chessBoardControl.PieceMovedByHuman += _mainGame.WhitePlayer_HumanMovedPieceEvent;
+                //chessBoardControl.PieceMovedByHuman += _mainGame.BlackPlayer_HumanMovedPieceEvent;
 
-                // Add the ChessGame to the GuiChessBoard updates
-                chessBoardControl.PieceMovedByHuman += _mainGame.WhitePlayer_HumanMovedPieceEvent;
-                chessBoardControl.PieceMovedByHuman += _mainGame.BlackPlayer_HumanMovedPieceEvent;
+                //// Add WinGui to the ChessGame updates event
+                ////_mainGame.Updated += OnChessGameUpdated;
+                //_mainGame.UpdatedState += OnChessGameUpdated;
 
-                // Add WinGui to the ChessGame updates event
-                //_mainGame.Updated += OnChessGameUpdated;
-                _mainGame.UpdatedState += OnChessGameUpdated;
+                //_mainGame.SetGuiChessBoard_IsLocked += UpdateWinGuiOnTimer.SetGuiChessBoard_IsLocked;
 
-                _mainGame.SetGuiChessBoard_IsLocked += UpdateWinGuiOnTimer.SetGuiChessBoard_IsLocked;
-
-                // Add WinGui to the DeclareResults event
-                _mainGame.DeclareResults += OnChessGameDeclareResults;
+                //// Add WinGui to the DeclareResults event
+                //_mainGame.DeclareResults += OnChessGameDeclareResults;
 
                 _mainGame.StartGame();
             }
@@ -188,28 +185,28 @@ namespace UvsChess.Gui
             {
                 lock (_startStopGame_LockObj)
                 {
-                    // Remove the ChessGame from the GuiChessBoard updates
-                    chessBoardControl.PieceMovedByHuman -= _mainGame.WhitePlayer_HumanMovedPieceEvent;
-                    chessBoardControl.PieceMovedByHuman -= _mainGame.BlackPlayer_HumanMovedPieceEvent;
+                    //// Remove the ChessGame from the GuiChessBoard updates
+                    //chessBoardControl.PieceMovedByHuman -= _mainGame.WhitePlayer_HumanMovedPieceEvent;
+                    //chessBoardControl.PieceMovedByHuman -= _mainGame.BlackPlayer_HumanMovedPieceEvent;
 
-                    // Remove WinGui from the ChessGame updates event
-                    //_mainGame.Updated -= OnChessGameUpdated;
-                    _mainGame.UpdatedState -= OnChessGameUpdated;
+                    //// Remove WinGui from the ChessGame updates event
+                    ////_mainGame.Updated -= OnChessGameUpdated;
+                    //_mainGame.UpdatedState -= OnChessGameUpdated;
 
-                    _mainGame.SetGuiChessBoard_IsLocked -= UpdateWinGuiOnTimer.SetGuiChessBoard_IsLocked;
+                    //_mainGame.SetGuiChessBoard_IsLocked -= UpdateWinGuiOnTimer.SetGuiChessBoard_IsLocked;
 
-                    // Remove WinGui from the DeclareResults event
-                    _mainGame.DeclareResults -= OnChessGameDeclareResults;
+                    //// Remove WinGui from the DeclareResults event
+                    //_mainGame.DeclareResults -= OnChessGameDeclareResults;
+
+                    SwitchWinGuiMode(false);
 
                     _mainGame.StopGameEarly();
                     _mainGame = null;
 
-                    // Add WinGui to the GuiChessBoard updates
-                    chessBoardControl.PieceMovedByHuman += GuiChessBoardChangedByHuman;
+                    //// Add WinGui to the GuiChessBoard updates
+                    //chessBoardControl.PieceMovedByHuman += GuiChessBoardChangedByHuman;                    
 
-                    UpdateWinGuiOnTimer.SetGuiChessBoard_IsLocked(false);
-
-                    SwitchWinGuiMode(false);
+                    //SwitchWinGuiMode(false);
                 }
             }
         }
@@ -390,16 +387,51 @@ namespace UvsChess.Gui
         {            
             if (isSwitchIntoGameMode)
             {
+                // Remove WinGui from the GuiChessBoard updates
+                chessBoardControl.PieceMovedByHuman -= GuiChessBoardChangedByHuman;
+
+                // Add the ChessGame to the GuiChessBoard updates
+                chessBoardControl.PieceMovedByHuman += _mainGame.WhitePlayer_HumanMovedPieceEvent;
+                chessBoardControl.PieceMovedByHuman += _mainGame.BlackPlayer_HumanMovedPieceEvent;
+
+                // Add WinGui to the ChessGame updates event
+                //_mainGame.Updated += OnChessGameUpdated;
+                _mainGame.UpdatedState += OnChessGameUpdated;
+
+                _mainGame.SetGuiChessBoard_IsLocked += UpdateWinGuiOnTimer.SetGuiChessBoard_IsLocked;
+
+                // Add WinGui to the DeclareResults event
+                _mainGame.DeclareResults += OnChessGameDeclareResults;
+
                 RemoveHistoryAfterSelected();
+
                 DisableMenuItemsDuringPlay();
                 DisableRadioBtnsAndComboBoxes();
                 DisableHistoryWindowClicking();
+                UpdateWinGuiOnTimer.SetGuiChessBoard_IsLocked(true);
             }
             else
             {
+                // Remove the ChessGame from the GuiChessBoard updates
+                chessBoardControl.PieceMovedByHuman -= _mainGame.WhitePlayer_HumanMovedPieceEvent;
+                chessBoardControl.PieceMovedByHuman -= _mainGame.BlackPlayer_HumanMovedPieceEvent;
+
+                // Remove WinGui from the ChessGame updates event
+                //_mainGame.Updated -= OnChessGameUpdated;
+                _mainGame.UpdatedState -= OnChessGameUpdated;
+
+                _mainGame.SetGuiChessBoard_IsLocked -= UpdateWinGuiOnTimer.SetGuiChessBoard_IsLocked;
+
+                // Remove WinGui from the DeclareResults event
+                _mainGame.DeclareResults -= OnChessGameDeclareResults;
+
+                // Add WinGui to the GuiChessBoard updates
+                chessBoardControl.PieceMovedByHuman += GuiChessBoardChangedByHuman; 
+
                 EnableMenuItemsAfterPlay();
                 EnableRadioBtnsAndComboBoxes();
                 EnableHistoryWindowClicking();
+                UpdateWinGuiOnTimer.SetGuiChessBoard_IsLocked(false);
             }
         }
 
