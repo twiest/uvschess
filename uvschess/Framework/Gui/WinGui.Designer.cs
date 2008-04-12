@@ -659,11 +659,11 @@ namespace UvsChess.Gui
         private System.Windows.Forms.ToolStripMenuItem clearHistoryToolStripMenuItem;
         private System.Windows.Forms.TabPage tabBlacksLog;
         private System.Windows.Forms.TabPage tabWhitesLog;
-        private System.Windows.Forms.ListBox lstWhitesLog;
-        private System.Windows.Forms.ListBox lstBlacksLog;
-        private System.Windows.Forms.CheckBox chkBxAutoScrollBlacksLog;
+        public  System.Windows.Forms.ListBox lstWhitesLog;
+        public  System.Windows.Forms.ListBox lstBlacksLog;
+        public  System.Windows.Forms.CheckBox chkBxAutoScrollBlacksLog;
         public  System.Windows.Forms.CheckBox chkBxAutoScrollMainLog;
-        private System.Windows.Forms.CheckBox chkBxAutoScrollWhitesLog;
+        public  System.Windows.Forms.CheckBox chkBxAutoScrollWhitesLog;
         private System.Windows.Forms.Button btnSaveMainLog;
         private System.Windows.Forms.Button btnClearMainLog;
         private System.Windows.Forms.Button btnClearWhitesLog;

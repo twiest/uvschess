@@ -571,48 +571,7 @@ namespace UvsChess.Gui
 
 
 
-        public void AddToWhitesLog(List<string> messages)
-        {
-            if (this.lstWhitesLog.InvokeRequired)
-            {
-                this.Invoke(new StringListParameterCallback(AddToWhitesLog), new object[] { messages });
-            }
-            else
-            {
-                lstWhitesLog.BeginUpdate();
-                lstWhitesLog.Items.AddRange(messages.ToArray());
-                lstWhitesLog.Items.Add("----" + lstWhitesLog.Items.Count.ToString() + "----" + messages.Count.ToString() + "----");
 
-                if (chkBxAutoScrollWhitesLog.Checked)
-                {
-                    lstWhitesLog.SelectedIndex = lstWhitesLog.Items.Count - 1;
-                    lstWhitesLog.ClearSelected();
-                }
-                lstWhitesLog.EndUpdate();
-            }
-        }
-
-        public void AddToBlacksLog(List<string> messages)
-        {
-            if (this.lstBlacksLog.InvokeRequired)
-            {
-                this.Invoke(new StringListParameterCallback(AddToBlacksLog), new object[] { messages });
-            }
-            else
-            {
-                lstBlacksLog.BeginUpdate();
-                lstBlacksLog.Items.AddRange(messages.ToArray());
-                lstBlacksLog.Items.Add("----" + lstBlacksLog.Items.Count.ToString() + "----" + messages.Count.ToString() + "----");
-
-                if (chkBxAutoScrollBlacksLog.Checked)
-                {
-                    lstBlacksLog.SelectedIndex = lstBlacksLog.Items.Count - 1;
-                    lstBlacksLog.ClearSelected();
-                }
-
-                lstBlacksLog.EndUpdate();
-            }
-        }
         #endregion
         
         private void lstHistory_SelectedIndexChanged(object sender, EventArgs e)
