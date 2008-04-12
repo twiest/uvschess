@@ -352,20 +352,7 @@ namespace UvsChess.Gui
         #region Game play methods and events
 
 
-        public void DeclareResults(List<string> results)
-        {
-            if (this.InvokeRequired)
-            {
-                this.Invoke(new StringListParameterCallback(DeclareResults), new object[] { results });
-            }
-            else
-            {
-                foreach (string curResult in results)
-                {
-                    System.Windows.Forms.MessageBox.Show(this, curResult);
-                }
-            }
-        }
+
 
         public void OnChessGameDeclareResults(string results)
         {

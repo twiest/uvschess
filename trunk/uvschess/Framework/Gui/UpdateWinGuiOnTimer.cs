@@ -54,6 +54,8 @@ namespace UvsChess.Gui
 
         public delegate void ChessStateListParameterCallback(List<ChessState> states);
         public delegate void BoolParameterCallback(bool val);
+
+        public delegate void StringListParameterCallback(List<string> text);
         
 
         public static void DeclareResults(string results)
@@ -217,7 +219,7 @@ namespace UvsChess.Gui
 
                     if ((tmpDeclareResults_Parameter1 != null) && (tmpDeclareResults_Parameter1.Count > 0))
                     {
-                        Gui.DeclareResults(tmpDeclareResults_Parameter1);                        
+                        Actually_DeclareResults(tmpDeclareResults_Parameter1);                        
                     }                    
 
                     if ( (tmpAddToMainLog_Parameter1 != null) && (tmpAddToMainLog_Parameter1.Count > 0) )
@@ -276,6 +278,21 @@ namespace UvsChess.Gui
             else
             {
                 Gui.chessBoardControl.IsLocked = isLocked;
+            }
+        }
+
+        private static void Actually_DeclareResults(List<string> results)
+        {
+            if (Gui.InvokeRequired)
+            {
+                Gui.Invoke(new StringListParameterCallback(Actually_DeclareResults), new object[] { results });
+            }
+            else
+            {
+                foreach (string curResult in results)
+                {
+                    System.Windows.Forms.MessageBox.Show(Gui, curResult);
+                }
             }
         }
     }
