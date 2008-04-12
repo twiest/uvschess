@@ -642,7 +642,7 @@ namespace UvsChess.Gui
         private System.Windows.Forms.RadioButton radBlack;
         private System.Windows.Forms.RadioButton radWhite;
         private System.Windows.Forms.ComboBox cmbWhite;
-        private System.Windows.Forms.ListBox lstHistory;
+        public  System.Windows.Forms.ListBox lstHistory;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.SplitContainer splitContainer2;
