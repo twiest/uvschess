@@ -56,7 +56,7 @@ namespace UvsChess.Gui
         public delegate void StringParameterCallback(string text);
         public delegate void StringListParameterCallback(List<string> text);
         public delegate void TwoStringListParameterCallback(List<string> text1, List<string> text2);
-        public delegate void ChessStateListParameterCallback(List<ChessState> states);
+        
         public delegate string CmbBoxParamaterCallback(ComboBox cmb);
         private delegate void RadioBtnParameterCallback(RadioButton rad);
         delegate void NoParameterCallback();
@@ -107,7 +107,7 @@ namespace UvsChess.Gui
 
                 ChessState tmpState = new ChessState(line);
 
-                AddToHistory(new List<ChessState>() { tmpState });
+                UpdateWinGuiOnTimer.AddToHistory(tmpState);
 
                 reader.Close();                
             }
@@ -215,7 +215,7 @@ namespace UvsChess.Gui
         {
             lstHistory.Items.Clear();
 
-            AddToHistory(new List<ChessState>() {new ChessState()});
+            UpdateWinGuiOnTimer.AddToHistory(new ChessState());
         }
         #endregion
 
@@ -563,26 +563,7 @@ namespace UvsChess.Gui
                 numFullMoves.Value = fullmoves;
             }
         }
-        public void AddToHistory(List<ChessState> states)
-        {
-            if (this.lstHistory.InvokeRequired)
-            {
-                this.Invoke(new ChessStateListParameterCallback(AddToHistory), new object[] { states });
-            }
-            else
-            {
-                lstHistory.BeginUpdate();
-                //lstHistory.Items.AddRange(states.ToArray());
-                foreach (ChessState state in states)
-                {
-                    lstHistory.Items.Add(state);
-                }
-                //lstHistory.Items.Add("hello");
-                lstHistory.SelectedIndex = lstHistory.Items.Count - 1;
-                lstHistory.EndUpdate();
-            }
 
-        }
 
         //public void AddToHistory(string message, string fenboards)
         //{

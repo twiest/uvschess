@@ -50,6 +50,9 @@ namespace UvsChess.Gui
         private static bool? _guiChessBoard_IsLocked = null;
 
         private static Timer _pollGuiTimer = null;
+
+
+        public delegate void ChessStateListParameterCallback(List<ChessState> states);
         
 
         public static void DeclareResults(string results)
@@ -100,19 +103,10 @@ namespace UvsChess.Gui
             }
         }
 
-        //public static void AddToHistory(string messages, string fenboards)
-        //{
-        //    lock (_updateGuiDataLockObject)
-        //    {
-        //        _AddToHistory_Parameter1.Add(messages);
-        //        _AddToHistory_Parameter2.Add(fenboards);
-        //    }
-        //}
         public static void AddToHistory(ChessState state)
         {
             lock (_updateGuiDataLockObject)
             {
-                //TODO
                 _AddToHistory_ChessState.Add(state);
             }
         }
@@ -205,14 +199,9 @@ namespace UvsChess.Gui
                 try
                 {
                     // History MUST be on top, since it's the one that updates the GuiChessBoard control
-                    //if ((tmpAddToHistory_Parameter1 != null) && (tmpAddToHistory_Parameter1.Count > 0))
-                    //{
-                    //    Gui.AddToHistory(tmpAddToHistory_Parameter1, tmpAddToHistory_Parameter2);
-                    //}
-
                     if ((tmpAddToHistory_ChessState != null) && (tmpAddToHistory_ChessState.Count > 0))
                     {
-                        Gui.AddToHistory(tmpAddToHistory_ChessState);
+                        AddToHistory(tmpAddToHistory_ChessState);
                     }
 
                     if (tmpGuiChessBoard_IsLocked != null)
@@ -254,6 +243,26 @@ namespace UvsChess.Gui
 
                 // Setup to Poll Again in <interval> ms
                 PollGuiOnce();
+            }
+        }
+
+        private static void AddToHistory(List<ChessState> states)
+        {
+            if (Gui.lstHistory.InvokeRequired)
+            {
+                Gui.lstHistory.Invoke(new ChessStateListParameterCallback(AddToHistory), new object[] { states });
+            }
+            else
+            {
+                Gui.lstHistory.BeginUpdate();
+                //lstHistory.Items.AddRange(states.ToArray());
+                foreach (ChessState state in states)
+                {
+                    Gui.lstHistory.Items.Add(state);
+                }
+                //lstHistory.Items.Add("hello");
+                Gui.lstHistory.SelectedIndex = Gui.lstHistory.Items.Count - 1;
+                Gui.lstHistory.EndUpdate();
             }
         }
     }
