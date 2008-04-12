@@ -224,7 +224,7 @@ namespace UvsChess.Gui
 
                     if ( (tmpAddToMainLog_Parameter1 != null) && (tmpAddToMainLog_Parameter1.Count > 0) )
                     {
-                        Gui.AddToMainLog(tmpAddToMainLog_Parameter1);                        
+                        Actually_AddToMainLog(tmpAddToMainLog_Parameter1);                        
                     }
 
                     if ((tmpAddToWhitesLog_Parameter1 != null) && (tmpAddToWhitesLog_Parameter1.Count > 0))
@@ -293,6 +293,28 @@ namespace UvsChess.Gui
                 {
                     System.Windows.Forms.MessageBox.Show(Gui, curResult);
                 }
+            }
+        }
+
+        private static void Actually_AddToMainLog(List<string> messages)
+        {
+            if (Gui.lstMainLog.InvokeRequired)
+            {
+                Gui.lstMainLog.Invoke(new StringListParameterCallback(Actually_AddToMainLog), new object[] { messages });
+            }
+            else
+            {
+                Gui.lstMainLog.BeginUpdate();
+                Gui.lstMainLog.Items.AddRange(messages.ToArray());
+                Gui.lstMainLog.Items.Add("----" + Gui.lstMainLog.Items.Count.ToString() + "----" + messages.Count.ToString() + "----");
+
+                if (Gui.chkBxAutoScrollMainLog.Checked)
+                {
+                    Gui.lstMainLog.SelectedIndex = Gui.lstMainLog.Items.Count - 1;
+                    Gui.lstMainLog.ClearSelected();
+                }
+
+                Gui.lstMainLog.EndUpdate();
             }
         }
     }
