@@ -569,27 +569,7 @@ namespace UvsChess.Gui
         //    }
         //}
 
-        public void AddToMainLog(List<string> messages)
-        {
-            if (this.lstMainLog.InvokeRequired)
-            {
-                this.Invoke(new StringListParameterCallback(AddToMainLog), new object[] { messages });
-            }
-            else
-            {
-                lstMainLog.BeginUpdate();
-                lstMainLog.Items.AddRange(messages.ToArray());
-                lstMainLog.Items.Add("----" + lstMainLog.Items.Count.ToString() + "----" + messages.Count.ToString() + "----");
 
-                if (chkBxAutoScrollMainLog.Checked)
-                {
-                    lstMainLog.SelectedIndex = lstMainLog.Items.Count - 1;
-                    lstMainLog.ClearSelected();
-                }
-
-                lstMainLog.EndUpdate();
-            }
-        }
 
         public void AddToWhitesLog(List<string> messages)
         {

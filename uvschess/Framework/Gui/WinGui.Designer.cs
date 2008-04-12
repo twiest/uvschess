@@ -649,7 +649,7 @@ namespace UvsChess.Gui
         public  GuiChessBoard chessBoardControl;
         private System.Windows.Forms.TabControl tabLogs;
         private System.Windows.Forms.TabPage tabMainLog;
-        private System.Windows.Forms.ListBox lstMainLog;
+        public  System.Windows.Forms.ListBox lstMainLog;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
@@ -662,7 +662,7 @@ namespace UvsChess.Gui
         private System.Windows.Forms.ListBox lstWhitesLog;
         private System.Windows.Forms.ListBox lstBlacksLog;
         private System.Windows.Forms.CheckBox chkBxAutoScrollBlacksLog;
-        private System.Windows.Forms.CheckBox chkBxAutoScrollMainLog;
+        public  System.Windows.Forms.CheckBox chkBxAutoScrollMainLog;
         private System.Windows.Forms.CheckBox chkBxAutoScrollWhitesLog;
         private System.Windows.Forms.Button btnSaveMainLog;
         private System.Windows.Forms.Button btnClearMainLog;
