@@ -54,7 +54,6 @@ namespace UvsChess.Gui
 
         
         public delegate void StringParameterCallback(string text);
-        public delegate void StringListParameterCallback(List<string> text);
         public delegate void TwoStringListParameterCallback(List<string> text1, List<string> text2);
         
         public delegate string CmbBoxParamaterCallback(ComboBox cmb);
@@ -104,6 +103,7 @@ namespace UvsChess.Gui
                 string line = reader.ReadLine();
 
                 lstHistory.Items.Clear();
+                //UpdateWinGuiOnTimer.ClearHistory();
 
                 ChessState tmpState = new ChessState(line);
 
@@ -214,6 +214,7 @@ namespace UvsChess.Gui
         private void clearHistoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
             lstHistory.Items.Clear();
+            //UpdateWinGuiOnTimer.ClearHistory();
 
             UpdateWinGuiOnTimer.AddToHistory(new ChessState());
         }
