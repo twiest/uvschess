@@ -38,31 +38,56 @@ namespace UvsChess.Gui
         private static int Interval = 50;
         private static object _updateGuiDataLockObject = new object();
         private static object _updateGuiLockObject = new object();
+        private static object _pollGuiLockObject = new object();
 
-        private static List<string> _DeclareResults_Parameter1 = new List<string>();
-        private static List<string> _AddToMainLog_Parameter1 = new List<string>();
-        private static List<string> _AddToWhitesLog_Parameter1 = new List<string>();
-        private static List<string> _AddToBlacksLog_Parameter1 = new List<string>();
-        private static List<string> _AddToHistory_Parameter1 = new List<string>();
-        private static List<string> _AddToHistory_Parameter2 = new List<string>();
-        private static List<ChessState> _AddToHistory_ChessState = new List<ChessState>();
-        private static bool? _isSwitchIntoGameMode_Parameter1 = null;
-        private static bool? _guiChessBoard_IsLocked = null;
+        private static List<GuiEvent> _guiEvents = new List<GuiEvent>();
+        private static List<GuiEvent> _tmpGuiEvents = null;
+
+        private static bool _isShuttingDown = false;
+
+        private static bool _wasMainLogUpdated = false;
+        private static bool _tmpWasMainLogUpdated = false;
+
+        private static bool _wasWhitesLogUpdated = false;
+        private static bool _tmpWasWhitesLogUpdated = false;
+
+        private static bool _wasBlacksLogUpdated = false;
+        private static bool _tmpWasBlacksLogUpdated = false; 
+
+        private static bool _wasHistoryUpdated = false;
+        private static bool _tmpWasHistoryUpdated = false;        
 
         private static Timer _pollGuiTimer = null;
 
+        delegate void NoParameterCallback();
+        delegate void ObjectParameterCallback(object obj);
 
-        public delegate void ChessStateListParameterCallback(List<ChessState> states);
-        public delegate void BoolParameterCallback(bool val);
+        private class GuiEvent
+        {
+            public ObjectParameterCallback EventCallback { get; set; }
+            public object EventArgs { get; set; }
 
-        public delegate void StringListParameterCallback(List<string> text);
-        
+            public GuiEvent(ObjectParameterCallback eventCallback, object eventArgs)
+            {
+                EventCallback = eventCallback;
+                EventArgs = eventArgs;
+            }
+        }
+
+
+        public static void ClearHistory()
+        {
+            lock (_updateGuiDataLockObject)
+            {
+                _guiEvents.Add(new GuiEvent(Actually_ClearHistory, null));
+            }
+        }
 
         public static void DeclareResults(string results)
         {
             lock (_updateGuiDataLockObject)
             {
-                _DeclareResults_Parameter1.Add(results);
+                _guiEvents.Add(new GuiEvent(Actually_DeclareResults, results));
             }
         }
 
@@ -70,7 +95,7 @@ namespace UvsChess.Gui
         {
             lock (_updateGuiDataLockObject)
             {
-                _guiChessBoard_IsLocked = isLocked;
+                _guiEvents.Add(new GuiEvent(Actually_SetGuiChessBoard_IsLocked, isLocked));
             }
         }
 
@@ -78,31 +103,34 @@ namespace UvsChess.Gui
         {
             lock (_updateGuiDataLockObject)
             {
-                _isSwitchIntoGameMode_Parameter1 = isSwitchIntoGameMode;
+                _guiEvents.Add(new GuiEvent(Actually_SwitchWinGuiMode, isSwitchIntoGameMode));
             }
         }
 
-        public static void AddToMainLog(string messages)
+        public static void AddToMainLog(string message)
         {
             lock (_updateGuiDataLockObject)
             {
-                _AddToMainLog_Parameter1.Add(messages);
+                _guiEvents.Add(new GuiEvent(Actually_AddToMainLog, message));
+                _wasMainLogUpdated = true;
             }
         }
 
-        public static void AddToWhitesLog(string messages)
+        public static void AddToWhitesLog(string message)
         {
             lock (_updateGuiDataLockObject)
             {
-                _AddToWhitesLog_Parameter1.Add(messages);
+                _guiEvents.Add(new GuiEvent(Actually_AddToWhitesLog, message));
+                _wasWhitesLogUpdated = true;
             }
         }
 
-        public static void AddToBlacksLog(string messages)
+        public static void AddToBlacksLog(string message)
         {
             lock (_updateGuiDataLockObject)
             {
-                _AddToBlacksLog_Parameter1.Add(messages);
+                _guiEvents.Add(new GuiEvent(Actually_AddToBlacksLog, message));
+                _wasBlacksLogUpdated = true;
             }
         }
 
@@ -110,254 +138,287 @@ namespace UvsChess.Gui
         {
             lock (_updateGuiDataLockObject)
             {
-                _AddToHistory_ChessState.Add(state);
+                _guiEvents.Add(new GuiEvent(Actually_AddToHistory, state));
+                _wasHistoryUpdated = true;
             }
         }
 
         public static void PollGuiOnce()
         {
-            // Run UpdateGui in <interval> ms, exactly one time. 
-            // In UpdateGui, I'll tell it to run me again, exactly once.
-            _pollGuiTimer = new Timer(UpdateGui, null, Interval, System.Threading.Timeout.Infinite);
+            lock (_pollGuiLockObject)
+            {
+                // only poll if we're not shutting down
+                if (!_isShuttingDown)
+                {
+                    // Run UpdateGui in <interval> ms, exactly one time. 
+                    // In UpdateGui, I'll tell it to run me again, exactly once.
+                    _pollGuiTimer = new Timer(UpdateGui, null, Interval, System.Threading.Timeout.Infinite);
+                }
+            }
         }
 
         public static void StopGuiPolling()
         {
-            if (_pollGuiTimer != null)
+            lock (_pollGuiLockObject)
             {
-                _pollGuiTimer.Change(System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
-                _pollGuiTimer = null;
+                _isShuttingDown = true;
+
+                if (_pollGuiTimer != null)
+                {
+                    // if there's a timer out there ready to go off, shut it down.
+                    _pollGuiTimer.Change(System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
+                    _pollGuiTimer = null;
+                }
             }
         }
 
         private static void UpdateGui(object state)
         {
-
-            List<string> tmpDeclareResults_Parameter1 = null;
-            List<string> tmpAddToMainLog_Parameter1 = null;
-            List<string> tmpAddToWhitesLog_Parameter1 = null;
-            List<string> tmpAddToBlacksLog_Parameter1 = null;
-            List<string> tmpAddToHistory_Parameter1 = null;
-            List<string> tmpAddToHistory_Parameter2 = null;
-            List<ChessState> tmpAddToHistory_ChessState = null;
-            bool? tmpIsSwitchIntoGameMode = null;
-            bool? tmpGuiChessBoard_IsLocked = null;
-
-            // This should guarantee that we won't lose any data.
-            lock (_updateGuiDataLockObject)
+            if (!_isShuttingDown)
             {
-                if (_DeclareResults_Parameter1.Count > 0)
+                // This should guarantee that we won't lose any data.
+                lock (_updateGuiDataLockObject)
                 {
-                    tmpDeclareResults_Parameter1 = new List<string>(_DeclareResults_Parameter1);
-                    _DeclareResults_Parameter1.Clear();
-                }
-
-                if (_guiChessBoard_IsLocked != null)
-                {
-                    tmpGuiChessBoard_IsLocked = _guiChessBoard_IsLocked.Value;
-                    _guiChessBoard_IsLocked = null;
-                }
-
-                if (_isSwitchIntoGameMode_Parameter1 != null)
-                {
-                    tmpIsSwitchIntoGameMode = _isSwitchIntoGameMode_Parameter1.Value;
-                    _isSwitchIntoGameMode_Parameter1 = null;
-                }
-
-                if (_AddToMainLog_Parameter1.Count > 0)
-                {
-                    tmpAddToMainLog_Parameter1 = new List<string>(_AddToMainLog_Parameter1);
-                    _AddToMainLog_Parameter1.Clear();
-                }
-
-                if (_AddToWhitesLog_Parameter1.Count > 0)
-                {
-                    tmpAddToWhitesLog_Parameter1 = new List<string>(_AddToWhitesLog_Parameter1);
-                    _AddToWhitesLog_Parameter1.Clear();
-                }
-
-                if (_AddToBlacksLog_Parameter1.Count > 0)
-                {
-                    tmpAddToBlacksLog_Parameter1 = new List<string>(_AddToBlacksLog_Parameter1);
-                    _AddToBlacksLog_Parameter1.Clear();
-                }
-
-                if (_AddToHistory_Parameter1.Count > 0)
-                {
-                    tmpAddToHistory_Parameter1 = new List<string>(_AddToHistory_Parameter1);
-                    tmpAddToHistory_Parameter2 = new List<string>(_AddToHistory_Parameter2);
-                    _AddToHistory_Parameter1.Clear();
-                    _AddToHistory_Parameter2.Clear();
-                }
-
-                if (_AddToHistory_ChessState.Count > 0)
-                {
-                    tmpAddToHistory_ChessState = new List<ChessState>(_AddToHistory_ChessState);
-                    _AddToHistory_ChessState.Clear();
-                }
-            }
-
-            lock (_updateGuiLockObject)
-            {                
-                try
-                {
-                    // History MUST be on top, since it's the one that updates the GuiChessBoard control
-                    if ((tmpAddToHistory_ChessState != null) && (tmpAddToHistory_ChessState.Count > 0))
+                    if (_guiEvents.Count > 0)
                     {
-                        Actually_AddToHistory(tmpAddToHistory_ChessState);
+                        _tmpGuiEvents =_guiEvents;
+                        _guiEvents = new List<GuiEvent>();
+                    }
+                    else
+                    {
+                        _tmpGuiEvents = null;
                     }
 
-                    if (tmpGuiChessBoard_IsLocked != null)
+                    if (_wasMainLogUpdated)
                     {
-                        Actually_SetGuiChessBoard_IsLocked(tmpGuiChessBoard_IsLocked.Value);
+                        _tmpWasMainLogUpdated = true;
+                        _wasMainLogUpdated = false;
+                    }
+                    else
+                    {
+                        _tmpWasMainLogUpdated = false;
                     }
 
-                    if (tmpIsSwitchIntoGameMode != null)
+                    if (_wasWhitesLogUpdated)
                     {
-                        Gui.SwitchWinGuiMode(tmpIsSwitchIntoGameMode.Value);
+                        _tmpWasWhitesLogUpdated = true;
+                        _wasWhitesLogUpdated = false;
+                    }
+                    else
+                    {
+                        _tmpWasWhitesLogUpdated = false;
                     }
 
-                    if ((tmpDeclareResults_Parameter1 != null) && (tmpDeclareResults_Parameter1.Count > 0))
+                    if (_wasBlacksLogUpdated)
                     {
-                        Actually_DeclareResults(tmpDeclareResults_Parameter1);                        
-                    }                    
-
-                    if ( (tmpAddToMainLog_Parameter1 != null) && (tmpAddToMainLog_Parameter1.Count > 0) )
+                        _tmpWasBlacksLogUpdated = true;
+                        _wasBlacksLogUpdated = false;
+                    }
+                    else
                     {
-                        Actually_AddToMainLog(tmpAddToMainLog_Parameter1);                        
+                        _tmpWasBlacksLogUpdated = false;
                     }
 
-                    if ((tmpAddToWhitesLog_Parameter1 != null) && (tmpAddToWhitesLog_Parameter1.Count > 0))
+                    if (_wasHistoryUpdated)
                     {
-                        Actually_AddToWhitesLog(tmpAddToWhitesLog_Parameter1);
+                        _tmpWasHistoryUpdated = true;
+                        _wasHistoryUpdated = false;
                     }
-
-                    if ((tmpAddToBlacksLog_Parameter1 != null) && (tmpAddToBlacksLog_Parameter1.Count > 0))
+                    else
                     {
-                        Actually_AddToBlacksLog(tmpAddToBlacksLog_Parameter1);
+                        _tmpWasHistoryUpdated = false;
                     }
                 }
-                catch
+
+                lock (_updateGuiLockObject)
                 {
-                    // this is to catch any errant exceptions that might 
-                    // be thrown when we shut down (if the form is closing 
-                    // and we're trying to update the gui)
-                }
+                    try
+                    {
+                        LstBoxes_BeginUpdate();
 
-                // Setup to Poll Again in <interval> ms
-                PollGuiOnce();
+                        if (_tmpGuiEvents != null)
+                        {
+                            foreach (GuiEvent curEvent in _tmpGuiEvents)
+                            {
+                                // Process the GUI Events one event at a time,
+                                // _and_ in the same order that they were received.
+                                curEvent.EventCallback(curEvent.EventArgs);
+                            }
+                        }
+
+                        LstBoxes_EndUpdate();
+                    }
+                    catch
+                    {
+                        // this is to catch any errant exceptions that might 
+                        // be thrown when we shut down (if the form is closing 
+                        // and we're trying to update the gui)
+                    }
+
+                    // Setup to Poll Again in <interval> ms
+                    PollGuiOnce();
+                }
             }
         }
 
-        private static void Actually_AddToHistory(List<ChessState> states)
-        {
-            if (Gui.lstHistory.InvokeRequired)
-            {
-                Gui.lstHistory.Invoke(new ChessStateListParameterCallback(Actually_AddToHistory), new object[] { states });
-            }
-            else
-            {
-                Gui.lstHistory.BeginUpdate();
-                //lstHistory.Items.AddRange(states.ToArray());
-                foreach (ChessState state in states)
-                {
-                    Gui.lstHistory.Items.Add(state);
-                }
-                //lstHistory.Items.Add("hello");
-                Gui.lstHistory.SelectedIndex = Gui.lstHistory.Items.Count - 1;
-                Gui.lstHistory.EndUpdate();
-            }
-        }
-
-        private static void Actually_SetGuiChessBoard_IsLocked(bool isLocked)
-        {
-            if (Gui.chessBoardControl.InvokeRequired)
-            {
-                Gui.chessBoardControl.Invoke(new BoolParameterCallback(SetGuiChessBoard_IsLocked), new object[] { isLocked });
-            }
-            else
-            {
-                Gui.chessBoardControl.IsLocked = isLocked;
-            }
-        }
-
-        private static void Actually_DeclareResults(List<string> results)
+        private static void LstBoxes_BeginUpdate()
         {
             if (Gui.InvokeRequired)
             {
-                Gui.Invoke(new StringListParameterCallback(Actually_DeclareResults), new object[] { results });
+                Gui.Invoke(new NoParameterCallback(LstBoxes_BeginUpdate));
             }
             else
             {
-                foreach (string curResult in results)
+                if (_tmpWasHistoryUpdated)
                 {
-                    System.Windows.Forms.MessageBox.Show(Gui, curResult);
+                    Gui.lstHistory.BeginUpdate();
+                }
+
+                if (_tmpWasMainLogUpdated)
+                {
+                    Gui.lstMainLog.BeginUpdate();
+                }
+
+                if (_tmpWasWhitesLogUpdated)
+                {
+                    Gui.lstWhitesLog.BeginUpdate();
+                }
+
+                if (_tmpWasBlacksLogUpdated)
+                {
+                    Gui.lstBlacksLog.BeginUpdate();
                 }
             }
         }
 
-        private static void Actually_AddToMainLog(List<string> messages)
+        private static void LstBoxes_EndUpdate()
         {
-            if (Gui.lstMainLog.InvokeRequired)
+            if (Gui.InvokeRequired)
             {
-                Gui.lstMainLog.Invoke(new StringListParameterCallback(Actually_AddToMainLog), new object[] { messages });
+                Gui.Invoke(new NoParameterCallback(LstBoxes_EndUpdate));
             }
             else
             {
-                Gui.lstMainLog.BeginUpdate();
-                Gui.lstMainLog.Items.AddRange(messages.ToArray());
-                Gui.lstMainLog.Items.Add("----" + Gui.lstMainLog.Items.Count.ToString() + "----" + messages.Count.ToString() + "----");
+                if (_tmpWasHistoryUpdated)
+                {
+                    Gui.lstHistory.EndUpdate();
+                }
 
+                if (_tmpWasMainLogUpdated)
+                {
+                    Gui.lstMainLog.EndUpdate();
+                }
+
+                if (_tmpWasWhitesLogUpdated)
+                {
+                    Gui.lstWhitesLog.EndUpdate();
+                }
+
+                if (_tmpWasBlacksLogUpdated)
+                {
+                    Gui.lstBlacksLog.EndUpdate();
+                }
+            }
+        }
+
+        private static void Actually_ClearHistory(object eventArgs)
+        {
+            Gui.lstHistory.Items.Clear();
+        }
+
+        private static void Actually_SwitchWinGuiMode(object isSwitchIntoGameMode)
+        {
+            Gui.SwitchWinGuiMode((bool)isSwitchIntoGameMode);
+        }
+
+        private static void Actually_AddToHistory(object state)
+        {
+            if (Gui.lstHistory.InvokeRequired)
+            {
+                Gui.lstHistory.Invoke(new ObjectParameterCallback(Actually_AddToHistory), new object[] { state });
+            }
+            else
+            {                    
+                Gui.lstHistory.Items.Add(state);
+                Gui.lstHistory.SelectedIndex = Gui.lstHistory.Items.Count - 1;                    
+            }
+        }
+
+        private static void Actually_SetGuiChessBoard_IsLocked(object isLocked)
+        {
+            if (Gui.chessBoardControl.InvokeRequired)
+            {
+                Gui.chessBoardControl.Invoke(new ObjectParameterCallback(Actually_SetGuiChessBoard_IsLocked), new object[] { isLocked });
+            }
+            else
+            {
+                Gui.chessBoardControl.IsLocked = (bool)isLocked;
+            }
+        }
+
+        private static void Actually_DeclareResults(object result)
+        {
+            if (Gui.InvokeRequired)
+            {
+                Gui.Invoke(new ObjectParameterCallback(Actually_DeclareResults), new object[] { result});
+            }
+            else
+            {
+                 System.Windows.Forms.MessageBox.Show(Gui, (string)result);
+            }
+        }
+
+        private static void Actually_AddToMainLog(object message)
+        {
+            if (Gui.lstMainLog.InvokeRequired)
+            {
+                Gui.lstMainLog.Invoke(new ObjectParameterCallback(Actually_AddToMainLog), new object[] { message });
+            }
+            else
+            {
+                Gui.lstMainLog.Items.Add(message);
+ 
                 if (Gui.chkBxAutoScrollMainLog.Checked)
                 {
                     Gui.lstMainLog.SelectedIndex = Gui.lstMainLog.Items.Count - 1;
                     Gui.lstMainLog.ClearSelected();
                 }
-
-                Gui.lstMainLog.EndUpdate();
             }
         }
 
-        private static void Actually_AddToWhitesLog(List<string> messages)
+        private static void Actually_AddToWhitesLog(object message)
         {
             if (Gui.lstWhitesLog.InvokeRequired)
             {
-                Gui.lstWhitesLog.Invoke(new StringListParameterCallback(Actually_AddToWhitesLog), new object[] { messages });
+                Gui.lstWhitesLog.Invoke(new ObjectParameterCallback(Actually_AddToWhitesLog), new object[] { message });
             }
             else
             {
-                Gui.lstWhitesLog.BeginUpdate();
-                Gui.lstWhitesLog.Items.AddRange(messages.ToArray());
-                Gui.lstWhitesLog.Items.Add("----" + Gui.lstWhitesLog.Items.Count.ToString() + "----" + messages.Count.ToString() + "----");
+                Gui.lstWhitesLog.Items.Add(message);
 
                 if (Gui.chkBxAutoScrollWhitesLog.Checked)
                 {
                     Gui.lstWhitesLog.SelectedIndex = Gui.lstWhitesLog.Items.Count - 1;
                     Gui.lstWhitesLog.ClearSelected();
                 }
-                Gui.lstWhitesLog.EndUpdate();
             }
         }
 
-        private static void Actually_AddToBlacksLog(List<string> messages)
+        private static void Actually_AddToBlacksLog(object message)
         {
             if (Gui.lstBlacksLog.InvokeRequired)
             {
-                Gui.lstBlacksLog.Invoke(new StringListParameterCallback(Actually_AddToBlacksLog), new object[] { messages });
+                Gui.lstBlacksLog.Invoke(new ObjectParameterCallback(Actually_AddToBlacksLog), new object[] { message });
             }
             else
             {
-                Gui.lstBlacksLog.BeginUpdate();
-                Gui.lstBlacksLog.Items.AddRange(messages.ToArray());
-                Gui.lstBlacksLog.Items.Add("----" + Gui.lstBlacksLog.Items.Count.ToString() + "----" + messages.Count.ToString() + "----");
+                Gui.lstBlacksLog.Items.Add(message);
 
                 if (Gui.chkBxAutoScrollBlacksLog.Checked)
                 {
                     Gui.lstBlacksLog.SelectedIndex = Gui.lstBlacksLog.Items.Count - 1;
                     Gui.lstBlacksLog.ClearSelected();
                 }
-
-                Gui.lstBlacksLog.EndUpdate();
             }
         }
     }
