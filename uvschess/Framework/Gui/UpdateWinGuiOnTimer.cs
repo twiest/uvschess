@@ -53,6 +53,7 @@ namespace UvsChess.Gui
 
 
         public delegate void ChessStateListParameterCallback(List<ChessState> states);
+        public delegate void BoolParameterCallback(bool val);
         
 
         public static void DeclareResults(string results)
@@ -201,12 +202,12 @@ namespace UvsChess.Gui
                     // History MUST be on top, since it's the one that updates the GuiChessBoard control
                     if ((tmpAddToHistory_ChessState != null) && (tmpAddToHistory_ChessState.Count > 0))
                     {
-                        AddToHistory(tmpAddToHistory_ChessState);
+                        Actually_AddToHistory(tmpAddToHistory_ChessState);
                     }
 
                     if (tmpGuiChessBoard_IsLocked != null)
                     {
-                        Gui.SetGuiChessBoard_IsLocked(tmpGuiChessBoard_IsLocked.Value);
+                        Actually_SetGuiChessBoard_IsLocked(tmpGuiChessBoard_IsLocked.Value);
                     }
 
                     if (tmpIsSwitchIntoGameMode != null)
@@ -246,11 +247,11 @@ namespace UvsChess.Gui
             }
         }
 
-        private static void AddToHistory(List<ChessState> states)
+        private static void Actually_AddToHistory(List<ChessState> states)
         {
             if (Gui.lstHistory.InvokeRequired)
             {
-                Gui.lstHistory.Invoke(new ChessStateListParameterCallback(AddToHistory), new object[] { states });
+                Gui.lstHistory.Invoke(new ChessStateListParameterCallback(Actually_AddToHistory), new object[] { states });
             }
             else
             {
@@ -263,6 +264,18 @@ namespace UvsChess.Gui
                 //lstHistory.Items.Add("hello");
                 Gui.lstHistory.SelectedIndex = Gui.lstHistory.Items.Count - 1;
                 Gui.lstHistory.EndUpdate();
+            }
+        }
+
+        private static void Actually_SetGuiChessBoard_IsLocked(bool isLocked)
+        {
+            if (Gui.chessBoardControl.InvokeRequired)
+            {
+                Gui.chessBoardControl.Invoke(new BoolParameterCallback(SetGuiChessBoard_IsLocked), new object[] { isLocked });
+            }
+            else
+            {
+                Gui.chessBoardControl.IsLocked = isLocked;
             }
         }
     }

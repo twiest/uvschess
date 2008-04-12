@@ -52,7 +52,7 @@ namespace UvsChess.Gui
         public delegate void PlayCompletedHandler();
         protected delegate void PlayDelegate();
 
-        public delegate void BoolParameterCallback(bool val);
+        
         public delegate void StringParameterCallback(string text);
         public delegate void StringListParameterCallback(List<string> text);
         public delegate void TwoStringListParameterCallback(List<string> text1, List<string> text2);
@@ -350,17 +350,7 @@ namespace UvsChess.Gui
         #endregion
 
         #region Game play methods and events
-        public void SetGuiChessBoard_IsLocked(bool isLocked)
-        {
-            if (chessBoardControl.InvokeRequired)
-            {
-                chessBoardControl.Invoke(new BoolParameterCallback(SetGuiChessBoard_IsLocked), new object[] { isLocked });
-            }
-            else
-            {
-                chessBoardControl.IsLocked = isLocked;
-            }
-        }
+
 
         public void DeclareResults(List<string> results)
         {

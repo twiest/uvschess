@@ -646,7 +646,7 @@ namespace UvsChess.Gui
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.SplitContainer splitContainer2;
-        private GuiChessBoard chessBoardControl;
+        public  GuiChessBoard chessBoardControl;
         private System.Windows.Forms.TabControl tabLogs;
         private System.Windows.Forms.TabPage tabMainLog;
         private System.Windows.Forms.ListBox lstMainLog;
