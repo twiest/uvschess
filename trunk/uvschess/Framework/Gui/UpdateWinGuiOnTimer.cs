@@ -229,12 +229,12 @@ namespace UvsChess.Gui
 
                     if ((tmpAddToWhitesLog_Parameter1 != null) && (tmpAddToWhitesLog_Parameter1.Count > 0))
                     {
-                        Gui.AddToWhitesLog(tmpAddToWhitesLog_Parameter1);
+                        Actually_AddToWhitesLog(tmpAddToWhitesLog_Parameter1);
                     }
 
                     if ((tmpAddToBlacksLog_Parameter1 != null) && (tmpAddToBlacksLog_Parameter1.Count > 0))
                     {
-                        Gui.AddToBlacksLog(tmpAddToBlacksLog_Parameter1);
+                        Actually_AddToBlacksLog(tmpAddToBlacksLog_Parameter1);
                     }
                 }
                 catch
@@ -315,6 +315,49 @@ namespace UvsChess.Gui
                 }
 
                 Gui.lstMainLog.EndUpdate();
+            }
+        }
+
+        private static void Actually_AddToWhitesLog(List<string> messages)
+        {
+            if (Gui.lstWhitesLog.InvokeRequired)
+            {
+                Gui.lstWhitesLog.Invoke(new StringListParameterCallback(Actually_AddToWhitesLog), new object[] { messages });
+            }
+            else
+            {
+                Gui.lstWhitesLog.BeginUpdate();
+                Gui.lstWhitesLog.Items.AddRange(messages.ToArray());
+                Gui.lstWhitesLog.Items.Add("----" + Gui.lstWhitesLog.Items.Count.ToString() + "----" + messages.Count.ToString() + "----");
+
+                if (Gui.chkBxAutoScrollWhitesLog.Checked)
+                {
+                    Gui.lstWhitesLog.SelectedIndex = Gui.lstWhitesLog.Items.Count - 1;
+                    Gui.lstWhitesLog.ClearSelected();
+                }
+                Gui.lstWhitesLog.EndUpdate();
+            }
+        }
+
+        private static void Actually_AddToBlacksLog(List<string> messages)
+        {
+            if (Gui.lstBlacksLog.InvokeRequired)
+            {
+                Gui.lstBlacksLog.Invoke(new StringListParameterCallback(Actually_AddToBlacksLog), new object[] { messages });
+            }
+            else
+            {
+                Gui.lstBlacksLog.BeginUpdate();
+                Gui.lstBlacksLog.Items.AddRange(messages.ToArray());
+                Gui.lstBlacksLog.Items.Add("----" + Gui.lstBlacksLog.Items.Count.ToString() + "----" + messages.Count.ToString() + "----");
+
+                if (Gui.chkBxAutoScrollBlacksLog.Checked)
+                {
+                    Gui.lstBlacksLog.SelectedIndex = Gui.lstBlacksLog.Items.Count - 1;
+                    Gui.lstBlacksLog.ClearSelected();
+                }
+
+                Gui.lstBlacksLog.EndUpdate();
             }
         }
     }
