@@ -246,25 +246,7 @@ namespace UvsChess.Gui
                 {
                     try
                     {
-                        LstBoxes_BeginUpdate();
-
-                        if (_tmpGuiEvents != null)
-                        {
-                            while ((! _isShuttingDown) && (_tmpGuiEvents.Count > 0))
-                            {
-                                GuiEvent curEvent = _tmpGuiEvents[0];
-
-                                // Process the GUI Events one event at a time,
-                                // _and_ in the same order that they were received.
-                                curEvent.EventCallback(curEvent.EventArgs);
-                                _tmpGuiEvents.RemoveAt(0);
-                            }
-                        }
-
-                        if (! _isShuttingDown)
-                        {
-                            LstBoxes_EndUpdate();
-                        }
+                        RunThroughAllGuiEvents();
                     }
                     catch (Exception e)
                     {
@@ -280,63 +262,79 @@ namespace UvsChess.Gui
             }
         }
 
-        private static void LstBoxes_BeginUpdate()
+        private static void RunThroughAllGuiEvents()
         {
             if (Gui.InvokeRequired)
             {
-                Gui.Invoke(new NoParameterCallback(LstBoxes_BeginUpdate));
+                Gui.Invoke(new NoParameterCallback(RunThroughAllGuiEvents));
             }
             else
             {
-                if (_tmpWasHistoryUpdated)
+                LstBoxes_BeginUpdate();
+
+                if (_tmpGuiEvents != null)
                 {
-                    Gui.lstHistory.BeginUpdate();
+                    while ((!_isShuttingDown) && (_tmpGuiEvents.Count > 0))
+                    {
+                        GuiEvent curEvent = _tmpGuiEvents[0];
+
+                        // Process the GUI Events one event at a time,
+                        // _and_ in the same order that they were received.
+                        curEvent.EventCallback(curEvent.EventArgs);
+                        _tmpGuiEvents.RemoveAt(0);
+                    }
                 }
 
-                if (_tmpWasMainLogUpdated)
+                if (!_isShuttingDown)
                 {
-                    Gui.lstMainLog.BeginUpdate();
+                    LstBoxes_EndUpdate();
                 }
+            }
+        }
 
-                if (_tmpWasWhitesLogUpdated)
-                {
-                    Gui.lstWhitesLog.BeginUpdate();
-                }
+        private static void LstBoxes_BeginUpdate()
+        {
+            if (_tmpWasHistoryUpdated)
+            {
+                Gui.lstHistory.BeginUpdate();
+            }
 
-                if (_tmpWasBlacksLogUpdated)
-                {
-                    Gui.lstBlacksLog.BeginUpdate();
-                }
+            if (_tmpWasMainLogUpdated)
+            {
+                Gui.lstMainLog.BeginUpdate();
+            }
+
+            if (_tmpWasWhitesLogUpdated)
+            {
+                Gui.lstWhitesLog.BeginUpdate();
+            }
+
+            if (_tmpWasBlacksLogUpdated)
+            {
+                Gui.lstBlacksLog.BeginUpdate();
             }
         }
 
         private static void LstBoxes_EndUpdate()
         {
-            if (Gui.InvokeRequired)
+            if (_tmpWasHistoryUpdated)
             {
-                Gui.Invoke(new NoParameterCallback(LstBoxes_EndUpdate));
+                Gui.lstHistory.EndUpdate();
             }
-            else
+
+            if (_tmpWasMainLogUpdated)
             {
-                if (_tmpWasHistoryUpdated)
-                {
-                    Gui.lstHistory.EndUpdate();
-                }
+                Gui.lstMainLog.EndUpdate();
+            }
 
-                if (_tmpWasMainLogUpdated)
-                {
-                    Gui.lstMainLog.EndUpdate();
-                }
+            if (_tmpWasWhitesLogUpdated)
+            {
+                Gui.lstWhitesLog.EndUpdate();
+            }
 
-                if (_tmpWasWhitesLogUpdated)
-                {
-                    Gui.lstWhitesLog.EndUpdate();
-                }
-
-                if (_tmpWasBlacksLogUpdated)
-                {
-                    Gui.lstBlacksLog.EndUpdate();
-                }
+            if (_tmpWasBlacksLogUpdated)
+            {
+                Gui.lstBlacksLog.EndUpdate();
             }
         }
 
@@ -347,105 +345,56 @@ namespace UvsChess.Gui
 
         private static void Actually_AddToHistory(object state)
         {
-            if (Gui.lstHistory.InvokeRequired)
-            {
-                Gui.lstHistory.Invoke(new ObjectParameterCallback(Actually_AddToHistory), new object[] { state });
-            }
-            else
-            {                    
-                Gui.lstHistory.Items.Add(state);
-                Gui.lstHistory.SelectedIndex = Gui.lstHistory.Items.Count - 1;                    
-            }
+            Gui.lstHistory.Items.Add(state);
+            Gui.lstHistory.SelectedIndex = Gui.lstHistory.Items.Count - 1;
         }
 
         private static void Actually_SetGuiChessBoard_IsLocked(object isLocked)
         {
-            if (Gui.chessBoardControl.InvokeRequired)
-            {
-                Gui.chessBoardControl.Invoke(new ObjectParameterCallback(Actually_SetGuiChessBoard_IsLocked), new object[] { isLocked });
-            }
-            else
-            {
-                Gui.chessBoardControl.IsLocked = (bool)isLocked;
-            }
+            Gui.chessBoardControl.IsLocked = (bool)isLocked;
         }
 
         private static void Actually_DeclareResults(object result)
         {
-            if (Gui.InvokeRequired)
-            {
-                Gui.Invoke(new ObjectParameterCallback(Actually_DeclareResults), new object[] { result});
-            }
-            else
-            {
-                 System.Windows.Forms.MessageBox.Show(Gui, (string)result);
-            }
+            System.Windows.Forms.MessageBox.Show(Gui, (string)result);
         }
 
         private static void Actually_AddToMainLog(object message)
         {
-            if (Gui.lstMainLog.InvokeRequired)
+            Gui.lstMainLog.Items.Add(message);
+
+            if (Gui.chkBxAutoScrollMainLog.Checked)
             {
-                Gui.lstMainLog.Invoke(new ObjectParameterCallback(Actually_AddToMainLog), new object[] { message });
-            }
-            else
-            {
-                Gui.lstMainLog.Items.Add(message);
- 
-                if (Gui.chkBxAutoScrollMainLog.Checked)
-                {
-                    Gui.lstMainLog.SelectedIndex = Gui.lstMainLog.Items.Count - 1;
-                    Gui.lstMainLog.ClearSelected();
-                }
+                Gui.lstMainLog.SelectedIndex = Gui.lstMainLog.Items.Count - 1;
+                Gui.lstMainLog.ClearSelected();
             }
         }
 
         private static void Actually_AddToWhitesLog(object message)
         {
-            if (Gui.lstWhitesLog.InvokeRequired)
-            {
-                Gui.lstWhitesLog.Invoke(new ObjectParameterCallback(Actually_AddToWhitesLog), new object[] { message });
-            }
-            else
-            {
-                Gui.lstWhitesLog.Items.Add(message);
+            Gui.lstWhitesLog.Items.Add(message);
 
-                if (Gui.chkBxAutoScrollWhitesLog.Checked)
-                {
-                    Gui.lstWhitesLog.SelectedIndex = Gui.lstWhitesLog.Items.Count - 1;
-                    Gui.lstWhitesLog.ClearSelected();
-                }
+            if (Gui.chkBxAutoScrollWhitesLog.Checked)
+            {
+                Gui.lstWhitesLog.SelectedIndex = Gui.lstWhitesLog.Items.Count - 1;
+                Gui.lstWhitesLog.ClearSelected();
             }
         }
 
         private static void Actually_AddToBlacksLog(object message)
         {
-            if (Gui.lstBlacksLog.InvokeRequired)
-            {
-                Gui.lstBlacksLog.Invoke(new ObjectParameterCallback(Actually_AddToBlacksLog), new object[] { message });
-            }
-            else
-            {
-                Gui.lstBlacksLog.Items.Add(message);
+            Gui.lstBlacksLog.Items.Add(message);
 
-                if (Gui.chkBxAutoScrollBlacksLog.Checked)
-                {
-                    Gui.lstBlacksLog.SelectedIndex = Gui.lstBlacksLog.Items.Count - 1;
-                    Gui.lstBlacksLog.ClearSelected();
-                }
+            if (Gui.chkBxAutoScrollBlacksLog.Checked)
+            {
+                Gui.lstBlacksLog.SelectedIndex = Gui.lstBlacksLog.Items.Count - 1;
+                Gui.lstBlacksLog.ClearSelected();
             }
         }
 
         private static ChessState Actually_GetLstHistory_SelectedItem()
         {
-            if (Gui.lstHistory.InvokeRequired)
-            {
-                return (ChessState)Gui.lstHistory.Invoke(new NoParameterChessStateReturnCallback(Actually_GetLstHistory_SelectedItem));
-            }
-            else
-            {
-                return (ChessState)Gui.lstHistory.SelectedItem;
-            }
+            return (ChessState)Gui.lstHistory.SelectedItem;
         }
 
         private static void Actually_StartGame(object eventArgs)
@@ -522,119 +471,70 @@ namespace UvsChess.Gui
 
         private static void Actually_RemoveHistoryAfterSelected()
         {
-            if (Gui.lstHistory.InvokeRequired)
-            {
-                Gui.Invoke(new NoParameterCallback(Actually_RemoveHistoryAfterSelected), null);
-            }
-            else
-            {
-                int sel = Gui.lstHistory.SelectedIndex;
+            int sel = Gui.lstHistory.SelectedIndex;
 
-                if (sel < 0)
-                {
-                    return;
-                }
-                while (Gui.lstHistory.Items.Count > sel + 1)
-                {
-                    Gui.lstHistory.Items.RemoveAt(Gui.lstHistory.Items.Count - 1);
-                }
+            if (sel < 0)
+            {
+                return;
+            }
+            while (Gui.lstHistory.Items.Count > sel + 1)
+            {
+                Gui.lstHistory.Items.RemoveAt(Gui.lstHistory.Items.Count - 1);
             }
         }
 
         private static void Actually_DisableMenuItemsDuringPlay()
         {
-            if (Gui.radBlack.InvokeRequired)
-            {
-                Gui.Invoke(new NoParameterCallback(Actually_DisableMenuItemsDuringPlay), null);
-            }
-            else
-            {
-                Gui.startToolStripMenuItem.Enabled = false;
-                Gui.clearHistoryToolStripMenuItem.Enabled = false;
-                Gui.newToolStripMenuItem.Enabled = false;
+            Gui.startToolStripMenuItem.Enabled = false;
+            Gui.clearHistoryToolStripMenuItem.Enabled = false;
+            Gui.newToolStripMenuItem.Enabled = false;
 
-                Gui.openToolStripMenuItem.Enabled = false;
-                Gui.saveToolStripMenuItem.Enabled = false;
+            Gui.openToolStripMenuItem.Enabled = false;
+            Gui.saveToolStripMenuItem.Enabled = false;
 
-                Gui.stopToolStripMenuItem.Enabled = true;
-            }
+            Gui.stopToolStripMenuItem.Enabled = true;
         }
 
         private static void Actually_DisableRadioBtnsAndComboBoxes()
         {
-            if (Gui.radBlack.InvokeRequired)
-            {
-                Gui.Invoke(new NoParameterCallback(Actually_DisableRadioBtnsAndComboBoxes), null);
-            }
-            else
-            {
-                Gui.radBlack.Enabled = false;
-                Gui.radWhite.Enabled = false;
-                Gui.cmbBlack.Enabled = false;
-                Gui.cmbWhite.Enabled = false;
-                Gui.numFullMoves.Enabled = false;
-                Gui.numHalfMoves.Enabled = false;
-            }
+            Gui.radBlack.Enabled = false;
+            Gui.radWhite.Enabled = false;
+            Gui.cmbBlack.Enabled = false;
+            Gui.cmbWhite.Enabled = false;
+            Gui.numFullMoves.Enabled = false;
+            Gui.numHalfMoves.Enabled = false;
         }
 
         private static void Actually_DisableHistoryWindowClicking()
         {
-            if (Gui.lstHistory.InvokeRequired)
-            {
-                Gui.Invoke(new NoParameterCallback(Actually_DisableHistoryWindowClicking), null);
-            }
-            else
-            {
-                Gui.lstHistory.Enabled = false;
-            }
+            Gui.lstHistory.Enabled = false;
         }
 
         private static void Actually_EnableMenuItemsAfterPlay()
         {
-            if (Gui.radBlack.InvokeRequired)
-            {
-                Gui.Invoke(new NoParameterCallback(Actually_EnableMenuItemsAfterPlay), null);
-            }
-            else
-            {
-                Gui.startToolStripMenuItem.Enabled = true;
-                Gui.clearHistoryToolStripMenuItem.Enabled = true;
-                Gui.newToolStripMenuItem.Enabled = true;
+            Gui.startToolStripMenuItem.Enabled = true;
+            Gui.clearHistoryToolStripMenuItem.Enabled = true;
+            Gui.newToolStripMenuItem.Enabled = true;
 
-                Gui.openToolStripMenuItem.Enabled = true;
-                Gui.saveToolStripMenuItem.Enabled = true;
+            Gui.openToolStripMenuItem.Enabled = true;
+            Gui.saveToolStripMenuItem.Enabled = true;
 
-                Gui.stopToolStripMenuItem.Enabled = false;
-            }
+            Gui.stopToolStripMenuItem.Enabled = false;
         }
 
         private static void Actually_EnableRadioBtnsAndComboBoxes()
         {
-            if (Gui.radBlack.InvokeRequired)
-            {
-                Gui.Invoke(new NoParameterCallback(Actually_EnableRadioBtnsAndComboBoxes), null);
-            }
-            else
-            {
-                Gui.radBlack.Enabled = true;
-                Gui.radWhite.Enabled = true;
-                Gui.cmbBlack.Enabled = true;
-                Gui.cmbWhite.Enabled = true;
-                Gui.numFullMoves.Enabled = true;
-                Gui.numHalfMoves.Enabled = true;
-            }
+            Gui.radBlack.Enabled = true;
+            Gui.radWhite.Enabled = true;
+            Gui.cmbBlack.Enabled = true;
+            Gui.cmbWhite.Enabled = true;
+            Gui.numFullMoves.Enabled = true;
+            Gui.numHalfMoves.Enabled = true;
         }
 
         private static void Actually_EnableHistoryWindowClicking()
         {
-            if (Gui.lstHistory.InvokeRequired)
-            {
-                Gui.Invoke(new NoParameterCallback(Actually_EnableHistoryWindowClicking), null);
-            }
-            else
-            {
-                Gui.lstHistory.Enabled = true;
-            }
+            Gui.lstHistory.Enabled = true;
         }
     }
 }
