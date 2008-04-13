@@ -168,11 +168,12 @@ namespace UvsChess.Gui
                     {
                         RunThroughAllGuiEvents();
                     }
-                    catch
+                    catch (Exception e)
                     {
                         // this is to catch any errant exceptions that might 
                         // be thrown when we shut down (if the form is closing 
                         // and we're trying to update the gui)
+                        UvsChess.Framework.Logger.Log("  Exception: " + e.Message);
                     }
 
                     // Setup to Poll Again in <interval> ms
@@ -195,9 +196,18 @@ namespace UvsChess.Gui
                 {
                     GuiEvent curEvent = _tmpGuiEvents[0];
 
-                    // Process the GUI Events one event at a time,
-                    // _and_ in the same order that they were received.
-                    curEvent.EventCallback(curEvent.EventArgs);
+                    try
+                    {
+                        // Process the GUI Events one event at a time,
+                        // _and_ in the same order that they were received.
+                        curEvent.EventCallback(curEvent.EventArgs);
+                    }
+                    catch (Exception e)
+                    {
+                        // this is to catch exceptions from GuiEvents, 
+                        // close enough that I can get a good stack trace.
+                        UvsChess.Framework.Logger.Log("  Exception: " + e.Message);
+                    }
 
                     _tmpGuiEvents.RemoveAt(0);
                 }
@@ -732,7 +742,7 @@ namespace UvsChess.Gui
         {
             lock (_updateGuiDataLockObject)
             {
-                _guiEvents.Add(new GuiEvent(Actually_UpdateBoardBasedOnMove, selectedItem, move));
+                _guiEvents.Add(new GuiEvent(Actually_UpdateBoardBasedOnMove, selectedItem, move, isWhiteChecked));
             }
         }
 
@@ -763,7 +773,7 @@ namespace UvsChess.Gui
             Gui.lstHistory.SelectedItem = selectedItem;
 
             // Force update the lstHistory and the GuiChessBoard
-            Actually_UpdateBoardBasedOnLstHistory();
+            Actually_UpdateBoardBasedOnLstHistory(selectedItem);
         }
 
         public static void UpdateWhitesName(string name)
