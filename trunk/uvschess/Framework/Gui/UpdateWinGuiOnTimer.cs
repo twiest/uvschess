@@ -169,7 +169,7 @@ namespace UvsChess.Gui
             }
         }
 
-        public static void StopGuiPolling()
+        public static void ShutdownGuiEventLoop()
         {
             lock (_pollGuiLockObject)
             {
@@ -181,6 +181,8 @@ namespace UvsChess.Gui
                     _pollGuiTimer.Change(System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
                     _pollGuiTimer = null;
                 }
+
+                Actually_StopGame(null);
             }
         }
 
