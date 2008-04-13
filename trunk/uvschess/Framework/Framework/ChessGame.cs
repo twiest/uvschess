@@ -273,7 +273,7 @@ namespace UvsChess.Framework
                 this.SetGuiChessBoard_IsLocked(true);
             }
                         
-            if (UpdatedState != null)
+            if ((UpdatedState != null) && (newstate != null))
             {
                 // If someone is sub'd to our update delegate, 
                 // update them with the new state.
