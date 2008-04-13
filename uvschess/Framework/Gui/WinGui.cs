@@ -27,35 +27,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-using System.IO;
-using System.Threading;
-
 using UvsChess.Framework;
 
 namespace UvsChess.Gui
 {
     public partial class WinGui : Form
     {
-        #region Members        
-        Object _startStopGame_LockObj = new object();
-
-        public string WhitePlayerName = string.Empty;
-        public string BlackPlayerName = string.Empty;
-        
         List<AI> AvailableAIs = new List<AI>();
-        
-
-        public delegate void PlayCompletedHandler();
-        protected delegate void PlayDelegate();
-
-        
-        private delegate void RadioBtnParameterCallback(RadioButton rad);
-        delegate void NoParameterCallback();
-        delegate void IntParameterCallback(int i);
-        #endregion
 
         #region Constructors
         public WinGui()
@@ -63,17 +42,17 @@ namespace UvsChess.Gui
             InitializeComponent();
 
             UpdateWinGuiOnTimer.Gui = this;
+
+            UpdateWinGuiOnTimer.ResetHistory(new ChessState());
+
             UpdateWinGuiOnTimer.PollGuiOnce();
 
-            // Setup history lstBox
-            clearHistoryToolStripMenuItem_Click(null, null);
-
-            chessBoardControl.PieceMovedByHuman += GuiChessBoardChangedByHuman;
+            chessBoardControl.PieceMovedByHuman += UpdateWinGuiOnTimer.UpdateBoardBasedOnMove;
         }
 
         private void WinGui_Load(object sender, EventArgs e)
         {
-            DllLoader.SearhForAIs();
+            DllLoader.SearchForAIs();
 
             foreach (AI ai in DllLoader.AvailableAIs)
             {
@@ -83,48 +62,17 @@ namespace UvsChess.Gui
             cmbBlack.SelectedIndex = 0;
             cmbWhite.SelectedIndex = 0;
         }
-
         #endregion             
 
         #region File menu
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            openFileDialog1.Filter = "FEN files (*.fen)|*.fen|All files (*.*)| *.*";
-            DialogResult result = openFileDialog1.ShowDialog();
-            if (result == DialogResult.OK)
-            {
-                Logger.Log("Resetting chess board");
-                StreamReader reader = new StreamReader(openFileDialog1.FileName);
-                string line = reader.ReadLine();
-
-                lstHistory.Items.Clear();
-                //UpdateWinGuiOnTimer.ClearHistory();
-
-                ChessState tmpState = new ChessState(line);
-
-                UpdateWinGuiOnTimer.AddToHistory(tmpState);
-
-                reader.Close();                
-            }
+            UpdateWinGuiOnTimer.OpenStateFromDisk();
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            saveFileDialog1.Filter = "FEN files (*.fen) | *.fen";
-            DialogResult result = saveFileDialog1.ShowDialog();
-            if (result == DialogResult.OK)
-            {
-                StreamWriter writer = new StreamWriter(saveFileDialog1.FileName);
-
-                Logger.Log("Saving board to: " + saveFileDialog1.FileName);
-
-
-                ChessState item = (ChessState)lstHistory.SelectedItem;
-                string fenboard = item.ToFenBoard();
-
-                writer.WriteLine(fenboard);
-                writer.Close();
-            }
+            UpdateWinGuiOnTimer.SaveSelectedStateToDisk();
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -136,7 +84,7 @@ namespace UvsChess.Gui
         #region Game menu
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            clearHistoryToolStripMenuItem_Click(null, null);
+            UpdateWinGuiOnTimer.ResetHistory(new ChessState());
         }
 
         private void startToolStripMenuItem_Click(object sender, EventArgs e)
@@ -151,10 +99,7 @@ namespace UvsChess.Gui
 
         private void clearHistoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            lstHistory.Items.Clear();
-            //UpdateWinGuiOnTimer.ClearHistory();
-
-            UpdateWinGuiOnTimer.AddToHistory(new ChessState());
+            UpdateWinGuiOnTimer.ResetHistory(new ChessState());
         }
         #endregion
 
@@ -175,300 +120,72 @@ namespace UvsChess.Gui
         #region AISelector controls
         private void radWhiteBlack_CheckedChanged(object sender, EventArgs e)
         {
-            ChessState tmpState = (ChessState)lstHistory.SelectedItem;
-            //ChessState tmpState = new ChessState(item.fenboard);
-
-            if (radWhite.Checked)
-            {
-                tmpState.CurrentPlayerColor = ChessColor.White;
-            }
-            else
-            {
-                tmpState.CurrentPlayerColor = ChessColor.Black;
-            }
-
-            //item.fenboard = tmpState.ToFenBoard();
-
-            lstHistory.Items[lstHistory.SelectedIndex] = tmpState;
-        }
-
-        private void radWhite_SetChecked()
-        {
-            if (this.radWhite.InvokeRequired)
-            {
-                this.Invoke(new NoParameterCallback(radWhite_SetChecked), null);
-            }
-            else
-            {
-                this.radWhite.Checked = true;
-            }
-        }
-
-        private void radBlack_SetChecked()
-        {
-            if (this.radBlack.InvokeRequired)
-            {
-                this.Invoke(new NoParameterCallback(radBlack_SetChecked), null);
-            }
-            else
-            {
-                this.radBlack.Checked = true;
-            }
-        }
-        #endregion
-
-        #region Game play methods and events
-        public void OnChessGameDeclareResults(string results)
-        {
-            UpdateWinGuiOnTimer.DeclareResults(results);
-            UpdateWinGuiOnTimer.StopGame();
-        }
-
-        public void OnChessGameUpdated(ChessState state)
-        {
-            UpdateWinGuiOnTimer.AddToHistory(state);
-        }
-
-        public void GuiChessBoardChangedByHuman(ChessMove move)
-        {
-            ChessState tmpState = (ChessState)lstHistory.SelectedItem;
-            //ChessState tmpState = new ChessState(item.fenboard);
-            tmpState.MakeMove(move);
-            tmpState.PreviousMove = null;
-            tmpState.PreviousBoard = null;
-
-            if (radWhite.Checked)
-            {
-                tmpState.CurrentPlayerColor = ChessColor.White;
-            }
-            else
-            {
-                tmpState.CurrentPlayerColor = ChessColor.Black;
-            }
-
-            //item.fenboard = tmpState.ToFenBoard();
-
-            // This causes the "selected index changed event"
-            //lstHistory.Items[lstHistory.SelectedIndex] = tmpState;
-            lstHistory.SelectedItem = tmpState;
-
-            // Force update the lstHistory and the GuiChessBoard
-            lstHistory_SelectedIndexChanged(null, null);
-        }
-
-
-
-
-        private bool isOverTime(ChessPlayer player, TimeSpan time, int limit)
-        {
-            bool isovertime = false;
-            Console.WriteLine("{0} stopped after {1:0} ms", player.AIName, time.TotalMilliseconds);
-
-            //do we need/want a buffer ?
-            limit += 1000;  //time buffer
-
-            if ((time.TotalMilliseconds > (double)limit) && (player.IsComputer))
-            {
-                isovertime = true;
-                Logger.Log("Too Much Time: Move timeout occurred!");
-            }
-            return isovertime;
-        }
-        #endregion
-
-
-
-        #region GUI update methods
-        public void SetHalfMoves(int halfmoves)
-        {
-            if (this.numHalfMoves.InvokeRequired)
-            {
-                IntParameterCallback cb = new IntParameterCallback(SetHalfMoves);
-                this.Invoke(cb, new object[] { halfmoves });
-            }
-            else
-            {
-                //lblHalfMoves.Text = halfmoves.ToString();
-                numHalfMoves.Value = halfmoves;
-            }
-        }
-
-        public void SetFullMoves(int fullmoves)
-        {
-            if (this.numFullMoves.InvokeRequired)
-            {
-                IntParameterCallback cb = new IntParameterCallback(SetFullMoves);
-                this.Invoke(cb, new object[] { fullmoves });
-            }
-            else
-            {
-                //lblFullMoves.Text = fullmoves.ToString();
-                numFullMoves.Value = fullmoves;
-            }
-        }
-
-
-        //public void AddToHistory(string message, string fenboards)
-        //{
-        //    AddToHistory(new List<string>() { message }, new List<string>() { fenboards });
-        //}
-    
-        //public void AddToHistory(List<string> messages, List<string> fenboards)
-        //{
-        //    if (this.lstHistory.InvokeRequired)
-        //    {
-        //        this.Invoke(new TwoStringListParameterCallback(AddToHistory), new object[] { messages, fenboards });
-        //    }
-        //    else
-        //    {
-        //        List<HistoryItem> items = new List<HistoryItem>();
-
-        //        for (int ix = 0; ix < messages.Count; ix++)
-        //        {
-        //            items.Add(new HistoryItem(lstHistory.Items.Count.ToString() + ". " + messages[ix], fenboards[ix]));
-        //        }
-
-        //        lstHistory.BeginUpdate();
-        //        lstHistory.Items.AddRange(items.ToArray());
-        //        lstHistory.SelectedIndex = lstHistory.Items.Count - 1;
-        //        lstHistory.EndUpdate();
-        //    }
-        //}
-
-
-
-
-        #endregion
-        
-        private void lstHistory_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            ChessState tmpState = (ChessState)lstHistory.SelectedItem;
-            //ChessState tmpState = new ChessState(item.fenboard);
-
-            if (tmpState.CurrentPlayerColor == ChessColor.White)
-            {
-                radWhite_SetChecked();
-            }
-            else
-            {
-                radBlack_SetChecked();
-            }
-
-            SetFullMoves(tmpState.FullMoves);
-            SetHalfMoves(tmpState.HalfMoves);
-
-            chessBoardControl.ResetBoard(tmpState.CurrentBoard, tmpState.PreviousMove);
-        }
-
-        private void SelectRadio(RadioButton rad)
-        {
-            if (rad.InvokeRequired)
-            {
-                this.Invoke(new RadioBtnParameterCallback(SelectRadio), new object[] { rad });
-            }
-            else
-            {
-                rad.Checked = true;
-            }
+            UpdateWinGuiOnTimer.UpdateState_CurrentPlayerColor();
         }
 
         private void cmbWhite_SelectedIndexChanged(object sender, EventArgs e)
         {
-            WhitePlayerName = cmbWhite.SelectedItem.ToString();
+            UpdateWinGuiOnTimer.UpdateWhitesName();
         }
 
         private void cmbBlack_SelectedIndexChanged(object sender, EventArgs e)
         {
-            BlackPlayerName = cmbBlack.SelectedItem.ToString();
+            UpdateWinGuiOnTimer.UpdateBlacksName();
         }
+        #endregion
 
-        private void btnSaveMainLog_Click(object sender, EventArgs e)
+        #region Update ChessState Info
+        private void lstHistory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            saveFileDialog1.Filter = "Text Files (*.txt) | *.txt";
-            DialogResult result = saveFileDialog1.ShowDialog();
-            if (result == DialogResult.OK)
-            {
-                StreamWriter writer = new StreamWriter(saveFileDialog1.FileName);
-
-                Logger.Log("Saving Main Log to: " + saveFileDialog1.FileName);
-
-                foreach (string curLine in lstMainLog.Items)
-                {
-                    writer.WriteLine(curLine);
-                }
-
-                writer.Close();
-            }
-        }
-
-        private void btnSaveWhitesLog_Click(object sender, EventArgs e)
-        {
-            saveFileDialog1.Filter = "Text Files (*.txt) | *.txt";
-            DialogResult result = saveFileDialog1.ShowDialog();
-            if (result == DialogResult.OK)
-            {
-                StreamWriter writer = new StreamWriter(saveFileDialog1.FileName);
-
-                Logger.Log("Saving White AI's Log to: " + saveFileDialog1.FileName);
-
-                foreach (string curLine in lstWhitesLog.Items)
-                {
-                    writer.WriteLine(curLine);
-                }
-
-                writer.Close();
-            }
-        }
-
-        private void btnSaveBlacksLog_Click(object sender, EventArgs e)
-        {
-            saveFileDialog1.Filter = "Text Files (*.txt) | *.txt";
-            DialogResult result = saveFileDialog1.ShowDialog();
-            if (result == DialogResult.OK)
-            {
-                StreamWriter writer = new StreamWriter(saveFileDialog1.FileName);
-
-                Logger.Log("Saving Black AI's Log to: " + saveFileDialog1.FileName);
-
-                foreach (string curLine in lstBlacksLog.Items)
-                {
-                    writer.WriteLine(curLine);
-                }
-
-                writer.Close();
-            }
-        }
-
-        private void btnClearMainLog_Click(object sender, EventArgs e)
-        {
-            lstMainLog.Items.Clear();
-        }
-
-        private void btnClearWhitesLog_Click(object sender, EventArgs e)
-        {
-            lstWhitesLog.Items.Clear();
-        }
-
-        private void btnClearBlacksLog_Click(object sender, EventArgs e)
-        {
-            lstBlacksLog.Items.Clear();
-        }
-
-        private void WinGui_FormClosing(object sender, FormClosingEventArgs e)
-        {            
-            UpdateWinGuiOnTimer.ShutdownGuiEventLoop();
+            UpdateWinGuiOnTimer.UpdateBoardBasedOnLstHistory();
         }
 
         private void numHalfMoves_ValueChanged(object sender, EventArgs e)
         {
-            ChessState state = (ChessState)lstHistory.SelectedItem;
-            state.HalfMoves = Convert.ToInt32(numHalfMoves.Value);
+            UpdateWinGuiOnTimer.UpdateState_HalfMoves();
         }
 
         private void numFullMoves_ValueChanged(object sender, EventArgs e)
         {
-            ChessState state = (ChessState)lstHistory.SelectedItem;
-            state.FullMoves = Convert.ToInt32(numFullMoves.Value);
+            UpdateWinGuiOnTimer.UpdateState_FullMoves();
+        }
+        #endregion
+
+        #region Log Tabs
+        private void btnSaveMainLog_Click(object sender, EventArgs e)
+        {
+            UpdateWinGuiOnTimer.SaveMainLogToDisk();
+        }
+
+        private void btnSaveWhitesLog_Click(object sender, EventArgs e)
+        {
+            UpdateWinGuiOnTimer.SaveWhitesLogToDisk();
+        }
+
+        private void btnSaveBlacksLog_Click(object sender, EventArgs e)
+        {
+            UpdateWinGuiOnTimer.SaveBlacksLogToDisk();
+        }
+
+        private void btnClearMainLog_Click(object sender, EventArgs e)
+        {
+            UpdateWinGuiOnTimer.ClearMainLog();
+        }
+
+        private void btnClearWhitesLog_Click(object sender, EventArgs e)
+        {
+            UpdateWinGuiOnTimer.ClearWhitesLog();
+        }
+
+        private void btnClearBlacksLog_Click(object sender, EventArgs e)
+        {
+            UpdateWinGuiOnTimer.ClearBlacksLog();
+        }
+        #endregion
+
+        private void WinGui_FormClosing(object sender, FormClosingEventArgs e)
+        {            
+            UpdateWinGuiOnTimer.ShutdownGuiEventLoop();
         }
     }
 }

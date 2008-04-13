@@ -41,7 +41,7 @@ namespace UvsChess.Framework
         }
 
         #region Loading DLLs
-        public static void SearhForAIs()
+        public static void SearchForAIs()
         {
             _availableais = new List<AI>();
             _availableais.Add(new AI("Human"));

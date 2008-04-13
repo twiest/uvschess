@@ -643,8 +643,8 @@ namespace UvsChess.Gui
         public  System.Windows.Forms.RadioButton radWhite;
         public  System.Windows.Forms.ComboBox cmbWhite;
         public  System.Windows.Forms.ListBox lstHistory;
-        private System.Windows.Forms.OpenFileDialog openFileDialog1;
-        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
+        public  System.Windows.Forms.OpenFileDialog openFileDialog1;
+        public  System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.SplitContainer splitContainer2;
         public  GuiChessBoard chessBoardControl;
         private System.Windows.Forms.TabControl tabLogs;
