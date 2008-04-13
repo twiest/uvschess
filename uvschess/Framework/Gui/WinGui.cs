@@ -145,12 +145,12 @@ namespace UvsChess.Gui
 
         private void startToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            UpdateWinGuiOnTimer.SwitchWinGuiMode(true);
+            UpdateWinGuiOnTimer.StartGame();
         }
 
         private void stopToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            UpdateWinGuiOnTimer.SwitchWinGuiMode(false);
+            UpdateWinGuiOnTimer.StopGame();
         }
 
         private void clearHistoryToolStripMenuItem_Click(object sender, EventArgs e)
@@ -220,84 +220,16 @@ namespace UvsChess.Gui
             }
         }
 
-        public void DisableRadioBtnsAndComboBoxes()
-        {
-            if (this.radBlack.InvokeRequired)
-            {
-                this.Invoke(new NoParameterCallback(DisableRadioBtnsAndComboBoxes), null);
-            }
-            else
-            {
-                this.radBlack.Enabled = false;
-                this.radWhite.Enabled = false;
-                this.cmbBlack.Enabled = false;
-                this.cmbWhite.Enabled = false;
-                this.numFullMoves.Enabled = false;
-                this.numHalfMoves.Enabled = false;
-            }
-        }
 
-        public void EnableRadioBtnsAndComboBoxes()
-        {
-            if (this.radBlack.InvokeRequired)
-            {
-                this.Invoke(new NoParameterCallback(EnableRadioBtnsAndComboBoxes), null);
-            }
-            else
-            {
-                this.radBlack.Enabled = true;
-                this.radWhite.Enabled = true;
-                this.cmbBlack.Enabled = true;
-                this.cmbWhite.Enabled = true;
-                this.numFullMoves.Enabled = true;
-                this.numHalfMoves.Enabled = true;
-            }
-        }
 
-        public void DisableMenuItemsDuringPlay()
-        {
-            if (this.radBlack.InvokeRequired)
-            {
-                this.Invoke(new NoParameterCallback(DisableMenuItemsDuringPlay), null);
-            }
-            else
-            {
-                startToolStripMenuItem.Enabled = false;
-                clearHistoryToolStripMenuItem.Enabled = false;
-                newToolStripMenuItem.Enabled = false;
 
-                openToolStripMenuItem.Enabled = false;
-                saveToolStripMenuItem.Enabled = false;
-
-                stopToolStripMenuItem.Enabled = true;
-
-            }
-        }
-        public void EnableMenuItemsAfterPlay()
-        {
-            if (this.radBlack.InvokeRequired)
-            {
-                this.Invoke(new NoParameterCallback(EnableMenuItemsAfterPlay), null);
-            }
-            else
-            {
-                startToolStripMenuItem.Enabled = true;
-                clearHistoryToolStripMenuItem.Enabled = true;
-                newToolStripMenuItem.Enabled = true;
-
-                openToolStripMenuItem.Enabled = true;
-                saveToolStripMenuItem.Enabled = true;
-
-                stopToolStripMenuItem.Enabled = false;
-            }
-        }
         #endregion
 
         #region Game play methods and events
         public void OnChessGameDeclareResults(string results)
         {
             UpdateWinGuiOnTimer.DeclareResults(results);
-            UpdateWinGuiOnTimer.SwitchWinGuiMode(false);
+            UpdateWinGuiOnTimer.StopGame();
         }
 
         public void OnChessGameUpdated(ChessState state)
@@ -332,50 +264,8 @@ namespace UvsChess.Gui
             lstHistory_SelectedIndexChanged(null, null);
         }
 
-        public void DisableHistoryWindowClicking()
-        {
-            if (this.lstHistory.InvokeRequired)
-            {
-                this.Invoke(new NoParameterCallback(DisableHistoryWindowClicking), null);
-            }
-            else
-            {
-                lstHistory.Enabled = false;
-            }
-        }
 
-        public void EnableHistoryWindowClicking()
-        {
-            if (this.lstHistory.InvokeRequired)
-            {
-                this.Invoke(new NoParameterCallback(EnableHistoryWindowClicking), null);
-            }
-            else
-            {
-                lstHistory.Enabled = true;
-            }
-        }
 
-        public void RemoveHistoryAfterSelected()
-        {
-            if (this.lstHistory.InvokeRequired)
-            {
-                this.Invoke(new NoParameterCallback(RemoveHistoryAfterSelected), null);
-            }
-            else
-            {
-                int sel = lstHistory.SelectedIndex;
-
-                if (sel < 0)
-                {
-                    return;
-                }
-                while (lstHistory.Items.Count > sel + 1)
-                {
-                    lstHistory.Items.RemoveAt(lstHistory.Items.Count - 1);
-                }
-            }
-        }
 
         private bool isOverTime(ChessPlayer player, TimeSpan time, int limit)
         {

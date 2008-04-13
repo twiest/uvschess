@@ -631,17 +631,17 @@ namespace UvsChess.Gui
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
+        public  System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
+        public  System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem gameToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem startToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem stopToolStripMenuItem;
-        private System.Windows.Forms.ComboBox cmbBlack;
-        private System.Windows.Forms.RadioButton radBlack;
-        private System.Windows.Forms.RadioButton radWhite;
-        private System.Windows.Forms.ComboBox cmbWhite;
+        public  System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
+        public  System.Windows.Forms.ToolStripMenuItem startToolStripMenuItem;
+        public  System.Windows.Forms.ToolStripMenuItem stopToolStripMenuItem;
+        public  System.Windows.Forms.ComboBox cmbBlack;
+        public  System.Windows.Forms.RadioButton radBlack;
+        public  System.Windows.Forms.RadioButton radWhite;
+        public  System.Windows.Forms.ComboBox cmbWhite;
         public  System.Windows.Forms.ListBox lstHistory;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
@@ -656,7 +656,7 @@ namespace UvsChess.Gui
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem aboutUvsChessToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem clearHistoryToolStripMenuItem;
+        public  System.Windows.Forms.ToolStripMenuItem clearHistoryToolStripMenuItem;
         private System.Windows.Forms.TabPage tabBlacksLog;
         private System.Windows.Forms.TabPage tabWhitesLog;
         public  System.Windows.Forms.ListBox lstWhitesLog;
@@ -670,7 +670,7 @@ namespace UvsChess.Gui
         private System.Windows.Forms.Button btnSaveWhitesLog;
         private System.Windows.Forms.Button btnClearBlacksLog;
         private System.Windows.Forms.Button btnSaveBlacksLog;
-        private System.Windows.Forms.NumericUpDown numHalfMoves;
-        private System.Windows.Forms.NumericUpDown numFullMoves;
+        public  System.Windows.Forms.NumericUpDown numHalfMoves;
+        public  System.Windows.Forms.NumericUpDown numFullMoves;
     }
 }
