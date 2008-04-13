@@ -82,202 +82,6 @@ namespace UvsChess.Gui
             }
         }
 
-        public static void ResetHistory(ChessState newState)
-        {
-            lock (_updateGuiDataLockObject)
-            {
-                _guiEvents.Add(new GuiEvent(Actually_ResetHistory, newState));
-            }
-        }
-
-        public static void UpdateState_CurrentPlayerColor()
-        {
-            lock (_updateGuiDataLockObject)
-            {
-                _guiEvents.Add(new GuiEvent(Actually_UpdateState_CurrentPlayerColor, null));
-            }
-        }
-
-        public static void UpdateWhitesName()
-        {
-            lock (_updateGuiDataLockObject)
-            {
-                _guiEvents.Add(new GuiEvent(Actually_UpdateWhitesName, null));
-            }            
-        }
-
-        public static void UpdateBlacksName()
-        {
-            lock (_updateGuiDataLockObject)
-            {
-                _guiEvents.Add(new GuiEvent(Actually_UpdateBlacksName, null));
-            }
-        }
-
-        public static void UpdateState_HalfMoves()
-        {
-            lock (_updateGuiDataLockObject)
-            {
-                _guiEvents.Add(new GuiEvent(Actually_UpdateState_HalfMoves, null));
-            }            
-        }
-
-        public static void UpdateState_FullMoves()
-        {
-            lock (_updateGuiDataLockObject)
-            {
-                _guiEvents.Add(new GuiEvent(Actually_UpdateState_FullMoves, null));
-            }
-        }
-
-        public static void UpdateBoardBasedOnLstHistory()
-        {            
-            lock (_updateGuiDataLockObject)
-            {
-                _guiEvents.Add(new GuiEvent(Actually_UpdateBoardBasedOnLstHistory, null));
-            }
-        }
-
-        public static void UpdateBoardBasedOnMove(ChessMove move)
-        {
-            lock (_updateGuiDataLockObject)
-            {
-                _guiEvents.Add(new GuiEvent(Actually_UpdateBoardBasedOnMove, move));
-            }            
-        }
-
-        public static void SaveMainLogToDisk()
-        {
-            lock (_updateGuiDataLockObject)
-            {
-                _guiEvents.Add(new GuiEvent(Actually_SaveMainLogToDisk, null));
-            }
-        }
-
-        public static void SaveWhitesLogToDisk()
-        {
-            lock (_updateGuiDataLockObject)
-            {
-                _guiEvents.Add(new GuiEvent(Actually_SaveWhitesLogToDisk, null));
-            }
-        }
-
-        public static void SaveBlacksLogToDisk()
-        {
-            lock (_updateGuiDataLockObject)
-            {
-                _guiEvents.Add(new GuiEvent(Actually_SaveBlacksLogToDisk, null));
-            }
-        }
-
-        public static void ClearMainLog()
-        {
-            lock (_updateGuiDataLockObject)
-            {
-                _guiEvents.Add(new GuiEvent(Actually_ClearMainLog, null));
-            }
-        }
-
-        public static void ClearWhitesLog()
-        {
-            lock (_updateGuiDataLockObject)
-            {
-                _guiEvents.Add(new GuiEvent(Actually_ClearWhitesLog, null));
-            }
-        }
-
-        public static void ClearBlacksLog()
-        {
-            lock (_updateGuiDataLockObject)
-            {
-                _guiEvents.Add(new GuiEvent(Actually_ClearBlacksLog, null));
-            }
-        }
-
-        public static void OpenStateFromDisk()
-        {
-            lock (_updateGuiDataLockObject)
-            {
-                _guiEvents.Add(new GuiEvent(Actually_OpenFenFromDisk, null));
-            }
-        }
-
-        public static void SaveSelectedStateToDisk()
-        {
-            lock (_updateGuiDataLockObject)
-            {
-                _guiEvents.Add(new GuiEvent(Actually_SaveFenToDisk, null));
-            }
-        }
-
-        public static void DeclareResults(string results)
-        {
-            lock (_updateGuiDataLockObject)
-            {
-                _guiEvents.Add(new GuiEvent(Actually_DeclareResults, results));
-            }
-        }
-
-        public static void SetGuiChessBoard_IsLocked(bool isLocked)
-        {
-            lock (_updateGuiDataLockObject)
-            {
-                _guiEvents.Add(new GuiEvent(Actually_SetGuiChessBoard_IsLocked, isLocked));
-            }
-        }
-
-        public static void StartGame()
-        {
-            lock (_updateGuiDataLockObject)
-            {
-                _guiEvents.Add(new GuiEvent(Actually_StartGame, null));
-            }
-        }
-
-        public static void StopGame()
-        {
-            lock (_updateGuiDataLockObject)
-            {
-                _guiEvents.Add(new GuiEvent(Actually_StopGame, null));
-            }
-        }
-
-        public static void AddToMainLog(string message)
-        {
-            lock (_updateGuiDataLockObject)
-            {
-                _guiEvents.Add(new GuiEvent(Actually_AddToMainLog, message));
-                _wasMainLogUpdated = true;
-            }
-        }
-
-        public static void AddToWhitesLog(string message)
-        {
-            lock (_updateGuiDataLockObject)
-            {
-                _guiEvents.Add(new GuiEvent(Actually_AddToWhitesLog, message));
-                _wasWhitesLogUpdated = true;
-            }
-        }
-
-        public static void AddToBlacksLog(string message)
-        {
-            lock (_updateGuiDataLockObject)
-            {
-                _guiEvents.Add(new GuiEvent(Actually_AddToBlacksLog, message));
-                _wasBlacksLogUpdated = true;
-            }
-        }
-
-        public static void AddToHistory(ChessState state)
-        {
-            lock (_updateGuiDataLockObject)
-            {
-                _guiEvents.Add(new GuiEvent(Actually_AddToHistory, state));
-                _wasHistoryUpdated = true;
-            }
-        }
-
         public static void PollGuiOnce()
         {
             lock (_pollGuiLockObject)
@@ -373,12 +177,11 @@ namespace UvsChess.Gui
                     {
                         RunThroughAllGuiEvents();
                     }
-                    catch (Exception e)
+                    catch
                     {
                         // this is to catch any errant exceptions that might 
                         // be thrown when we shut down (if the form is closing 
                         // and we're trying to update the gui)
-                        int a = 1;
                     }
 
                     // Setup to Poll Again in <interval> ms
@@ -461,10 +264,27 @@ namespace UvsChess.Gui
             }
         }
 
+        public static void ResetHistory(ChessState newState)
+        {
+            lock (_updateGuiDataLockObject)
+            {
+                _guiEvents.Add(new GuiEvent(Actually_ResetHistory, newState));
+            }
+        }
+
         private static void Actually_ResetHistory(object newState)
         {
             Gui.lstHistory.Items.Clear();
             Actually_AddToHistory((ChessState) newState);
+        }
+
+        public static void AddToHistory(ChessState state)
+        {
+            lock (_updateGuiDataLockObject)
+            {
+                _guiEvents.Add(new GuiEvent(Actually_AddToHistory, state));
+                _wasHistoryUpdated = true;
+            }
         }
 
         private static void Actually_AddToHistory(object state)
@@ -473,15 +293,40 @@ namespace UvsChess.Gui
             Gui.lstHistory.SelectedIndex = Gui.lstHistory.Items.Count - 1;
         }
 
+        public static void SetGuiChessBoard_IsLocked(bool isLocked)
+        {
+            lock (_updateGuiDataLockObject)
+            {
+                _guiEvents.Add(new GuiEvent(Actually_SetGuiChessBoard_IsLocked, isLocked));
+            }
+        }
+
         private static void Actually_SetGuiChessBoard_IsLocked(object isLocked)
         {
             Gui.chessBoardControl.IsLocked = (bool)isLocked;
+        }
+
+        public static void DeclareResults(string results)
+        {
+            lock (_updateGuiDataLockObject)
+            {
+                _guiEvents.Add(new GuiEvent(Actually_DeclareResults, results));
+            }
         }
 
         private static void Actually_DeclareResults(object result)
         {
             Actually_StopGame(null);
             System.Windows.Forms.MessageBox.Show(Gui, (string)result);            
+        }
+
+        public static void AddToMainLog(string message)
+        {
+            lock (_updateGuiDataLockObject)
+            {
+                _guiEvents.Add(new GuiEvent(Actually_AddToMainLog, message));
+                _wasMainLogUpdated = true;
+            }
         }
 
         private static void Actually_AddToMainLog(object message)
@@ -495,6 +340,15 @@ namespace UvsChess.Gui
             }
         }
 
+        public static void AddToWhitesLog(string message)
+        {
+            lock (_updateGuiDataLockObject)
+            {
+                _guiEvents.Add(new GuiEvent(Actually_AddToWhitesLog, message));
+                _wasWhitesLogUpdated = true;
+            }
+        }
+
         private static void Actually_AddToWhitesLog(object message)
         {
             Gui.lstWhitesLog.Items.Add(message);
@@ -503,6 +357,15 @@ namespace UvsChess.Gui
             {
                 Gui.lstWhitesLog.SelectedIndex = Gui.lstWhitesLog.Items.Count - 1;
                 Gui.lstWhitesLog.ClearSelected();
+            }
+        }
+
+        public static void AddToBlacksLog(string message)
+        {
+            lock (_updateGuiDataLockObject)
+            {
+                _guiEvents.Add(new GuiEvent(Actually_AddToBlacksLog, message));
+                _wasBlacksLogUpdated = true;
             }
         }
 
@@ -520,6 +383,14 @@ namespace UvsChess.Gui
         private static ChessState Actually_GetLstHistory_SelectedItem()
         {
             return (ChessState)Gui.lstHistory.SelectedItem;
+        }
+
+        public static void StartGame()
+        {
+            lock (_updateGuiDataLockObject)
+            {
+                _guiEvents.Add(new GuiEvent(Actually_StartGame, null));
+            }
         }
 
         private static void Actually_StartGame(object eventArgs)
@@ -555,6 +426,14 @@ namespace UvsChess.Gui
                 UpdateWinGuiOnTimer.SetGuiChessBoard_IsLocked(true);
 
                 _mainGame.StartGame();
+            }
+        }
+
+        public static void StopGame()
+        {
+            lock (_updateGuiDataLockObject)
+            {
+                _guiEvents.Add(new GuiEvent(Actually_StopGame, null));
             }
         }
 
@@ -674,9 +553,25 @@ namespace UvsChess.Gui
             }
         }
 
+        public static void SaveMainLogToDisk()
+        {
+            lock (_updateGuiDataLockObject)
+            {
+                _guiEvents.Add(new GuiEvent(Actually_SaveMainLogToDisk, null));
+            }
+        }
+
         private static void Actually_SaveMainLogToDisk(object eventArgs)
         {
             SaveLogToDisk("Saving Main Log to: ", Gui.lstMainLog);
+        }
+
+        public static void SaveWhitesLogToDisk()
+        {
+            lock (_updateGuiDataLockObject)
+            {
+                _guiEvents.Add(new GuiEvent(Actually_SaveWhitesLogToDisk, null));
+            }
         }
 
         private static void Actually_SaveWhitesLogToDisk(object eventArgs)
@@ -684,9 +579,25 @@ namespace UvsChess.Gui
             SaveLogToDisk("Saving White AI's Log to: ", Gui.lstWhitesLog);
         }
 
+        public static void SaveBlacksLogToDisk()
+        {
+            lock (_updateGuiDataLockObject)
+            {
+                _guiEvents.Add(new GuiEvent(Actually_SaveBlacksLogToDisk, null));
+            }
+        }
+
         private static void Actually_SaveBlacksLogToDisk(object eventArgs)
         {
             SaveLogToDisk("Saving Black AI's Log to: ", Gui.lstBlacksLog);
+        }
+
+        public static void OpenStateFromDisk()
+        {
+            lock (_updateGuiDataLockObject)
+            {
+                _guiEvents.Add(new GuiEvent(Actually_OpenFenFromDisk, null));
+            }
         }
 
         private static void Actually_OpenFenFromDisk(object eventArgs)
@@ -702,6 +613,14 @@ namespace UvsChess.Gui
                 ResetHistory(new ChessState(line));
 
                 reader.Close();
+            }
+        }
+
+        public static void SaveSelectedStateToDisk()
+        {
+            lock (_updateGuiDataLockObject)
+            {
+                _guiEvents.Add(new GuiEvent(Actually_SaveFenToDisk, null));
             }
         }
 
@@ -724,9 +643,25 @@ namespace UvsChess.Gui
             }
         }
 
+        public static void ClearMainLog()
+        {
+            lock (_updateGuiDataLockObject)
+            {
+                _guiEvents.Add(new GuiEvent(Actually_ClearMainLog, null));
+            }
+        }
+
         private static void Actually_ClearMainLog(object eventArgs)
         {
             Gui.lstMainLog.Items.Clear();
+        }
+
+        public static void ClearWhitesLog()
+        {
+            lock (_updateGuiDataLockObject)
+            {
+                _guiEvents.Add(new GuiEvent(Actually_ClearWhitesLog, null));
+            }
         }
 
         private static void Actually_ClearWhitesLog(object eventArgs)
@@ -734,9 +669,25 @@ namespace UvsChess.Gui
             Gui.lstWhitesLog.Items.Clear();
         }
 
+        public static void ClearBlacksLog()
+        {
+            lock (_updateGuiDataLockObject)
+            {
+                _guiEvents.Add(new GuiEvent(Actually_ClearBlacksLog, null));
+            }
+        }
+
         private static void Actually_ClearBlacksLog(object eventArgs)
         {
             Gui.lstBlacksLog.Items.Clear();
+        }
+
+        public static void UpdateState_CurrentPlayerColor()
+        {
+            lock (_updateGuiDataLockObject)
+            {
+                _guiEvents.Add(new GuiEvent(Actually_UpdateState_CurrentPlayerColor, null));
+            }
         }
 
         private static void Actually_UpdateState_CurrentPlayerColor(object eventArgs)
@@ -755,16 +706,40 @@ namespace UvsChess.Gui
             Gui.lstHistory.Items[Gui.lstHistory.SelectedIndex] = tmpState;
         }
 
+        public static void UpdateState_HalfMoves()
+        {
+            lock (_updateGuiDataLockObject)
+            {
+                _guiEvents.Add(new GuiEvent(Actually_UpdateState_HalfMoves, null));
+            }
+        }
+
         private static void Actually_UpdateState_HalfMoves(object eventArgs)
         {
             ChessState state = (ChessState)Gui.lstHistory.SelectedItem;
             state.HalfMoves = Convert.ToInt32(Gui.numHalfMoves.Value);
         }
 
+        public static void UpdateState_FullMoves()
+        {
+            lock (_updateGuiDataLockObject)
+            {
+                _guiEvents.Add(new GuiEvent(Actually_UpdateState_FullMoves, null));
+            }
+        }
+
         private static void Actually_UpdateState_FullMoves(object eventArgs)
         {
             ChessState state = (ChessState)Gui.lstHistory.SelectedItem;
             state.FullMoves = Convert.ToInt32(Gui.numFullMoves.Value);
+        }
+
+        public static void UpdateBoardBasedOnLstHistory()
+        {
+            lock (_updateGuiDataLockObject)
+            {
+                _guiEvents.Add(new GuiEvent(Actually_UpdateBoardBasedOnLstHistory, null));
+            }
         }
 
         private static void Actually_UpdateBoardBasedOnLstHistory(object eventArgs)
@@ -785,6 +760,14 @@ namespace UvsChess.Gui
             Gui.numHalfMoves.Value = tmpState.HalfMoves;
 
             Gui.chessBoardControl.ResetBoard(tmpState.CurrentBoard, tmpState.PreviousMove);
+        }
+
+        public static void UpdateBoardBasedOnMove(ChessMove move)
+        {
+            lock (_updateGuiDataLockObject)
+            {
+                _guiEvents.Add(new GuiEvent(Actually_UpdateBoardBasedOnMove, move));
+            }
         }
 
         private static void Actually_UpdateBoardBasedOnMove(object move)
@@ -814,9 +797,25 @@ namespace UvsChess.Gui
             Actually_UpdateBoardBasedOnLstHistory(null);
         }
 
+        public static void UpdateWhitesName()
+        {
+            lock (_updateGuiDataLockObject)
+            {
+                _guiEvents.Add(new GuiEvent(Actually_UpdateWhitesName, null));
+            }
+        }
+
         private static void Actually_UpdateWhitesName(object eventArgs)
         {
             WhitePlayerName = Gui.cmbWhite.SelectedItem.ToString();
+        }
+
+        public static void UpdateBlacksName()
+        {
+            lock (_updateGuiDataLockObject)
+            {
+                _guiEvents.Add(new GuiEvent(Actually_UpdateBlacksName, null));
+            }
         }
 
         private static void Actually_UpdateBlacksName(object eventArgs)
