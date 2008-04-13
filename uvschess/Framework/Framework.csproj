@@ -88,6 +88,7 @@
     <Compile Include="ChessState.cs" />
     <Compile Include="ChessLocation.cs" />
     <Compile Include="ChessMove.cs" />
+    <Compile Include="Gui\GuiEvent.cs" />
     <Compile Include="Gui\Preferences.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -47,7 +47,7 @@ namespace UvsChess.Gui
 
             UpdateWinGuiOnTimer.PollGuiOnce();
 
-            chessBoardControl.PieceMovedByHuman += UpdateWinGuiOnTimer.UpdateBoardBasedOnMove;
+            chessBoardControl.PieceMovedByHuman += PieceMovedByHuman_Changed;
         }
 
         private void WinGui_Load(object sender, EventArgs e)
@@ -62,7 +62,12 @@ namespace UvsChess.Gui
             cmbBlack.SelectedIndex = 0;
             cmbWhite.SelectedIndex = 0;
         }
-        #endregion             
+        #endregion    
+        
+        public void PieceMovedByHuman_Changed(ChessMove move)
+        {
+            UpdateWinGuiOnTimer.UpdateBoardBasedOnMove((ChessState)this.lstHistory.SelectedItem, move, this.radWhite.Checked);
+        }
 
         #region File menu
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -118,36 +123,21 @@ namespace UvsChess.Gui
         #endregion
 
         #region AISelector controls
-        private void radWhiteBlack_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateWinGuiOnTimer.UpdateState_CurrentPlayerColor();
-        }
-
         private void cmbWhite_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UpdateWinGuiOnTimer.UpdateWhitesName();
+            UpdateWinGuiOnTimer.UpdateWhitesName(this.cmbWhite.SelectedItem.ToString());
         }
 
         private void cmbBlack_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UpdateWinGuiOnTimer.UpdateBlacksName();
+            UpdateWinGuiOnTimer.UpdateBlacksName(this.cmbBlack.SelectedItem.ToString());
         }
         #endregion
 
         #region Update ChessState Info
         private void lstHistory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UpdateWinGuiOnTimer.UpdateBoardBasedOnLstHistory();
-        }
-
-        private void numHalfMoves_ValueChanged(object sender, EventArgs e)
-        {
-            UpdateWinGuiOnTimer.UpdateState_HalfMoves();
-        }
-
-        private void numFullMoves_ValueChanged(object sender, EventArgs e)
-        {
-            UpdateWinGuiOnTimer.UpdateState_FullMoves();
+            UpdateWinGuiOnTimer.UpdateBoardBasedOnLstHistory((ChessState)this.lstHistory.SelectedItem);
         }
         #endregion
 
