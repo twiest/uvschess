@@ -103,11 +103,19 @@ namespace UvsChess.Gui
             }
         }
 
-        public static void SwitchWinGuiMode(bool isSwitchIntoGameMode)
+        public static void StartGame()
         {
             lock (_updateGuiDataLockObject)
             {
-                _guiEvents.Add(new GuiEvent(Actually_SwitchWinGuiMode, isSwitchIntoGameMode));
+                _guiEvents.Add(new GuiEvent(Actually_StartGame, null));
+            }
+        }
+
+        public static void StopGame()
+        {
+            lock (_updateGuiDataLockObject)
+            {
+                _guiEvents.Add(new GuiEvent(Actually_StopGame, null));
             }
         }
 
@@ -178,7 +186,7 @@ namespace UvsChess.Gui
 
         private static void UpdateGui(object state)
         {
-            if (!_isShuttingDown)
+            if (! _isShuttingDown)
             {
                 // This should guarantee that we won't lose any data.
                 lock (_updateGuiDataLockObject)
@@ -242,15 +250,21 @@ namespace UvsChess.Gui
 
                         if (_tmpGuiEvents != null)
                         {
-                            foreach (GuiEvent curEvent in _tmpGuiEvents)
+                            while ((! _isShuttingDown) && (_tmpGuiEvents.Count > 0))
                             {
+                                GuiEvent curEvent = _tmpGuiEvents[0];
+
                                 // Process the GUI Events one event at a time,
                                 // _and_ in the same order that they were received.
                                 curEvent.EventCallback(curEvent.EventArgs);
+                                _tmpGuiEvents.RemoveAt(0);
                             }
                         }
 
-                        LstBoxes_EndUpdate();
+                        if (! _isShuttingDown)
+                        {
+                            LstBoxes_EndUpdate();
+                        }
                     }
                     catch (Exception e)
                     {
@@ -434,9 +448,9 @@ namespace UvsChess.Gui
             }
         }
 
-        private static void Actually_SwitchWinGuiMode(object shouldSwitchIntoGameMode)
+        private static void Actually_StartGame(object eventArgs)
         {
-            if ((! _isInGameMode) && ((bool)shouldSwitchIntoGameMode))
+            if (! _isInGameMode)
             {
                 _isInGameMode = true;
 
@@ -455,7 +469,6 @@ namespace UvsChess.Gui
                 Gui.chessBoardControl.PieceMovedByHuman += _mainGame.BlackPlayer_HumanMovedPieceEvent;
 
                 // Add WinGui to the ChessGame updates event
-                //_mainGame.Updated += OnChessGameUpdated;
                 _mainGame.UpdatedState += Gui.OnChessGameUpdated;
 
                 _mainGame.SetGuiChessBoard_IsLocked += UpdateWinGuiOnTimer.SetGuiChessBoard_IsLocked;
@@ -463,17 +476,20 @@ namespace UvsChess.Gui
                 // Add WinGui to the DeclareResults event
                 _mainGame.DeclareResults += Gui.OnChessGameDeclareResults;
 
-                Gui.RemoveHistoryAfterSelected();
+                Actually_RemoveHistoryAfterSelected();
 
-                Gui.DisableMenuItemsDuringPlay();
-                Gui.DisableRadioBtnsAndComboBoxes();
-                Gui.DisableHistoryWindowClicking();
+                Actually_DisableMenuItemsDuringPlay();
+                Actually_DisableRadioBtnsAndComboBoxes();
+                Actually_DisableHistoryWindowClicking();
                 UpdateWinGuiOnTimer.SetGuiChessBoard_IsLocked(true);
 
                 _mainGame.StartGame();
             }
+        }
 
-            if ( (_isInGameMode) && (! (bool)shouldSwitchIntoGameMode) )
+        private static void Actually_StopGame(object eventArgs)
+        {
+            if (_isInGameMode)
             {
                 _isInGameMode = false;
 
@@ -493,14 +509,131 @@ namespace UvsChess.Gui
                 // Add WinGui to the GuiChessBoard updates
                 Gui.chessBoardControl.PieceMovedByHuman += Gui.GuiChessBoardChangedByHuman;
 
-                Gui.EnableMenuItemsAfterPlay();
-                Gui.EnableRadioBtnsAndComboBoxes();
-                Gui.EnableHistoryWindowClicking();
+                Actually_EnableMenuItemsAfterPlay();
+                Actually_EnableRadioBtnsAndComboBoxes();
+                Actually_EnableHistoryWindowClicking();
                 UpdateWinGuiOnTimer.SetGuiChessBoard_IsLocked(false);
 
                 _mainGame.StopGameEarly();
 
                 _mainGame = null;                
+            }
+        }
+
+        private static void Actually_RemoveHistoryAfterSelected()
+        {
+            if (Gui.lstHistory.InvokeRequired)
+            {
+                Gui.Invoke(new NoParameterCallback(Actually_RemoveHistoryAfterSelected), null);
+            }
+            else
+            {
+                int sel = Gui.lstHistory.SelectedIndex;
+
+                if (sel < 0)
+                {
+                    return;
+                }
+                while (Gui.lstHistory.Items.Count > sel + 1)
+                {
+                    Gui.lstHistory.Items.RemoveAt(Gui.lstHistory.Items.Count - 1);
+                }
+            }
+        }
+
+        private static void Actually_DisableMenuItemsDuringPlay()
+        {
+            if (Gui.radBlack.InvokeRequired)
+            {
+                Gui.Invoke(new NoParameterCallback(Actually_DisableMenuItemsDuringPlay), null);
+            }
+            else
+            {
+                Gui.startToolStripMenuItem.Enabled = false;
+                Gui.clearHistoryToolStripMenuItem.Enabled = false;
+                Gui.newToolStripMenuItem.Enabled = false;
+
+                Gui.openToolStripMenuItem.Enabled = false;
+                Gui.saveToolStripMenuItem.Enabled = false;
+
+                Gui.stopToolStripMenuItem.Enabled = true;
+            }
+        }
+
+        private static void Actually_DisableRadioBtnsAndComboBoxes()
+        {
+            if (Gui.radBlack.InvokeRequired)
+            {
+                Gui.Invoke(new NoParameterCallback(Actually_DisableRadioBtnsAndComboBoxes), null);
+            }
+            else
+            {
+                Gui.radBlack.Enabled = false;
+                Gui.radWhite.Enabled = false;
+                Gui.cmbBlack.Enabled = false;
+                Gui.cmbWhite.Enabled = false;
+                Gui.numFullMoves.Enabled = false;
+                Gui.numHalfMoves.Enabled = false;
+            }
+        }
+
+        private static void Actually_DisableHistoryWindowClicking()
+        {
+            if (Gui.lstHistory.InvokeRequired)
+            {
+                Gui.Invoke(new NoParameterCallback(Actually_DisableHistoryWindowClicking), null);
+            }
+            else
+            {
+                Gui.lstHistory.Enabled = false;
+            }
+        }
+
+        private static void Actually_EnableMenuItemsAfterPlay()
+        {
+            if (Gui.radBlack.InvokeRequired)
+            {
+                Gui.Invoke(new NoParameterCallback(Actually_EnableMenuItemsAfterPlay), null);
+            }
+            else
+            {
+                Gui.startToolStripMenuItem.Enabled = true;
+                Gui.clearHistoryToolStripMenuItem.Enabled = true;
+                Gui.newToolStripMenuItem.Enabled = true;
+
+                Gui.openToolStripMenuItem.Enabled = true;
+                Gui.saveToolStripMenuItem.Enabled = true;
+
+                Gui.stopToolStripMenuItem.Enabled = false;
+            }
+        }
+
+        private static void Actually_EnableRadioBtnsAndComboBoxes()
+        {
+            if (Gui.radBlack.InvokeRequired)
+            {
+                Gui.Invoke(new NoParameterCallback(Actually_EnableRadioBtnsAndComboBoxes), null);
+            }
+            else
+            {
+                Gui.radBlack.Enabled = true;
+                Gui.radWhite.Enabled = true;
+                Gui.cmbBlack.Enabled = true;
+                Gui.cmbWhite.Enabled = true;
+                Gui.numFullMoves.Enabled = true;
+                Gui.numHalfMoves.Enabled = true;
+            }
+        }
+
+        private static void Actually_EnableHistoryWindowClicking()
+        {
+            if (Gui.lstHistory.InvokeRequired)
+            {
+                Gui.Invoke(new NoParameterCallback(Actually_EnableHistoryWindowClicking), null);
+            }
+            else
+            {
+                Gui.lstHistory.Enabled = true;
             }
         }
     }
