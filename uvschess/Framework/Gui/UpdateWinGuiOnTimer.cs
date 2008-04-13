@@ -397,17 +397,15 @@ namespace UvsChess.Gui
             {
                 LstBoxes_BeginUpdate();
 
-                if (_tmpGuiEvents != null)
+                while ((!_isShuttingDown) && (_tmpGuiEvents != null) && (_tmpGuiEvents.Count > 0))
                 {
-                    while ((!_isShuttingDown) && (_tmpGuiEvents.Count > 0))
-                    {
-                        GuiEvent curEvent = _tmpGuiEvents[0];
+                    GuiEvent curEvent = _tmpGuiEvents[0];
 
-                        // Process the GUI Events one event at a time,
-                        // _and_ in the same order that they were received.
-                        curEvent.EventCallback(curEvent.EventArgs);
-                        _tmpGuiEvents.RemoveAt(0);
-                    }
+                    // Process the GUI Events one event at a time,
+                    // _and_ in the same order that they were received.
+                    curEvent.EventCallback(curEvent.EventArgs);
+
+                    _tmpGuiEvents.RemoveAt(0);
                 }
 
                 if (!_isShuttingDown)
