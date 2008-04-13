@@ -52,10 +52,6 @@ namespace UvsChess.Gui
         protected delegate void PlayDelegate();
 
         
-        public delegate void StringParameterCallback(string text);
-        public delegate void TwoStringListParameterCallback(List<string> text1, List<string> text2);
-        
-        public delegate string CmbBoxParamaterCallback(ComboBox cmb);
         private delegate void RadioBtnParameterCallback(RadioButton rad);
         delegate void NoParameterCallback();
         delegate void IntParameterCallback(int i);
@@ -219,10 +215,6 @@ namespace UvsChess.Gui
                 this.radBlack.Checked = true;
             }
         }
-
-
-
-
         #endregion
 
         #region Game play methods and events
@@ -463,10 +455,8 @@ namespace UvsChess.Gui
         }
 
         private void WinGui_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            UpdateWinGuiOnTimer.StopGuiPolling();
-
-            stopToolStripMenuItem_Click(null, null);
+        {            
+            UpdateWinGuiOnTimer.ShutdownGuiEventLoop();
         }
 
         private void numHalfMoves_ValueChanged(object sender, EventArgs e)
