@@ -264,7 +264,6 @@ namespace UvsChess.Gui
             this.numHalfMoves.Name = "numHalfMoves";
             this.numHalfMoves.Size = new System.Drawing.Size(51, 20);
             this.numHalfMoves.TabIndex = 6;
-            this.numHalfMoves.ValueChanged += new System.EventHandler(this.numHalfMoves_ValueChanged);
             // 
             // numFullMoves
             // 
@@ -277,7 +276,6 @@ namespace UvsChess.Gui
             this.numFullMoves.Name = "numFullMoves";
             this.numFullMoves.Size = new System.Drawing.Size(52, 20);
             this.numFullMoves.TabIndex = 5;
-            this.numFullMoves.ValueChanged += new System.EventHandler(this.numFullMoves_ValueChanged);
             // 
             // cmbBlack
             // 
@@ -310,7 +308,6 @@ namespace UvsChess.Gui
             this.radBlack.TabIndex = 3;
             this.radBlack.Text = "Black";
             this.radBlack.UseVisualStyleBackColor = true;
-            this.radBlack.CheckedChanged += new System.EventHandler(this.radWhiteBlack_CheckedChanged);
             // 
             // label2
             // 
@@ -333,7 +330,6 @@ namespace UvsChess.Gui
             this.radWhite.TabStop = true;
             this.radWhite.Text = "White";
             this.radWhite.UseVisualStyleBackColor = true;
-            this.radWhite.CheckedChanged += new System.EventHandler(this.radWhiteBlack_CheckedChanged);
             // 
             // cmbWhite
             // 
