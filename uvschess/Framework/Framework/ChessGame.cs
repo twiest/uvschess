@@ -31,7 +31,7 @@ using System.Threading;
 
 namespace UvsChess.Framework
 {
-    class ChessGame
+    public class ChessGame
     {
         //public delegate void UpdatedDelegate(string playerColor, string nextMove, string currentFen);
         public delegate void UpdatedStateDelegate(ChessState state);

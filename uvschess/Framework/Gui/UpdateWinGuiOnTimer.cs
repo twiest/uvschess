@@ -39,6 +39,9 @@ namespace UvsChess.Gui
         private static object _updateGuiDataLockObject = new object();
         private static object _updateGuiLockObject = new object();
         private static object _pollGuiLockObject = new object();
+        private static UvsChess.Framework.ChessGame _mainGame = null;
+
+        private static bool _isInGameMode = false;
 
         private static List<GuiEvent> _guiEvents = new List<GuiEvent>();
         private static List<GuiEvent> _tmpGuiEvents = null;
@@ -60,6 +63,7 @@ namespace UvsChess.Gui
         private static Timer _pollGuiTimer = null;
 
         delegate void NoParameterCallback();
+        delegate ChessState NoParameterChessStateReturnCallback();        
         delegate void ObjectParameterCallback(object obj);
 
         private class GuiEvent
@@ -248,11 +252,12 @@ namespace UvsChess.Gui
 
                         LstBoxes_EndUpdate();
                     }
-                    catch
+                    catch (Exception e)
                     {
                         // this is to catch any errant exceptions that might 
                         // be thrown when we shut down (if the form is closing 
                         // and we're trying to update the gui)
+                        int a = 1;
                     }
 
                     // Setup to Poll Again in <interval> ms
@@ -324,11 +329,6 @@ namespace UvsChess.Gui
         private static void Actually_ClearHistory(object eventArgs)
         {
             Gui.lstHistory.Items.Clear();
-        }
-
-        private static void Actually_SwitchWinGuiMode(object isSwitchIntoGameMode)
-        {
-            Gui.SwitchWinGuiMode((bool)isSwitchIntoGameMode);
         }
 
         private static void Actually_AddToHistory(object state)
@@ -419,6 +419,88 @@ namespace UvsChess.Gui
                     Gui.lstBlacksLog.SelectedIndex = Gui.lstBlacksLog.Items.Count - 1;
                     Gui.lstBlacksLog.ClearSelected();
                 }
+            }
+        }
+
+        private static ChessState Actually_GetLstHistory_SelectedItem()
+        {
+            if (Gui.lstHistory.InvokeRequired)
+            {
+                return (ChessState)Gui.lstHistory.Invoke(new NoParameterChessStateReturnCallback(Actually_GetLstHistory_SelectedItem));
+            }
+            else
+            {
+                return (ChessState)Gui.lstHistory.SelectedItem;
+            }
+        }
+
+        private static void Actually_SwitchWinGuiMode(object shouldSwitchIntoGameMode)
+        {
+            if ((! _isInGameMode) && ((bool)shouldSwitchIntoGameMode))
+            {
+                _isInGameMode = true;
+
+
+                ChessState item = Actually_GetLstHistory_SelectedItem();
+
+                _mainGame = new UvsChess.Framework.ChessGame(item, Gui.WhitePlayerName, Gui.BlackPlayerName);
+
+
+
+                // Remove WinGui from the GuiChessBoard updates
+                Gui.chessBoardControl.PieceMovedByHuman -= Gui.GuiChessBoardChangedByHuman;
+
+                // Add the ChessGame to the GuiChessBoard updates
+                Gui.chessBoardControl.PieceMovedByHuman += _mainGame.WhitePlayer_HumanMovedPieceEvent;
+                Gui.chessBoardControl.PieceMovedByHuman += _mainGame.BlackPlayer_HumanMovedPieceEvent;
+
+                // Add WinGui to the ChessGame updates event
+                //_mainGame.Updated += OnChessGameUpdated;
+                _mainGame.UpdatedState += Gui.OnChessGameUpdated;
+
+                _mainGame.SetGuiChessBoard_IsLocked += UpdateWinGuiOnTimer.SetGuiChessBoard_IsLocked;
+
+                // Add WinGui to the DeclareResults event
+                _mainGame.DeclareResults += Gui.OnChessGameDeclareResults;
+
+                Gui.RemoveHistoryAfterSelected();
+
+                Gui.DisableMenuItemsDuringPlay();
+                Gui.DisableRadioBtnsAndComboBoxes();
+                Gui.DisableHistoryWindowClicking();
+                UpdateWinGuiOnTimer.SetGuiChessBoard_IsLocked(true);
+
+                _mainGame.StartGame();
+            }
+
+            if ( (_isInGameMode) && (! (bool)shouldSwitchIntoGameMode) )
+            {
+                _isInGameMode = false;
+
+                // Remove the ChessGame from the GuiChessBoard updates
+                Gui.chessBoardControl.PieceMovedByHuman -= _mainGame.WhitePlayer_HumanMovedPieceEvent;
+                Gui.chessBoardControl.PieceMovedByHuman -= _mainGame.BlackPlayer_HumanMovedPieceEvent;
+
+                // Remove WinGui from the ChessGame updates event
+                //_mainGame.Updated -= OnChessGameUpdated;
+                _mainGame.UpdatedState -= Gui.OnChessGameUpdated;
+
+                _mainGame.SetGuiChessBoard_IsLocked -= UpdateWinGuiOnTimer.SetGuiChessBoard_IsLocked;
+
+                // Remove WinGui from the DeclareResults event
+                _mainGame.DeclareResults -= Gui.OnChessGameDeclareResults;
+
+                // Add WinGui to the GuiChessBoard updates
+                Gui.chessBoardControl.PieceMovedByHuman += Gui.GuiChessBoardChangedByHuman;
+
+                Gui.EnableMenuItemsAfterPlay();
+                Gui.EnableRadioBtnsAndComboBoxes();
+                Gui.EnableHistoryWindowClicking();
+                UpdateWinGuiOnTimer.SetGuiChessBoard_IsLocked(false);
+
+                _mainGame.StopGameEarly();
+
+                _mainGame = null;                
             }
         }
     }
