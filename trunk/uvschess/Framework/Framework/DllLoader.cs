@@ -82,7 +82,7 @@ namespace UvsChess.Framework
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("Chess->MainForm->LoadAI: " + ex.Message);
+                Logger.Log("Chess->MainForm->LoadAI: " + ex.Message);
             }
         }
 
