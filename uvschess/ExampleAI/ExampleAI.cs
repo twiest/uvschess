@@ -76,7 +76,8 @@ namespace ExampleAI
         {
             ChessMove myNextMove = null;
 
-            while (IsRunning)            
+            //while (IsRunning) ;// uncomment this to test over time conditions
+            while (true)
             {
                 if (myNextMove == null)
                 {
@@ -86,7 +87,7 @@ namespace ExampleAI
 
                     // Since I have a move, break out of loop
                     break;
-                }               
+                }
             }
 
             return myNextMove;
