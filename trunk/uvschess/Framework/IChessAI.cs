@@ -92,6 +92,6 @@ namespace UvsChess
         /// </summary>
         /// <param name="currentState">ChessState, including previous state, previous move. </param>
         /// <returns>Returns true if the opponents move was valid</returns>
-        bool IsValidMove(ChessState currentState);
+        bool IsValidMove(ChessBoard currentBoard, ChessMove moveToCheck, ChessColor colorOfPlayerMoving);
     }
 }

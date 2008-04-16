@@ -98,7 +98,7 @@ namespace ExampleAI
         /// </summary>
         /// <param name="currentState">ChessState, including previous state, previous move. </param>
         /// <returns>Returns true if the move was valid</returns>
-        public bool IsValidMove(ChessState currentState)
+        public bool IsValidMove(ChessBoard currentBoard, ChessMove moveToCheck, ChessColor colorOfPlayerMoving)
         {
             return true;
         }
