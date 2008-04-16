@@ -41,8 +41,8 @@ namespace UvsChess.Framework
         public IChessAI AI;
         public TimeSpan TimeOfLastMove = TimeSpan.MinValue;
 
+        private bool _isTurnOver = false;
         private bool _hasAIEndedTurn = false;
-        private bool _aiWentOverTime = false;
         private bool _forceAIToEndTurnEarly = false;
         private DateTime _startTime;
         private DateTime _endTime;
@@ -65,6 +65,11 @@ namespace UvsChess.Framework
         public ChessPlayer(ChessColor color)
         {
             Color = color;
+        }
+
+        public bool IsTurnOver()
+        {
+            return _isTurnOver;
         }
 
         public bool IsHuman
@@ -138,7 +143,7 @@ namespace UvsChess.Framework
             // NO LOGGING ALLOWED between here
             if ((_forceAIToEndTurnEarly) || (_hasAIEndedTurn) || (DateTime.Now > _endTime))
             {
-                this.AI.IsRunning = false;
+                this._isTurnOver = true;
 
                 if (! _hasAIEndedTurn)
                 {
@@ -191,7 +196,7 @@ namespace UvsChess.Framework
         private void GetNextAIMoveInThread()
         {
             // This is the only place that IsRunning should be set to true.
-            this.AI.IsRunning = true;
+            this._isTurnOver = false;
             _hasAIEndedTurn = false;
 
             _moveToReturn = this.AI.GetNextMove(_currentBoard, this.Color);
