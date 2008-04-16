@@ -485,10 +485,12 @@ namespace UvsChess.Gui
         {
             int sel = Gui.lstHistory.SelectedIndex;
 
+            Gui.lstHistory.BeginUpdate();
             while (Gui.lstHistory.Items.Count > sel + 1)
             {
                 Gui.lstHistory.Items.RemoveAt(Gui.lstHistory.Items.Count - 1);
             }
+            Gui.lstHistory.EndUpdate();
         }
 
         private static void Actually_DisableMenuItemsDuringPlay()
