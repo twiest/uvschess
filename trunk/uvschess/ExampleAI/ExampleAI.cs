@@ -37,15 +37,15 @@ namespace ExampleAI
         #region IChessAI Members
 
         /// <summary>
-        /// This is set to true when the framework starts running your AI. When the AI's time has run out,
-        /// the framework will set this variable to false, which the AI should detect and immediatly exit 
-        /// and return your move to the framework.
+        /// This will return true when the framework starts running your AI. When the AI's time has run out,
+        /// the this method will return false. Once this method returns false, your AI should return a 
+        /// move immediately.
         /// 
-        /// You should NEVER EVER set this property, you should only read from it.
+        /// You should NEVER EVER set this property!
         /// IsRunning should be defined as an Automatic Property.
         /// IsRunning SHOULD NOT CONTAIN ANY CODE!!!
         /// </summary>
-        public bool IsRunning { get; set; }
+        public AIIsMyTurnOverCallback IsMyTurnOver { get; set; }
 
         /// <summary>
         /// Call this method to print out debug information. The framework subscribes to this event
@@ -76,8 +76,8 @@ namespace ExampleAI
         {
             ChessMove myNextMove = null;
 
-            //while (IsRunning) ;// uncomment this to test over time conditions
-            while (true)
+            //while (! IsMyTurnOver()) ;// uncomment this to test over time conditions
+            while (! IsMyTurnOver())
             {
                 if (myNextMove == null)
                 {

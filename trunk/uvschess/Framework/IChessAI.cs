@@ -28,12 +28,17 @@
 namespace UvsChess
 {
     /// <summary>
-    /// This is the delegate that defines the Log callback. You should not need to use this. This is
+    /// This is the delegate that defines the Log callback. You should not need to use this delegate. This is
     /// here solely for the Log property to use as it's return value.
     /// </summary>
     /// <param name="text">This is a string parameter that the Log callback uses to pass the message to the framework.</param>
     public delegate void AILoggerCallback(string message);
-
+    
+    /// <summary>
+    /// This is the delegate that defines the IsMyTurnOver callback. You should not need to use this. This is
+    /// here solely for the IsMyTurnOver property to use as it's return value.
+    /// </summary>
+    public delegate bool AIIsMyTurnOverCallback();
 
     /// <summary>
     /// This is the interface that your AI must implement in order to be used by the chess framework.
@@ -42,15 +47,15 @@ namespace UvsChess
     public interface IChessAI
     {
         /// <summary>
-        /// This is set to true when the framework starts running your AI. When the AI's time has run out,
-        /// the framework will set this variable to false, which the AI should detect and immediatly exit 
-        /// and return your move to the framework. 
+        /// This will return true when the framework starts running your AI. When the AI's time has run out,
+        /// the this method will return false. Once this method returns false, your AI should return a 
+        /// move immediately.
         /// 
-        /// You should NEVER EVER set this property, you should only read from it.
+        /// You should NEVER EVER set this property!
         /// IsRunning should be defined as an Automatic Property.
         /// IsRunning SHOULD NOT CONTAIN ANY CODE!!!
         /// </summary>
-        bool IsRunning
+        AIIsMyTurnOverCallback IsMyTurnOver
         {
             get;
             set;
@@ -60,6 +65,7 @@ namespace UvsChess
         /// Call this method to print out debug information. The framework subscribes to this event
         /// and will provide a log window for your debug messages.
         /// 
+        /// You should NEVER EVER set this property!
         /// Log should be defined as an Automatic Property.
         /// Log SHOULD NOT CONTAIN ANY CODE!!!
         /// </summary>

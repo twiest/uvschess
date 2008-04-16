@@ -69,11 +69,13 @@ namespace UvsChess.Framework
             if (WhitePlayer.IsComputer)
             {
                 WhitePlayer.AI.Log += Logger.AddToWhitesLog;
+                WhitePlayer.AI.IsMyTurnOver += WhitePlayer.IsTurnOver;
             }
 
             if (BlackPlayer.IsComputer)
             {
                 BlackPlayer.AI.Log += Logger.AddToBlacksLog;
+                BlackPlayer.AI.IsMyTurnOver += BlackPlayer.IsTurnOver;
             }
         }
         public ChessGame(string fen, string whitePlayerName, string blackPlayerName)
@@ -168,11 +170,13 @@ namespace UvsChess.Framework
             if (WhitePlayer.IsComputer)
             {
                 WhitePlayer.AI.Log -= Logger.AddToWhitesLog;
+                WhitePlayer.AI.IsMyTurnOver -= WhitePlayer.IsTurnOver;
             }
 
             if (BlackPlayer.IsComputer)
             {
                 BlackPlayer.AI.Log -= Logger.AddToBlacksLog;
+                BlackPlayer.AI.IsMyTurnOver -= BlackPlayer.IsTurnOver;
             }
 
             if (DeclareResults != null)
