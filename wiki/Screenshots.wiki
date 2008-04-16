@@ -8,6 +8,6 @@ http://uvschess.googlecode.com/svn/wiki/main_window-thumb_nail.png
 
 http://uvschess.googlecode.com/svn/wiki/openSuse-4.png
 
-!UvsChess on Mac OSX 10.5
+!UvsChess on Mac OSX 10.5 (because of some Mono on Mac problems, UvsChess doesn't run perfectly there yet)
 
 http://uvschess.googlecode.com/svn/wiki/MacOSX-5.png
