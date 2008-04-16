@@ -236,7 +236,10 @@ namespace UvsChess.Framework
 
                     if (opponent.IsComputer)
                     {
-                        isValidMove = opponent.AI.IsValidMove(newstate);
+                        ChessState tmpState = newstate.Clone();
+                        isValidMove = opponent.AI.IsValidMove(tmpState.PreviousBoard,
+                                                              tmpState.PreviousMove,
+                                                              (tmpState.CurrentPlayerColor == ChessColor.White ? ChessColor.Black : ChessColor.White));
                     }
                     else
                     {
@@ -267,7 +270,10 @@ namespace UvsChess.Framework
                 }
                 else
                 {
-                    isValidMove = opponent.AI.IsValidMove(newstate);
+                    ChessState tmpState = newstate.Clone();
+                    isValidMove = opponent.AI.IsValidMove(tmpState.PreviousBoard,
+                                                          tmpState.PreviousMove,
+                                                          (tmpState.CurrentPlayerColor == ChessColor.White ? ChessColor.Black : ChessColor.White));
                 }
 
                 this.SetGuiChessBoard_IsLocked(true);
