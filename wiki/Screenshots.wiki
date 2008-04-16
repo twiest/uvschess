@@ -1,11 +1,13 @@
-Here are some screenshots of UvsChess in action.
+Here are some screenshots of !UvsChess in action.
+
+!UvsChess running on Windows XP
 
 http://uvschess.googlecode.com/svn/wiki/main_window-thumb_nail.png
 
-UvsChess running on openSUSE 10.3
+!UvsChess running on openSUSE 10.3
 
 http://uvschess.googlecode.com/svn/wiki/openSuse-4.png
 
-UvsChess on Mac OSX 10.5
+!UvsChess on Mac OSX 10.5
 
 http://uvschess.googlecode.com/svn/wiki/MacOSX-5.png
