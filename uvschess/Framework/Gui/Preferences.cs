@@ -128,10 +128,37 @@ namespace UvsChess.Gui
         }
         public void SavePreferences()
         {
-
             StreamWriter outfile = new StreamWriter(inifile);
-            Time = Convert.ToInt32(txtTime.Text);
-            GracePeriod = Convert.ToInt32(txtGrace.Text);
+            try
+            {
+                Time = Convert.ToInt32(txtTime.Text);
+            }
+            catch
+            {
+                Time = int.MaxValue;
+            }
+
+            if (Time < 100)
+            {
+                Time = 100;
+            }
+
+            try
+            {
+                GracePeriod = Convert.ToInt32(txtGrace.Text);
+            }
+            catch
+            {
+                GracePeriod = int.MaxValue;
+            }
+
+            if (GracePeriod < 100)
+            {
+                GracePeriod = 100;
+            }
+
+
+
             outfile.WriteLine("{0}={1}", TIME, Time);
             outfile.WriteLine("{0}={1}", GRACEPERIOD, GracePeriod);
             outfile.Close();
