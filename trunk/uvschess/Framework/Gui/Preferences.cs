@@ -92,6 +92,7 @@ namespace UvsChess.Gui
 
             txtTime.Text = Time.ToString();
             txtGrace.Text = GracePeriod.ToString();
+            txtCheckMove.Text = CheckMoveTimeout.ToString();
         }
         public static void LoadFromFile()
         {
@@ -122,9 +123,9 @@ namespace UvsChess.Gui
                         case GRACEPERIOD:
                             GracePeriod = Convert.ToInt32(sections[1]);
                             break;
-					case CHECKMOVE:
-						CheckMoveTimeout = Convert.ToInt32(sections[1]);
-						break;
+					    case CHECKMOVE:
+						    CheckMoveTimeout = Convert.ToInt32(sections[1]);
+						    break;
                     }
                     line = infile.ReadLine();
                 }
@@ -177,7 +178,7 @@ namespace UvsChess.Gui
 			//Check opponents move time out
             try
             {
-                CheckMoveTimeout = Convert.ToInt32(txtGrace.Text);
+                CheckMoveTimeout = Convert.ToInt32(txtCheckMove.Text);
             }
             catch
             {

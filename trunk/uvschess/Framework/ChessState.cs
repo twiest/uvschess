@@ -131,6 +131,30 @@ namespace UvsChess
             set { _enPassant = value; }
         }
 
+        public bool CanWhiteCastleKingSide 
+        { 
+            get { return _canWhiteCastleKingSide; } 
+            set { _canWhiteCastleKingSide = value; }
+        }
+
+        public bool CanWhiteCastleQueenSide
+        {
+            get { return _canWhiteCastleQueenSide; }
+            set { _canWhiteCastleQueenSide = value; }
+        }
+
+        public bool CanBlackCastleKingSide
+        {
+            get { return _canBlackCastleKingSide; }
+            set { _canBlackCastleKingSide = value; }
+        }
+
+        public bool CanBlackCastleQueenSide
+        {
+            get { return _canBlackCastleQueenSide; }
+            set { _canBlackCastleQueenSide = value; }
+        }
+
         
         #endregion
 
@@ -177,7 +201,13 @@ namespace UvsChess
 
             newState.CurrentPlayerColor = this.CurrentPlayerColor;
 
-            newState.EnPassant = this.EnPassant.Clone();
+            newState.CanWhiteCastleKingSide = this.CanWhiteCastleKingSide;
+            newState.CanWhiteCastleQueenSide = this.CanWhiteCastleQueenSide;
+            newState.CanBlackCastleKingSide = this.CanBlackCastleKingSide;
+            newState.CanBlackCastleQueenSide = this.CanBlackCastleQueenSide;
+
+            if (this.EnPassant != null)
+                newState.EnPassant = this.EnPassant.Clone();
             newState.HalfMoves = this.HalfMoves;
             newState.FullMoves = this.FullMoves;
 
