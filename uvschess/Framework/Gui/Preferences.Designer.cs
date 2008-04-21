@@ -60,6 +60,8 @@ namespace UvsChess.Gui
             this.txtTime = new System.Windows.Forms.TextBox();
             this.txtGrace = new System.Windows.Forms.TextBox();
             this.btnSavePrefs = new System.Windows.Forms.Button();
+            this.txtCheckMove = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -82,21 +84,21 @@ namespace UvsChess.Gui
             // 
             // txtTime
             // 
-            this.txtTime.Location = new System.Drawing.Point(136, 27);
+            this.txtTime.Location = new System.Drawing.Point(199, 27);
             this.txtTime.Name = "txtTime";
             this.txtTime.Size = new System.Drawing.Size(100, 20);
             this.txtTime.TabIndex = 5;
             // 
             // txtGrace
             // 
-            this.txtGrace.Location = new System.Drawing.Point(136, 61);
+            this.txtGrace.Location = new System.Drawing.Point(199, 61);
             this.txtGrace.Name = "txtGrace";
             this.txtGrace.Size = new System.Drawing.Size(100, 20);
             this.txtGrace.TabIndex = 6;
             // 
             // btnSavePrefs
             // 
-            this.btnSavePrefs.Location = new System.Drawing.Point(136, 104);
+            this.btnSavePrefs.Location = new System.Drawing.Point(199, 184);
             this.btnSavePrefs.Name = "btnSavePrefs";
             this.btnSavePrefs.Size = new System.Drawing.Size(94, 23);
             this.btnSavePrefs.TabIndex = 7;
@@ -104,11 +106,29 @@ namespace UvsChess.Gui
             this.btnSavePrefs.UseVisualStyleBackColor = true;
             this.btnSavePrefs.Click += new System.EventHandler(this.btnSavePrefs_Click);
             // 
+            // txtCheckMove
+            // 
+            this.txtCheckMove.Location = new System.Drawing.Point(199, 96);
+            this.txtCheckMove.Name = "txtCheckMove";
+            this.txtCheckMove.Size = new System.Drawing.Size(100, 20);
+            this.txtCheckMove.TabIndex = 8;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(15, 99);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(127, 13);
+            this.label3.TabIndex = 9;
+            this.label3.Text = "Check Move timeout (ms)";
+            // 
             // Preferences
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(262, 139);
+            this.ClientSize = new System.Drawing.Size(344, 229);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.txtCheckMove);
             this.Controls.Add(this.btnSavePrefs);
             this.Controls.Add(this.txtGrace);
             this.Controls.Add(this.txtTime);
@@ -130,5 +150,7 @@ namespace UvsChess.Gui
         private System.Windows.Forms.TextBox txtTime;
         private System.Windows.Forms.TextBox txtGrace;
         private System.Windows.Forms.Button btnSavePrefs;
+        private System.Windows.Forms.TextBox txtCheckMove;
+        private System.Windows.Forms.Label label3;
     }
 }

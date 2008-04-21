@@ -164,6 +164,7 @@ namespace UvsChess.Framework
                     //SelectRadio(radBlack);
                     DoNextMove(BlackPlayer, WhitePlayer);
                 }
+                //Logger.Log("New chess state: " + mainChessState.ToFenBoard());
             }
 
             // Remove the AI Log methods from the GUI
