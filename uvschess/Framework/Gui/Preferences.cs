@@ -40,12 +40,16 @@ namespace UvsChess.Gui
 
         private const string TIME = "time";
         private const string GRACEPERIOD = "graceperiod";
-
+		private const string CHECKMOVE = "checkmove";
+		
         private static int time_default = 5000;
         private static int grace_default = 1000;
+		private static int checkMove_default = 1000;
 
         private static int _time = 5000;
         private static int _grace = 1000;
+		private static int _checkMoveTimeout = 1000;
+		
 
         private static string inifile = AppDomain.CurrentDomain.BaseDirectory + "UvsChess.ini";
 
@@ -63,6 +67,11 @@ namespace UvsChess.Gui
         {
             get { return _grace; }
             set { _grace = value; }
+        }
+        public static int CheckMoveTimeout
+        {
+            get { return _checkMoveTimeout; }
+            set { _checkMoveTimeout = value; }
         }
         #endregion
 
@@ -113,6 +122,9 @@ namespace UvsChess.Gui
                         case GRACEPERIOD:
                             GracePeriod = Convert.ToInt32(sections[1]);
                             break;
+					case CHECKMOVE:
+						CheckMoveTimeout = Convert.ToInt32(sections[1]);
+						break;
                     }
                     line = infile.ReadLine();
                 }
@@ -124,11 +136,14 @@ namespace UvsChess.Gui
 
                 Time = time_default;
                 GracePeriod = grace_default;
+				CheckMoveTimeout = checkMove_default;
             }
         }
         public void SavePreferences()
         {
             StreamWriter outfile = new StreamWriter(inifile);
+			
+			// Time
             try
             {
                 Time = Convert.ToInt32(txtTime.Text);
@@ -143,6 +158,7 @@ namespace UvsChess.Gui
                 Time = 100;
             }
 
+			//  Grace period
             try
             {
                 GracePeriod = Convert.ToInt32(txtGrace.Text);
@@ -156,11 +172,28 @@ namespace UvsChess.Gui
             {
                 GracePeriod = 100;
             }
+			
+			
+			//Check opponents move time out
+            try
+            {
+                CheckMoveTimeout = Convert.ToInt32(txtGrace.Text);
+            }
+            catch
+            {
+                CheckMoveTimeout = int.MaxValue;
+            }
+
+            if (CheckMoveTimeout < 100)
+            {
+                CheckMoveTimeout = 100;
+            }
 
 
 
             outfile.WriteLine("{0}={1}", TIME, Time);
             outfile.WriteLine("{0}={1}", GRACEPERIOD, GracePeriod);
+            outfile.WriteLine("{0}={1}", CHECKMOVE, CheckMoveTimeout);
             outfile.Close();
         }
 

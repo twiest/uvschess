@@ -42,6 +42,11 @@ namespace UvsChess
         private int _fullMoves = 0;
         private int _halfMoves = 0;
         private ChessLocation _enPassant = null;
+		private bool _canWhiteCastleKingSide = false;
+		private bool _canWhiteCastleQueenSide = false;
+		private bool _canBlackCastleKingSide = false;
+		private bool _canBlackCastleQueenSide = false;
+		
         //private string _castling = "-";
         #endregion
 
@@ -62,7 +67,7 @@ namespace UvsChess
             {
                 fenBoard = FenStartState;
             }
-            FromFenBoard(fenBoard);
+			FromFenBoard(fenBoard);
         }
         #endregion
 
@@ -172,7 +177,7 @@ namespace UvsChess
 
             newState.CurrentPlayerColor = this.CurrentPlayerColor;
 
-            newState.EnPassant = this.EnPassant;
+            newState.EnPassant = this.EnPassant.Clone();
             newState.HalfMoves = this.HalfMoves;
             newState.FullMoves = this.FullMoves;
 
@@ -199,7 +204,7 @@ namespace UvsChess
             }
 
             //place holder for castling (not currently supported)
-            strBuild.Append(" -");
+            strBuild.Append(" " + CastlingToFen());
 
             //place holder for en passant (not currently supported)
             strBuild.Append(EnPassantToFen());
@@ -217,7 +222,7 @@ namespace UvsChess
         /// </summary>
         /// <param name="fenBoard"></param>
         public void FromFenBoard(string fenBoard)
-        {            
+        {  
             string[] lines = fenBoard.Split(' ');
 
             CurrentBoard = new ChessBoard(fenBoard);
@@ -234,15 +239,63 @@ namespace UvsChess
             {
                 throw new Exception("Missing active color in FEN board");
             }
+			
+			//casting is lines[2]
+			CastlingFromFen(lines[2]);
 
             //en passant is lines[3]
             EnPassant = EnPassantFromFen(lines[3].ToLower());            
             
             HalfMoves = Convert.ToInt32(lines[4]);
             FullMoves = Convert.ToInt32(lines[5]);
-
-            return;
         }
+		
+		private void CastlingFromFen(string castling)
+		{
+			_canBlackCastleKingSide = false;
+			_canBlackCastleQueenSide = false;
+			_canWhiteCastleKingSide = false;
+			_canWhiteCastleQueenSide = false;
+			
+			if (castling == "-")
+			{
+				return;
+			}
+			foreach (char c in castling)
+			{
+				switch(c)
+				{
+				case 'K':
+					_canWhiteCastleKingSide = true;
+					break;			
+				case 'Q':
+					_canWhiteCastleQueenSide = true;
+					break;
+				case 'k':
+					_canBlackCastleKingSide = true;
+					break;
+				case 'q':
+					_canBlackCastleQueenSide = true;
+					break;
+				default:
+					throw new Exception(string.Format("Invalid castling values '{0}' in fen board", castling));
+					
+				}
+			}
+		}
+		
+		private string CastlingToFen()
+		{
+			string castling = string.Empty;
+			
+			castling += (_canWhiteCastleKingSide)?"K":"";
+			castling += (_canWhiteCastleQueenSide)?"Q":"";
+			castling += (_canBlackCastleKingSide)?"k":"";
+			castling += (_canBlackCastleQueenSide)?"q":"";
+			
+			castling = (castling == string.Empty)?"-":castling;
+			return castling;
+		}
 
         private ChessLocation EnPassantFromFen(string fen)
         {
