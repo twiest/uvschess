@@ -25,14 +25,12 @@
 // 		Thomas Wiest  twiest@users.sourceforge.net
 //		Rusty Howell  rhowell@users.sourceforge.net
 
+using System;
+
 namespace UvsChess
 {
-    public class ChessMove
+    public class ChessMove:IComparable<ChessMove>
     {        
-        private ChessLocation _from;
-        private ChessLocation _to;        
-        private ChessFlag _flag;
-
         public ChessMove(ChessLocation from, ChessLocation to):this(from, to, ChessFlag.NoFlag)
         {
         }
@@ -46,20 +44,29 @@ namespace UvsChess
 
         public ChessFlag Flag
         {
-            get { return _flag; }
-            set { _flag = value; }
+            get;
+            set;
         }
-        
+
         public ChessLocation From
         {
-            get { return _from; }
-            set { _from = value; }
-        }       
+            get;
+            set;
+        }
 
         public ChessLocation To
         {
-            get { return _to; }
-            set { _to = value; }
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// This is the value of the board after this move has been made.
+        /// </summary>
+        public int ValueOfMove
+        {
+            get;
+            set;
         }
 
         /// <summary>
@@ -206,5 +213,14 @@ namespace UvsChess
             return !(move1 == move2);
         }
 
+
+        #region IComparable<ChessMove> Members
+
+        public int CompareTo(ChessMove other)
+        {
+            return (other.ValueOfMove - this.ValueOfMove);
+        }
+
+        #endregion
     }
 }
