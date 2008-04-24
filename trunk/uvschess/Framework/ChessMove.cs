@@ -114,6 +114,7 @@ namespace UvsChess
             if (this.From != null)
                 newMove.From = this.From.Clone();
 
+            newMove.ValueOfMove = this.ValueOfMove;
             newMove.Flag = this.Flag;
 
             return newMove;
@@ -218,6 +219,7 @@ namespace UvsChess
 
         public int CompareTo(ChessMove other)
         {
+            // Sorts it from highest value move to lowest value
             return (other.ValueOfMove - this.ValueOfMove);
         }
 
