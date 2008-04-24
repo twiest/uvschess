@@ -70,12 +70,14 @@ namespace UvsChess.Framework
             {
                 WhitePlayer.AI.Log += Logger.AddToWhitesLog;
                 WhitePlayer.AI.IsMyTurnOver += WhitePlayer.IsTurnOver;
+                WhitePlayer.AI.Profile += Profiler.AddToWhitesProfile;
             }
 
             if (BlackPlayer.IsComputer)
             {
                 BlackPlayer.AI.Log += Logger.AddToBlacksLog;
                 BlackPlayer.AI.IsMyTurnOver += BlackPlayer.IsTurnOver;
+                BlackPlayer.AI.Profile += Profiler.AddToBlacksProfile;
             }
         }
         public ChessGame(string fen, string whitePlayerName, string blackPlayerName)
@@ -149,7 +151,7 @@ namespace UvsChess.Framework
         {
             //This method run in its own thread.          
 
-            IsGameRunning = true;
+            IsGameRunning = true;            
 
             while (IsGameRunning)
             {
@@ -172,13 +174,18 @@ namespace UvsChess.Framework
             {
                 WhitePlayer.AI.Log -= Logger.AddToWhitesLog;
                 WhitePlayer.AI.IsMyTurnOver -= WhitePlayer.IsTurnOver;
+                WhitePlayer.AI.Profile -= Profiler.AddToWhitesProfile;
             }
 
             if (BlackPlayer.IsComputer)
             {
                 BlackPlayer.AI.Log -= Logger.AddToBlacksLog;
                 BlackPlayer.AI.IsMyTurnOver -= BlackPlayer.IsTurnOver;
+                BlackPlayer.AI.Profile -= Profiler.AddToBlacksProfile;
             }
+
+            Profiler.Write();
+
 
             if (DeclareResults != null)
             {
@@ -198,7 +205,12 @@ namespace UvsChess.Framework
 
             if (player.IsComputer)
             {
+
+                Profiler.Clear(player.Color);
+                
                 nextMove = player.GetNextMove(mainChessState.CurrentBoard);
+
+                Profiler.Write(player.Color);
 
                 if (!this.IsGameRunning)
                 {
@@ -282,7 +294,7 @@ namespace UvsChess.Framework
                 }
 
                 this.SetGuiChessBoard_IsLocked(true);
-            }
+            }//end if player == human
                         
             if ((UpdatedState != null) && (newstate != null))
             {
