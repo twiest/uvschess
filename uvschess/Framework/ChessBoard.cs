@@ -35,8 +35,6 @@ namespace UvsChess
         #region Members
         public const int NumberOfRows = 8;
         public const int NumberOfColumns = 8;
-
-        ChessPiece[,] _board;
         #endregion
 
         #region Constructors
@@ -46,9 +44,14 @@ namespace UvsChess
 
         public ChessBoard(string fenBoard)
         {
-            _board = new ChessPiece[NumberOfRows, NumberOfColumns];
+            Board = new ChessPiece[NumberOfRows, NumberOfColumns];
 
             FromFenBoard(fenBoard);
+        }
+
+        public ChessBoard(ChessPiece[,] board)
+        {
+            Board = CloneBoard(board);
         }
         #endregion
 
@@ -72,30 +75,40 @@ namespace UvsChess
         /// <returns>ChessPiece</returns>
         public ChessPiece this[int x, int y]
         {
-            get { return _board[x, y]; }
-            set { _board[x, y] = value; }
+            get { return Board[x, y]; }
+            set { Board[x, y] = value; }
+        }
+
+        private ChessPiece[,] Board
+        {
+            get;
+            set;
         }
 
         public ChessPiece[,] RawBoard
         {
-            get { return (ChessPiece[,])_board.Clone(); }
+            get { return this.Clone().Board; }
         }
         #endregion
 
         #region Methods and Operators
-        public ChessBoard Clone()
+        private ChessPiece[,] CloneBoard(ChessPiece[,] board)
         {
-            ChessBoard newChessBoard = new ChessBoard();
-
+            ChessPiece[,] retBoard = new ChessPiece[NumberOfRows, NumberOfColumns];
             for (int Y = 0; Y < NumberOfRows; Y++)
             {
                 for (int X = 0; X < NumberOfColumns; X++)
                 {
-                    newChessBoard._board[X, Y] = this._board[X, Y];
+                    retBoard[X, Y] = board[X, Y];
                 }
             }
 
-            return newChessBoard;
+            return retBoard;
+        }
+
+        public ChessBoard Clone()
+        {
+            return new ChessBoard(this.Board);
         }
 
         public void MakeMove(ChessMove move)

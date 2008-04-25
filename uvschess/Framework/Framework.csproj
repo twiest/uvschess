@@ -69,6 +69,7 @@
     <Compile Include="ChessColor.cs" />
     <Compile Include="ChessPiece.cs" />
     <Compile Include="Framework\AI.cs" />
+    <Compile Include="Framework\DecisionTree.cs" />
     <Compile Include="Framework\ChessGame.cs" />
     <Compile Include="Framework\Profiler.cs" />
     <Compile Include="Gui\AboutUvsChess.cs">
