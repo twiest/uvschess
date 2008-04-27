@@ -9,19 +9,18 @@ namespace UvsChess.Framework
         private ChessMove _move = null;
         private ChessBoard _board = null;
 
-        public DecisionTree()
+        public DecisionTree(ChessBoard board)
         {
-            Level = 0;
             Children = new List<DecisionTree>();
+            Board = board;
         }
 
-        private DecisionTree(DecisionTree parent, ChessBoard board, ChessMove move, int level)
+        private DecisionTree(DecisionTree parent, ChessBoard board, ChessMove move)
         {
             Children = new List<DecisionTree>();
             Parent = parent;
             Board = board;
             Move = move;
-            Level = level;
         }
 
         public DecisionTree LastChild
@@ -36,12 +35,6 @@ namespace UvsChess.Framework
         {
             get;
             private set;
-        }
-
-        private int Level
-        {
-            get;
-            set;
         }
 
         private List<DecisionTree> Children
@@ -90,29 +83,40 @@ namespace UvsChess.Framework
             }
         }
 
+        public DecisionTree Clone()
+        {
+            return this.Clone(null);
+        }
+
+        public DecisionTree Clone(DecisionTree parent)
+        {
+            DecisionTree retVal = null;
+
+            if (parent == null)
+            {
+                retVal = new DecisionTree(this.Board);
+            }
+            else
+            {
+                retVal = new DecisionTree(parent, this.Board, this.Move);
+            }
+
+            foreach (DecisionTree curChild in this.Children)
+            {
+                retVal.Children.Add(curChild.Clone(this));
+            }
+
+            return retVal;
+        }
+
         public void AddChild(ChessBoard board, ChessMove move)
         {
-            this.Children.Add(new DecisionTree(this, board, move, this.Level + 1));
+            this.Children.Add(new DecisionTree(this, board, move));
         }
 
         public void AddFinalDecision(ChessBoard board, ChessMove move)
         {
-            FinalDecision = new DecisionTree(this, board, move, 0);
+            FinalDecision = new DecisionTree(this, board, move);
         }
-
-        //public void AddChild(ChessBoard board, ChessMove move)
-        //{
-        //    currentNode.Children.Add(new DecisionTree(currentNode, board, move, currentNode.Level + 1));
-        //}
-
-        //public void GoDownOneLevel()
-        //{
-        //    currentNode = currentNode.Children[currentNode.Children.Count - 1];
-        //}
-
-        //public void GoUpOneLevel()
-        //{
-        //    currentNode = currentNode.Parent;
-        //}
     }
 }

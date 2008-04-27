@@ -80,6 +80,7 @@ namespace UvsChess.Gui
             this.cmbWhite = new System.Windows.Forms.ComboBox();
             this.lstHistory = new System.Windows.Forms.ListBox();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.chessBoardControl = new UvsChess.Gui.GuiChessBoard();
             this.tabLogs = new System.Windows.Forms.TabControl();
             this.tabMainLog = new System.Windows.Forms.TabPage();
             this.btnSaveMainLog = new System.Windows.Forms.Button();
@@ -98,7 +99,7 @@ namespace UvsChess.Gui
             this.lstBlacksLog = new System.Windows.Forms.ListBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.chessBoardControl = new UvsChess.Gui.GuiChessBoard();
+            this.viewDecisionTreeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -166,7 +167,8 @@ namespace UvsChess.Gui
             this.newToolStripMenuItem,
             this.startToolStripMenuItem,
             this.stopToolStripMenuItem,
-            this.clearHistoryToolStripMenuItem});
+            this.clearHistoryToolStripMenuItem,
+            this.viewDecisionTreeToolStripMenuItem});
             this.gameToolStripMenuItem.Name = "gameToolStripMenuItem";
             this.gameToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
             this.gameToolStripMenuItem.Text = "Game";
@@ -175,7 +177,7 @@ namespace UvsChess.Gui
             // 
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
             this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.newToolStripMenuItem.Text = "New";
             this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
             // 
@@ -183,7 +185,7 @@ namespace UvsChess.Gui
             // 
             this.startToolStripMenuItem.Name = "startToolStripMenuItem";
             this.startToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
-            this.startToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.startToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.startToolStripMenuItem.Text = "Start";
             this.startToolStripMenuItem.Click += new System.EventHandler(this.startToolStripMenuItem_Click);
             // 
@@ -192,14 +194,14 @@ namespace UvsChess.Gui
             this.stopToolStripMenuItem.Enabled = false;
             this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
             this.stopToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-            this.stopToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.stopToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.stopToolStripMenuItem.Text = "Stop";
             this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
             // 
             // clearHistoryToolStripMenuItem
             // 
             this.clearHistoryToolStripMenuItem.Name = "clearHistoryToolStripMenuItem";
-            this.clearHistoryToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.clearHistoryToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.clearHistoryToolStripMenuItem.Text = "Clear History";
             this.clearHistoryToolStripMenuItem.Click += new System.EventHandler(this.clearHistoryToolStripMenuItem_Click);
             // 
@@ -375,6 +377,16 @@ namespace UvsChess.Gui
             this.splitContainer2.Size = new System.Drawing.Size(798, 726);
             this.splitContainer2.SplitterDistance = 333;
             this.splitContainer2.TabIndex = 0;
+            // 
+            // chessBoardControl
+            // 
+            this.chessBoardControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.chessBoardControl.IsLocked = false;
+            this.chessBoardControl.Location = new System.Drawing.Point(0, 0);
+            this.chessBoardControl.Name = "chessBoardControl";
+            this.chessBoardControl.Size = new System.Drawing.Size(333, 333);
+            this.chessBoardControl.TabIndex = 0;
+            this.chessBoardControl.TabStop = false;
             // 
             // tabLogs
             // 
@@ -575,15 +587,12 @@ namespace UvsChess.Gui
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
-            // chessBoardControl
+            // viewDecisionTreeToolStripMenuItem
             // 
-            this.chessBoardControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.chessBoardControl.IsLocked = false;
-            this.chessBoardControl.Location = new System.Drawing.Point(0, 0);
-            this.chessBoardControl.Name = "chessBoardControl";
-            this.chessBoardControl.Size = new System.Drawing.Size(333, 333);
-            this.chessBoardControl.TabIndex = 0;
-            this.chessBoardControl.TabStop = false;
+            this.viewDecisionTreeToolStripMenuItem.Name = "viewDecisionTreeToolStripMenuItem";
+            this.viewDecisionTreeToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.viewDecisionTreeToolStripMenuItem.Text = "View Decision Tree";
+            this.viewDecisionTreeToolStripMenuItem.Click += new System.EventHandler(this.viewDecisionTreeToolStripMenuItem_Click);
             // 
             // WinGui
             // 
@@ -668,5 +677,6 @@ namespace UvsChess.Gui
         private System.Windows.Forms.Button btnSaveBlacksLog;
         public  System.Windows.Forms.NumericUpDown numHalfMoves;
         public  System.Windows.Forms.NumericUpDown numFullMoves;
+        private System.Windows.Forms.ToolStripMenuItem viewDecisionTreeToolStripMenuItem;
     }
 }

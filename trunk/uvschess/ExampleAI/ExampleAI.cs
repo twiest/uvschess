@@ -71,6 +71,17 @@ namespace ExampleAI
         public AIProfilerCallback Profile { get; set; }
 
         /// <summary>
+        /// Call this method to tell the framework what decision print out debug information. The framework subscribes to this event
+        /// and will provide a debug window for your decision tree.
+        /// 
+        /// You should NEVER EVER set this property!
+        /// SetDecisionTree should be defined as an Automatic Property.
+        /// SetDecisionTree SHOULD NOT CONTAIN ANY CODE!!!
+        /// </summary>
+        /// <param name="message"></param>
+        public AISetDecisionTreeCallback SetDecisionTree { get; set; }
+
+        /// <summary>
         /// The name of your AI
         /// </summary>
         public string Name

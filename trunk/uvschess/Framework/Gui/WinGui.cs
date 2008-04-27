@@ -177,5 +177,10 @@ namespace UvsChess.Gui
         {            
             UpdateWinGuiOnTimer.ShutdownGuiEventLoop();
         }
+
+        private void viewDecisionTreeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UpdateWinGuiOnTimer.ShowDecisionTree();
+        }
     }
 }
