@@ -65,6 +65,7 @@ namespace UvsChess.Gui
             this.startToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clearHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewDecisionTreeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.preferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -99,7 +100,6 @@ namespace UvsChess.Gui
             this.lstBlacksLog = new System.Windows.Forms.ListBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.viewDecisionTreeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -204,6 +204,13 @@ namespace UvsChess.Gui
             this.clearHistoryToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.clearHistoryToolStripMenuItem.Text = "Clear History";
             this.clearHistoryToolStripMenuItem.Click += new System.EventHandler(this.clearHistoryToolStripMenuItem_Click);
+            // 
+            // viewDecisionTreeToolStripMenuItem
+            // 
+            this.viewDecisionTreeToolStripMenuItem.Name = "viewDecisionTreeToolStripMenuItem";
+            this.viewDecisionTreeToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.viewDecisionTreeToolStripMenuItem.Text = "View Decision Tree";
+            this.viewDecisionTreeToolStripMenuItem.Click += new System.EventHandler(this.viewDecisionTreeToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -586,13 +593,6 @@ namespace UvsChess.Gui
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
-            // 
-            // viewDecisionTreeToolStripMenuItem
-            // 
-            this.viewDecisionTreeToolStripMenuItem.Name = "viewDecisionTreeToolStripMenuItem";
-            this.viewDecisionTreeToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
-            this.viewDecisionTreeToolStripMenuItem.Text = "View Decision Tree";
-            this.viewDecisionTreeToolStripMenuItem.Click += new System.EventHandler(this.viewDecisionTreeToolStripMenuItem_Click);
             // 
             // WinGui
             // 

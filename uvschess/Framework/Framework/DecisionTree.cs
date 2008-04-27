@@ -37,7 +37,7 @@ namespace UvsChess.Framework
             private set;
         }
 
-        private List<DecisionTree> Children
+        public List<DecisionTree> Children
         {
             get;
             set;
@@ -116,7 +116,21 @@ namespace UvsChess.Framework
 
         public void AddFinalDecision(ChessBoard board, ChessMove move)
         {
-            FinalDecision = new DecisionTree(this, board, move);
+            DecisionTree rootNode = this;
+            while (! rootNode.IsRootNode)
+            {
+                rootNode = rootNode.Parent;
+            }
+
+            rootNode.FinalDecision = new DecisionTree(rootNode, board, move);
+        }
+
+        public override string ToString()
+        {
+            if (IsRootNode)
+                return "Starting Board";
+            else
+                return Move.ToString();
         }
     }
 }
