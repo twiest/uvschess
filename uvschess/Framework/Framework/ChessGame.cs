@@ -33,85 +33,66 @@ namespace UvsChess.Framework
 {
     public class ChessGame
     {
-        //public delegate void UpdatedDelegate(string playerColor, string nextMove, string currentFen);
         public delegate void UpdatedStateDelegate(ChessState state);
-        //public UpdatedDelegate Updated = null;
-        public UpdatedStateDelegate UpdatedState = null;
-
         public delegate void SetGuiChessBoard_IsLockedDelegate(bool isLocked);
-        public SetGuiChessBoard_IsLockedDelegate SetGuiChessBoard_IsLocked = null;
-
         public delegate void DeclareResultsDelegate(string results);
-        public DeclareResultsDelegate DeclareResults = null;
+        public delegate void SetDecisionTreeDelegate(DecisionTree dt);
 
-        ChessState _mainChessState = null;
-        public bool IsGameRunning = false;
-        string results = string.Empty;
+        string _results = string.Empty;
 
-        ChessPlayer WhitePlayer = null;
-        ChessPlayer BlackPlayer = null;
+        DecisionTree _tmpDecisionTree = null;
+        ChessPlayer _whitePlayer = null;
+        ChessPlayer _blackPlayer = null;
         Thread _chessGameThread = null;
+        ChessState _mainChessState = null;
 
         public ChessGame(ChessState state, string whitePlayerName, string blackPlayerName)
         {
-            mainChessState = state;
-            WhitePlayer = new ChessPlayer(ChessColor.White);
-            BlackPlayer = new ChessPlayer(ChessColor.Black);
+            IsGameRunning = false;
 
-            WhitePlayer.AIName = whitePlayerName;
-            BlackPlayer.AIName = blackPlayerName;
+            _mainChessState = state;
+            _whitePlayer = new ChessPlayer(ChessColor.White);
+            _blackPlayer = new ChessPlayer(ChessColor.Black);
+
+            _whitePlayer.AIName = whitePlayerName;
+            _blackPlayer.AIName = blackPlayerName;
 
             //Load the AI if it isn't loaded already
-            LoadAI(WhitePlayer);
-            LoadAI(BlackPlayer);
+            LoadAI(_whitePlayer);
+            LoadAI(_blackPlayer);
 
             // Hook up the AI Log methods to the GUI
-            if (WhitePlayer.IsComputer)
+            if (_whitePlayer.IsComputer)
             {
-                WhitePlayer.AI.Log += Logger.AddToWhitesLog;
-                WhitePlayer.AI.IsMyTurnOver += WhitePlayer.IsTurnOver;
-                WhitePlayer.AI.Profile += Profiler.AddToWhitesProfile;
+                _whitePlayer.AI.Log += Logger.AddToWhitesLog;
+                _whitePlayer.AI.IsMyTurnOver += _whitePlayer.IsTurnOver;
+                _whitePlayer.AI.Profile += Profiler.AddToWhitesProfile;
+                _whitePlayer.AI.SetDecisionTree += SetTmpLastDecisionTree;
             }
 
-            if (BlackPlayer.IsComputer)
+            if (_blackPlayer.IsComputer)
             {
-                BlackPlayer.AI.Log += Logger.AddToBlacksLog;
-                BlackPlayer.AI.IsMyTurnOver += BlackPlayer.IsTurnOver;
-                BlackPlayer.AI.Profile += Profiler.AddToBlacksProfile;
+                _blackPlayer.AI.Log += Logger.AddToBlacksLog;
+                _blackPlayer.AI.IsMyTurnOver += _blackPlayer.IsTurnOver;
+                _blackPlayer.AI.Profile += Profiler.AddToBlacksProfile;
+                _blackPlayer.AI.SetDecisionTree += SetTmpLastDecisionTree;
             }
         }
+
         public ChessGame(string fen, string whitePlayerName, string blackPlayerName)
             : this(new ChessState(fen), whitePlayerName, blackPlayerName)
         {
-
-            //mainChessState = new ChessState(fen);
-
-            //WhitePlayer = new ChessPlayer(ChessColor.White);
-            //BlackPlayer = new ChessPlayer(ChessColor.Black);
-
-            //WhitePlayer.AIName = whitePlayerName;
-            //BlackPlayer.AIName = blackPlayerName;
-
-            ////Load the AI if it isn't loaded already
-            //LoadAI(WhitePlayer);
-            //LoadAI(BlackPlayer);
-
-            //// Hook up the AI Log methods to the GUI
-            //if (WhitePlayer.IsComputer)
-            //{
-            //    WhitePlayer.AI.Log += Logger.AddToWhitesLog;
-            //}
-
-            //if (BlackPlayer.IsComputer)
-            //{
-            //    BlackPlayer.AI.Log += Logger.AddToBlacksLog;
-            //}
         }
 
-        private ChessState mainChessState
+        public bool IsGameRunning { get; set; }
+        public SetGuiChessBoard_IsLockedDelegate SetGuiChessBoard_IsLocked { get; set; }
+        public SetDecisionTreeDelegate SetDecisionTree { get; set; }
+        public DeclareResultsDelegate DeclareResults { get; set; }
+        public UpdatedStateDelegate UpdatedState { get; set; }
+
+        public void SetTmpLastDecisionTree(DecisionTree dt)
         {
-            get { return _mainChessState; }
-            set { _mainChessState = value; }
+            _tmpDecisionTree = dt;
         }
 
         public void StartGame()
@@ -124,27 +105,27 @@ namespace UvsChess.Framework
         {
             IsGameRunning = false;            
 
-            WhitePlayer.EndTurnEarly();
-            BlackPlayer.EndTurnEarly();
+            _whitePlayer.EndTurnEarly();
+            _blackPlayer.EndTurnEarly();
 
             _chessGameThread.Join();
 
 
             // Explicitly get rid of the AI and Player objects
-            WhitePlayer.AI = null;
-            WhitePlayer = null;
-            BlackPlayer.AI = null;
-            BlackPlayer = null;           
+            _whitePlayer.AI = null;
+            _whitePlayer = null;
+            _blackPlayer.AI = null;
+            _blackPlayer = null;           
         }
 
         public void WhitePlayer_HumanMovedPieceEvent(ChessMove move)
         {
-            WhitePlayer.HumanMovedPieceEvent(move);
+            _whitePlayer.HumanMovedPieceEvent(move);
         }
 
         public void BlackPlayer_HumanMovedPieceEvent(ChessMove move)
         {
-            BlackPlayer.HumanMovedPieceEvent(move);
+            _blackPlayer.HumanMovedPieceEvent(move);
         }
 
         void PlayInThread()
@@ -155,33 +136,35 @@ namespace UvsChess.Framework
 
             while (IsGameRunning)
             {
-                if (mainChessState.CurrentPlayerColor == ChessColor.White)
+                if (_mainChessState.CurrentPlayerColor == ChessColor.White)
                 {
                     //change radion button selection
                     //SelectRadio(radWhite);
-                    DoNextMove(WhitePlayer, BlackPlayer);
+                    DoNextMove(_whitePlayer, _blackPlayer);
                 }
                 else
                 {
                     //SelectRadio(radBlack);
-                    DoNextMove(BlackPlayer, WhitePlayer);
+                    DoNextMove(_blackPlayer, _whitePlayer);
                 }
                 //Logger.Log("New chess state: " + mainChessState.ToFenBoard());
             }
 
             // Remove the AI Log methods from the GUI
-            if (WhitePlayer.IsComputer)
+            if (_whitePlayer.IsComputer)
             {
-                WhitePlayer.AI.Log -= Logger.AddToWhitesLog;
-                WhitePlayer.AI.IsMyTurnOver -= WhitePlayer.IsTurnOver;
-                WhitePlayer.AI.Profile -= Profiler.AddToWhitesProfile;
+                _whitePlayer.AI.Log -= Logger.AddToWhitesLog;
+                _whitePlayer.AI.IsMyTurnOver -= _whitePlayer.IsTurnOver;
+                _whitePlayer.AI.Profile -= Profiler.AddToWhitesProfile;
+                _whitePlayer.AI.SetDecisionTree -= SetTmpLastDecisionTree;
             }
 
-            if (BlackPlayer.IsComputer)
+            if (_blackPlayer.IsComputer)
             {
-                BlackPlayer.AI.Log -= Logger.AddToBlacksLog;
-                BlackPlayer.AI.IsMyTurnOver -= BlackPlayer.IsTurnOver;
-                BlackPlayer.AI.Profile -= Profiler.AddToBlacksProfile;
+                _blackPlayer.AI.Log -= Logger.AddToBlacksLog;
+                _blackPlayer.AI.IsMyTurnOver -= _blackPlayer.IsTurnOver;
+                _blackPlayer.AI.Profile -= Profiler.AddToBlacksProfile;
+                _blackPlayer.AI.SetDecisionTree -= SetTmpLastDecisionTree;
             }
 
             Profiler.Write();
@@ -189,7 +172,7 @@ namespace UvsChess.Framework
 
             if (DeclareResults != null)
             {
-                DeclareResults(results);
+                DeclareResults(_results);
             }
             
             Logger.Log("Game Over");
@@ -205,10 +188,20 @@ namespace UvsChess.Framework
 
             if (player.IsComputer)
             {
-
                 Profiler.Clear(player.Color);
-                
-                nextMove = player.GetNextMove(mainChessState.CurrentBoard);
+
+                // Clear out the decision tree
+                _tmpDecisionTree = null;
+                nextMove = player.GetNextMove(_mainChessState.CurrentBoard);
+
+                try
+                {
+                    SetDecisionTree(_tmpDecisionTree);
+                }
+                catch
+                {
+                    // do nothing, the game was ending while I was trying to set the decision tree
+                }
 
                 Profiler.Write(player.Color);
 
@@ -221,7 +214,7 @@ namespace UvsChess.Framework
                 if ( (nextMove == null) || (!nextMove.IsBasicallyValid) )
                 {
                     IsGameRunning = false;
-                    results = "The framework caught " + player.ColorAndName + " returning a completely invalid move, therefore " +
+                    _results = "The framework caught " + player.ColorAndName + " returning a completely invalid move, therefore " +
                               player.ColorAndName + " loses!";
 
                     if (nextMove == null)
@@ -240,7 +233,7 @@ namespace UvsChess.Framework
                 {
                     // the AI went over it's time limit.
                     IsGameRunning = false;
-                    results = player.ColorAndName + " went over the time limit and grace period. Total move time was: " + player.TimeOfLastMove.ToString();
+                    _results = player.ColorAndName + " went over the time limit and grace period. Total move time was: " + player.TimeOfLastMove.ToString();
                     return;
                 }
 
@@ -248,7 +241,7 @@ namespace UvsChess.Framework
                 {
                     // The move is not a stale mate, and it's basically valid,
                     // so, let's see if the move is actually valid.
-                    newstate = mainChessState.Clone();
+                    newstate = _mainChessState.Clone();
                     newstate.MakeMove(nextMove);
 
                     if (opponent.IsComputer)
@@ -270,7 +263,7 @@ namespace UvsChess.Framework
             {
                 this.SetGuiChessBoard_IsLocked(false);
 
-                nextMove = player.GetNextMove(mainChessState.CurrentBoard);
+                nextMove = player.GetNextMove(_mainChessState.CurrentBoard);
 
                 if (!IsGameRunning)
                 {
@@ -278,7 +271,7 @@ namespace UvsChess.Framework
                     return;
                 }
 
-                newstate = mainChessState.Clone();
+                newstate = _mainChessState.Clone();
                 newstate.MakeMove(nextMove);
 
                 if (opponent.IsHuman)
@@ -305,29 +298,29 @@ namespace UvsChess.Framework
 
             if (isValidMove)
             {
-                mainChessState = newstate;
+                _mainChessState = newstate;
 
                 if (player.Color == ChessColor.Black)
                 {
-                    mainChessState.FullMoves++;//Increment fullmoves after black's turn
+                    _mainChessState.FullMoves++;//Increment fullmoves after black's turn
                 }
 
                 //Determine if a pawn was moved or a kill was made.
                 if (ResetHalfMove())
                 {
-                    mainChessState.HalfMoves = 0;
+                    _mainChessState.HalfMoves = 0;
                 }
                 else
                 {
-                    if (mainChessState.HalfMoves < 50)
+                    if (_mainChessState.HalfMoves < 50)
                     {
-                        mainChessState.HalfMoves++;
+                        _mainChessState.HalfMoves++;
                     }
                     else
                     {
                         //end of game: 50 move rule
                         IsGameRunning = false;
-                        results = "Game is a stalemate. 50 moves were made without a kill or a pawn advancement.";
+                        _results = "Game is a stalemate. 50 moves were made without a kill or a pawn advancement.";
                     }
                 }
 
@@ -341,7 +334,7 @@ namespace UvsChess.Framework
                     // Checkmate on a valid move has been signaled.
                     IsGameRunning = false;
 
-                    results = player.ColorAndName + " has signaled that the game is a checkmate _and_ " +
+                    _results = player.ColorAndName + " has signaled that the game is a checkmate _and_ " +
                               opponent.ColorAndName + " said the last move was valid.";
                 }
             }
@@ -355,11 +348,11 @@ namespace UvsChess.Framework
                     // A stalemate has occurred. Since stalemates can occur because the AI can't
                     // make a move, we don't have the other AI check their move (because it would
                     // probably just be an empty move).
-                    results = player.ColorAndName + " has signaled that the game is a stalemate.";
+                    _results = player.ColorAndName + " has signaled that the game is a stalemate.";
                 }
                 else
                 {
-                    results = opponent.ColorAndName + " has signaled that " + player.ColorAndName + 
+                    _results = opponent.ColorAndName + " has signaled that " + player.ColorAndName + 
                               " returned an invalid move!";
 
                     Logger.Log(player.ColorAndName + "'s invalid move was: " + nextMove.ToString());
@@ -403,16 +396,16 @@ namespace UvsChess.Framework
         //This method checks if a pawn was moved or a kill was made.
         private bool ResetHalfMove()
         {
-            ChessMove move = mainChessState.PreviousMove;
+            ChessMove move = _mainChessState.PreviousMove;
             //Check for a pawn move
-            ChessPiece piece = mainChessState.PreviousBoard[move.From.X, move.From.Y];
+            ChessPiece piece = _mainChessState.PreviousBoard[move.From.X, move.From.Y];
             if ((piece == ChessPiece.WhitePawn) || (piece == ChessPiece.BlackPawn))
             {
                 return true;
             }
 
             //Check for a kill
-            piece = mainChessState.PreviousBoard[move.To.X, move.To.Y];
+            piece = _mainChessState.PreviousBoard[move.To.X, move.To.Y];
             if (piece != ChessPiece.Empty)
             {
                 return true;

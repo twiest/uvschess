@@ -42,10 +42,17 @@ namespace UvsChess
     public delegate void AIProfilerCallback(string key);
     
     /// <summary>
-    /// This is the delegate that defines the IsMyTurnOver callback. You should not need to use this. This is
+    /// This is the delegate that defines the IsMyTurnOver callback. You should not need to use this delegate. This is
     /// here solely for the IsMyTurnOver property to use as it's return value.
     /// </summary>
     public delegate bool AIIsMyTurnOverCallback();
+
+    /// <summary>
+    /// This is the delegate that defines the SetDecisionTree callback. You should not need to use this delegate. This is
+    /// here solely for the SetDecisionTree property to use as it's return value.
+    /// </summary>
+    /// <param name="dt"></param>
+    public delegate void AISetDecisionTreeCallback(UvsChess.Framework.DecisionTree dt);
 
     /// <summary>
     /// This is the interface that your AI must implement in order to be used by the chess framework.
@@ -53,6 +60,7 @@ namespace UvsChess
     /// </summary>
     public interface IChessAI
     {
+        #region These should be implemented as automatic properties.
         /// <summary>
         /// This will return true when the framework starts running your AI. When the AI's time has run out,
         /// the this method will return false. Once this method returns false, your AI should return a 
@@ -97,6 +105,22 @@ namespace UvsChess
             get;
             set;
         }
+
+        /// <summary>
+        /// Call this method to tell the framework what decision print out debug information. The framework subscribes to this event
+        /// and will provide a debug window for your decision tree.
+        /// 
+        /// You should NEVER EVER set this property!
+        /// SetDecisionTree should be defined as an Automatic Property.
+        /// SetDecisionTree SHOULD NOT CONTAIN ANY CODE!!!
+        /// </summary>
+        /// <param name="message"></param>
+        AISetDecisionTreeCallback SetDecisionTree
+        {
+            get;
+            set;
+        }
+        #endregion
 
         /// <summary>
         /// The name of your AI

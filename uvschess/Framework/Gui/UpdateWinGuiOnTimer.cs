@@ -51,6 +51,7 @@ namespace UvsChess.Gui
         private static List<GuiEvent> _tmpGuiEvents = null;
 
         private static bool _isShuttingDown = false;
+        private static UvsChess.Framework.DecisionTree _lastDecisionTree = null;
 
         private static bool _wasMainLogUpdated = false;
         private static bool _tmpWasMainLogUpdated = false;
@@ -265,6 +266,42 @@ namespace UvsChess.Gui
             }
         }
 
+        public static void SetDecisionTree(UvsChess.Framework.DecisionTree dt)
+        {
+            lock (_updateGuiDataLockObject)
+            {
+                _lastDecisionTree = dt;
+            }
+        }
+
+        public static void ShowDecisionTree()
+        {
+            lock (_updateGuiDataLockObject)
+            {
+                if (UpdateWinGuiOnTimer._lastDecisionTree == null)
+                {
+                    _guiEvents.Add(new GuiEvent(Actually_ShowDecisionTree, null));
+                }
+                else
+                {
+                    _guiEvents.Add(new GuiEvent(Actually_ShowDecisionTree, UpdateWinGuiOnTimer._lastDecisionTree.Clone()));
+                }
+            }
+        }
+
+        public static void Actually_ShowDecisionTree(params object[] eventArgs)
+        {            
+            if ((eventArgs == null) || (eventArgs.Length == 0))
+            {
+                System.Windows.Forms.MessageBox.Show(Gui, "The DecisionTree object is set to Null");
+            }
+            else
+            {
+                GuiDecisionTree gdt = new GuiDecisionTree((UvsChess.Framework.DecisionTree)eventArgs[0]);
+                gdt.ShowDialog(Gui);
+            }
+        }
+
         public static void ResetHistory(ChessState newState)
         {
             lock (_updateGuiDataLockObject)
@@ -429,6 +466,8 @@ namespace UvsChess.Gui
                 // Add WinGui to the DeclareResults event
                 _mainGame.DeclareResults += UpdateWinGuiOnTimer.DeclareResults;
 
+                _mainGame.SetDecisionTree += UpdateWinGuiOnTimer.SetDecisionTree;
+
                 Actually_RemoveHistoryAfterSelected();
 
                 Actually_DisableMenuItemsDuringPlay();
@@ -466,6 +505,8 @@ namespace UvsChess.Gui
 
                 // Remove WinGui from the DeclareResults event
                 _mainGame.DeclareResults -= UpdateWinGuiOnTimer.DeclareResults;
+
+                _mainGame.SetDecisionTree -= UpdateWinGuiOnTimer.SetDecisionTree;
 
                 // Add WinGui to the GuiChessBoard updates
                 Gui.chessBoardControl.PieceMovedByHuman += Gui.PieceMovedByHuman_Changed;
