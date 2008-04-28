@@ -20,7 +20,17 @@ namespace UvsChess.Gui
 
             _dt = dt;
 
-            ListBox rootNodeListBox = NewDecisionListBox(new List<DecisionTree>() { _dt });
+            ListBox rootNodeListBox = null;
+
+            if (_dt.FinalDecision == null)
+            {
+                rootNodeListBox = NewDecisionListBox(new List<DecisionTree>() { _dt });
+            }
+            else
+            {
+                rootNodeListBox = NewDecisionListBox(new List<DecisionTree>() { _dt, _dt.FinalDecision });
+            }
+
             //rootNodeListBox.Location = new Point(-5, 0);
             decisionListBoxes.Add(rootNodeListBox);
                         
@@ -35,6 +45,7 @@ namespace UvsChess.Gui
         {
             ListBox retVal = new ListBox();
             retVal.ScrollAlwaysVisible = true;
+            retVal.Width = 150;
             retVal.BeginUpdate();
 
             foreach (DecisionTree curDecision in dtChildren)
@@ -55,6 +66,18 @@ namespace UvsChess.Gui
             ListBox sender = (ListBox)s;
             DecisionTree curDt = (DecisionTree)sender.SelectedItem;
             guiChessBoard1.ResetBoard(curDt.Board, curDt.Move);
+
+            if (curDt.IsRootNode)
+            {
+                lblActualMoveValue.Text = "Not Set";
+                lblEventualMoveValue.Text = "Not Set";
+            }
+            else
+            {
+                lblActualMoveValue.Text = curDt.ActualMoveValue;
+                lblEventualMoveValue.Text = curDt.EventualMoveValue;
+            }
+
 
             int indexOfSelectedListBox = FindIndexOfSelectedListBox(sender);
 

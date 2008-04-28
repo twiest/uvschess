@@ -8,6 +8,7 @@ namespace UvsChess.Framework
     {
         private ChessMove _move = null;
         private ChessBoard _board = null;
+        private string _eventualMoveValue = null;
 
         public DecisionTree(ChessBoard board)
         {
@@ -47,6 +48,32 @@ namespace UvsChess.Framework
         {
             get;
             private set;
+        }
+
+        public string ActualMoveValue
+        {
+            get
+            {
+                return Move.ValueOfMove.ToString();
+            }
+        }
+
+        public string EventualMoveValue
+        {
+            get
+            {
+                if (_eventualMoveValue == null)
+                {
+                    return "Not Set";
+                }
+
+                return _eventualMoveValue.ToString();
+            }
+
+            set
+            {
+                _eventualMoveValue = value;
+            }
         }
 
         public bool IsRootNode
@@ -101,6 +128,9 @@ namespace UvsChess.Framework
                 retVal = new DecisionTree(parent, this.Board, this.Move);
             }
 
+            retVal.EventualMoveValue = this.EventualMoveValue;
+            retVal.FinalDecision = this.FinalDecision;
+
             foreach (DecisionTree curChild in this.Children)
             {
                 retVal.Children.Add(curChild.Clone(this));
@@ -122,15 +152,32 @@ namespace UvsChess.Framework
                 rootNode = rootNode.Parent;
             }
 
-            rootNode.FinalDecision = new DecisionTree(rootNode, board, move);
+            foreach (DecisionTree curDt in rootNode.Children)
+            {
+                if (curDt.Move == move)
+                {
+                    rootNode.FinalDecision = new DecisionTree(rootNode, board, move);
+                    rootNode.FinalDecision.EventualMoveValue = curDt.EventualMoveValue;
+                    break;
+                }
+            }            
         }
 
         public override string ToString()
         {
             if (IsRootNode)
+            {
                 return "Starting Board";
+            }
+            else if ((this.Parent.IsRootNode) && (this == this.Parent.FinalDecision))
+            {
+                // This is the Final Decision!
+                return "Final Decision";
+            }
             else
+            {
                 return Move.ToString();
+            }
         }
     }
 }
