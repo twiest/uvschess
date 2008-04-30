@@ -34,11 +34,14 @@ namespace UvsChess.Framework
 {
     public class Logger
     {
+        public delegate void LogCallback(string msg);
+
         public static void Log(string msg)
         {
             //Console.WriteLine(msg);
-            UpdateWinGuiOnTimer.AddToMainLog("[" + System.AppDomain.GetCurrentThreadId().ToString() + "] " + 
-                                                Environment.TickCount.ToString() + ": " + msg); 
+            //UpdateWinGuiOnTimer.AddToMainLog("[" + System.AppDomain.GetCurrentThreadId().ToString() + "] " + 
+            //                                    Environment.TickCount.ToString() + ": " + msg); 
+            UpdateWinGuiOnTimer.AddToMainLog(msg); 
         }
 
         public static void AddToWhitesLog(string msg)

@@ -147,12 +147,16 @@ namespace UvsChess.Framework
                     //SelectRadio(radBlack);
                     DoNextMove(_blackPlayer, _whitePlayer);
                 }
+                
                 //Logger.Log("New chess state: " + mainChessState.ToFenBoard());
             }
 
             // Remove the AI Log methods from the GUI
             if (_whitePlayer.IsComputer)
             {
+                Profiler.WritePlayerWholeGameProfile(ChessColor.White);
+                Profiler.WriteMainWholeGameProfile(ChessColor.White);
+
                 _whitePlayer.AI.Log -= Logger.AddToWhitesLog;
                 _whitePlayer.AI.IsMyTurnOver -= _whitePlayer.IsTurnOver;
                 _whitePlayer.AI.Profile -= Profiler.AddToWhitesProfile;
@@ -161,14 +165,14 @@ namespace UvsChess.Framework
 
             if (_blackPlayer.IsComputer)
             {
+                Profiler.WritePlayerWholeGameProfile(ChessColor.Black);
+                Profiler.WriteMainWholeGameProfile(ChessColor.Black);
+
                 _blackPlayer.AI.Log -= Logger.AddToBlacksLog;
                 _blackPlayer.AI.IsMyTurnOver -= _blackPlayer.IsTurnOver;
                 _blackPlayer.AI.Profile -= Profiler.AddToBlacksProfile;
                 _blackPlayer.AI.SetDecisionTree -= SetTmpLastDecisionTree;
-            }
-
-            Profiler.Write();
-
+            }            
 
             if (DeclareResults != null)
             {
@@ -188,7 +192,7 @@ namespace UvsChess.Framework
 
             if (player.IsComputer)
             {
-                Profiler.Clear(player.Color);
+                Profiler.ClearPlayersPerMoveProfiles(player.Color);
 
                 // Clear out the decision tree
                 _tmpDecisionTree = null;
@@ -203,7 +207,8 @@ namespace UvsChess.Framework
                     // do nothing, the game was ending while I was trying to set the decision tree
                 }
 
-                Profiler.Write(player.Color);
+                Profiler.WritePlayerMoveProfile(player.Color);
+                Profiler.WriteMainMoveProfile(player.Color);
 
                 if (!this.IsGameRunning)
                 {
