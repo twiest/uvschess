@@ -219,8 +219,9 @@ namespace UvsChess
 
         public int CompareTo(ChessMove other)
         {
-            // Sorts it from highest value move to lowest value
-            return (other.ValueOfMove - this.ValueOfMove);
+            UvsChess.Framework.Profiler.AddToMainProfile("ChessMove.CompareTo_Run");
+            // Sorts it from lowest value move to highest value move
+            return (this.ValueOfMove - other.ValueOfMove);
         }
 
         #endregion
