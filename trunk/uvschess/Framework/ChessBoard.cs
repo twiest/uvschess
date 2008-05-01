@@ -39,11 +39,13 @@ namespace UvsChess
 
         #region Constructors
         public ChessBoard():this(ChessState.FenStartState)
-        {            
+        {
+            UvsChess.Framework.Profiler.AddToMainProfile("ChessBoard.ctor()");
         }
 
         public ChessBoard(string fenBoard)
         {
+            UvsChess.Framework.Profiler.AddToMainProfile("ChessBoard.ctor(string)");
             Board = new ChessPiece[NumberOfRows, NumberOfColumns];
 
             FromFenBoard(fenBoard);
@@ -51,6 +53,7 @@ namespace UvsChess
 
         public ChessBoard(ChessPiece[,] board)
         {
+            UvsChess.Framework.Profiler.AddToMainProfile("ChessBoard.ctor(ChessPiece[,])");
             Board = CloneBoard(board);
         }
         #endregion
@@ -63,8 +66,16 @@ namespace UvsChess
         /// <returns>ChessPiece</returns>
         public ChessPiece this[ChessLocation location]
         {
-            get { return this[location.X, location.Y]; }
-            set { this[location.X, location.Y] = value; }
+            get 
+            {
+                UvsChess.Framework.Profiler.AddToMainProfile("ChessBoard.get_ChessPiece[ChessLocation]");
+                return this[location.X, location.Y]; 
+            }
+            set 
+            {
+                UvsChess.Framework.Profiler.AddToMainProfile("ChessBoard.set_ChessPiece[ChessLocation]");
+                this[location.X, location.Y] = value; 
+            }
         }
 
         /// <summary>
@@ -75,8 +86,16 @@ namespace UvsChess
         /// <returns>ChessPiece</returns>
         public ChessPiece this[int x, int y]
         {
-            get { return Board[x, y]; }
-            set { Board[x, y] = value; }
+            get 
+            {
+                UvsChess.Framework.Profiler.AddToMainProfile("ChessBoard.get_ChessPiece[int, int]");
+                return Board[x, y]; 
+            }
+            set 
+            {
+                UvsChess.Framework.Profiler.AddToMainProfile("ChessBoard.set_ChessPiece[int, int]");
+                Board[x, y] = value; 
+            }
         }
 
         private ChessPiece[,] Board
@@ -87,13 +106,18 @@ namespace UvsChess
 
         public ChessPiece[,] RawBoard
         {
-            get { return this.Clone().Board; }
+            get 
+            {
+                UvsChess.Framework.Profiler.AddToMainProfile("ChessBoard.get_RawBoard()");
+                return this.Clone().Board; 
+            }
         }
         #endregion
 
         #region Methods and Operators
         private ChessPiece[,] CloneBoard(ChessPiece[,] board)
         {
+            UvsChess.Framework.Profiler.AddToMainProfile("ChessBoard.CloneBoard(ChessPiece[,])");
             ChessPiece[,] retBoard = new ChessPiece[NumberOfRows, NumberOfColumns];
             for (int Y = 0; Y < NumberOfRows; Y++)
             {
@@ -108,11 +132,13 @@ namespace UvsChess
 
         public ChessBoard Clone()
         {
+            UvsChess.Framework.Profiler.AddToMainProfile("ChessBoard.Clone()");
             return new ChessBoard(this.Board);
         }
 
         public void MakeMove(ChessMove move)
         {
+            UvsChess.Framework.Profiler.AddToMainProfile("ChessBoard.MakeMove(ChessMove)");
             if (move.IsBasicallyValid)
             {
                 // Handle Queening
@@ -139,6 +165,7 @@ namespace UvsChess
         /// <param name="fenBoard"></param>
         public void FromFenBoard(string fenBoard)
         {
+            UvsChess.Framework.Profiler.AddToMainProfile("ChessBoard.FromFenBoard(string)");
             string[] lines = fenBoard.Split(' ')[0].Split('/');
             int spaces = 0;
 
@@ -211,6 +238,7 @@ namespace UvsChess
 
         public string ToPartialFenBoard()
         {
+            UvsChess.Framework.Profiler.AddToMainProfile("ChessBoard.ToPartialFenBoard()");
             StringBuilder strBuild = new StringBuilder();
             for (int y = 0; y < ChessBoard.NumberOfRows; ++y)
             {
@@ -286,6 +314,7 @@ namespace UvsChess
 
         public override int GetHashCode()
         {
+            UvsChess.Framework.Profiler.AddToMainProfile("ChessBoard.GetHashCode()");
             return this.ToPartialFenBoard().GetHashCode();
         }
         #endregion
