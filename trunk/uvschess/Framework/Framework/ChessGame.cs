@@ -132,8 +132,8 @@ namespace UvsChess.Framework
         {
             //This method run in its own thread.          
 
-            IsGameRunning = true;            
-
+            IsGameRunning = true;
+            DateTime startTime = DateTime.Now;
             while (IsGameRunning)
             {
                 if (_mainChessState.CurrentPlayerColor == ChessColor.White)
@@ -150,6 +150,8 @@ namespace UvsChess.Framework
                 
                 //Logger.Log("New chess state: " + mainChessState.ToFenBoard());
             }
+
+            TimeSpan timeOfGame = DateTime.Now - startTime;            
 
             // Remove the AI Log methods from the GUI
             if (_whitePlayer.IsComputer)
@@ -172,7 +174,9 @@ namespace UvsChess.Framework
                 _blackPlayer.AI.IsMyTurnOver -= _blackPlayer.IsTurnOver;
                 _blackPlayer.AI.Profile -= Profiler.AddToBlacksProfile;
                 _blackPlayer.AI.SetDecisionTree -= SetTmpLastDecisionTree;
-            }            
+            }
+
+            Logger.Log("Total Time of Game: " + timeOfGame);
 
             if (DeclareResults != null)
             {
