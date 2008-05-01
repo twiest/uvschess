@@ -34,6 +34,7 @@ namespace UvsChess.Framework
 {
     public class Profiler
     {
+        private static bool _isEnabled = true;
         private static object profilerLock = new object();
 
         private static Dictionary<string, int> _MainItems = new Dictionary<string, int>();
@@ -47,24 +48,30 @@ namespace UvsChess.Framework
 
         private static void AddToAProfile(string key, Dictionary<string, int> items)
         {
-            lock (profilerLock)
+            if (_isEnabled)
             {
-                if (items.ContainsKey(key))
+                lock (profilerLock)
                 {
-                    ++items[key];                    
-                }
-                else
-                {
-                    items.Add(key, 1);                    
+                    if (items.ContainsKey(key))
+                    {
+                        ++items[key];
+                    }
+                    else
+                    {
+                        items.Add(key, 1);
+                    }
                 }
             }
         }
 
         public static void AddToMainProfile(string key)
         {
-            AddToAProfile(key, _MainItems);
-            AddToAProfile("WholeGameWhite_" + key, _WholeGame_WhitesMainItems);
-            AddToAProfile("WholeGameBlack_" + key, _WholeGame_BlacksMainItems);
+            if (_isEnabled)
+            {
+                AddToAProfile(key, _MainItems);
+                AddToAProfile("WholeGameWhite_" + key, _WholeGame_WhitesMainItems);
+                AddToAProfile("WholeGameBlack_" + key, _WholeGame_BlacksMainItems);
+            }
 
             //lock (profilerLock)
             //{
@@ -83,8 +90,11 @@ namespace UvsChess.Framework
 
         public static void AddToWhitesProfile(string key)
         {
-            AddToAProfile(key, _WhiteItems);
-            AddToAProfile("WholeGame_" + key, _WholeGame_WhiteItems);
+            if (_isEnabled)
+            {
+                AddToAProfile(key, _WhiteItems);
+                AddToAProfile("WholeGame_" + key, _WholeGame_WhiteItems);
+            }
             //lock (profilerLock)
             //{
             //    if (_WhiteItems.ContainsKey(key))
@@ -102,8 +112,11 @@ namespace UvsChess.Framework
 
         public static void AddToBlacksProfile(string key)
         {
-            AddToAProfile(key, _BlackItems);
-            AddToAProfile("WholeGame_" + key, _WholeGame_BlackItems);
+            if (_isEnabled)
+            {
+                AddToAProfile(key, _BlackItems);
+                AddToAProfile("WholeGame_" + key, _WholeGame_BlackItems);
+            }
             //lock (profilerLock)
             //{
             //    if (_BlackItems.ContainsKey(key))
@@ -133,56 +146,68 @@ namespace UvsChess.Framework
 
         public static void ClearAllProfiles()
         {
-            lock (profilerLock)
+            if (_isEnabled)
             {
-                _MainItems = new Dictionary<string, int>();
-                _WhiteItems = new Dictionary<string, int>();
-                _BlackItems = new Dictionary<string, int>();
+                lock (profilerLock)
+                {
+                    _MainItems = new Dictionary<string, int>();
+                    _WhiteItems = new Dictionary<string, int>();
+                    _BlackItems = new Dictionary<string, int>();
 
-                _WholeGame_WhitesMainItems = new Dictionary<string, int>();
-                _WholeGame_BlacksMainItems = new Dictionary<string, int>();
-                _WholeGame_WhiteItems = new Dictionary<string, int>();
-                _WholeGame_BlackItems = new Dictionary<string, int>();
+                    _WholeGame_WhitesMainItems = new Dictionary<string, int>();
+                    _WholeGame_BlacksMainItems = new Dictionary<string, int>();
+                    _WholeGame_WhiteItems = new Dictionary<string, int>();
+                    _WholeGame_BlackItems = new Dictionary<string, int>();
+                }
             }
         }
 
         public static void ClearPlayersPerMoveProfiles(ChessColor color)
         {
-            lock (profilerLock)
+            if (_isEnabled)
             {
-                _MainItems = new Dictionary<string, int>();
-                if (color == ChessColor.White)
+                lock (profilerLock)
                 {
-                    _WhiteItems = new Dictionary<string, int>();
-                }
-                else
-                {
-                    _BlackItems = new Dictionary<string, int>();
+                    _MainItems = new Dictionary<string, int>();
+                    if (color == ChessColor.White)
+                    {
+                        _WhiteItems = new Dictionary<string, int>();
+                    }
+                    else
+                    {
+                        _BlackItems = new Dictionary<string, int>();
+                    }
                 }
             }
         }
 
         private static void WriteProfile(string description, Dictionary<string, int> profile, Logger.LogCallback log)
         {
-            lock (profilerLock)
+            if (_isEnabled)
             {
-                if (profile.Count == 0)
+                lock (profilerLock)
                 {
-                    return;
-                }
+                    if (profile.Count == 0)
+                    {
+                        return;
+                    }
 
-                log("Begin: " + description);
-                foreach (string s in profile.Keys)
-                {
-                    log(string.Format("{0} : {1:N0}", s, profile[s]));
+                    log("Begin: " + description);
+                    foreach (string s in profile.Keys)
+                    {
+                        log(string.Format("{0} : {1:N0}", s, profile[s]));
+                    }
+                    log("End: " + description);
                 }
-                log("End: " + description);
             }
         }
 
         public static void WriteMainMoveProfile(ChessColor color)
         {
-            WriteProfile("*** Framework Profile Move Stats during " + color.ToString() + "'s turn ***", _MainItems, Logger.Log);
+            if (_isEnabled)
+            {
+                WriteProfile("*** Framework Profile Move Stats during " + color.ToString() + "'s turn ***", _MainItems, Logger.Log);
+            }
             //lock (profilerLock)
             //{
             //    if (_MainItems.Count == 0)
@@ -200,42 +225,49 @@ namespace UvsChess.Framework
 
         public static void WritePlayerMoveProfile(ChessColor color)
         {
-            if (color == ChessColor.White)
+            if (_isEnabled)
             {
-                WriteProfile("*** White's AI Profile Move Stats ***", _WhiteItems, Logger.AddToWhitesLog);
-                //WriteWhitesProfiles();
+                if (color == ChessColor.White)
+                {
+                    WriteProfile("*** White's AI Profile Move Stats ***", _WhiteItems, Logger.AddToWhitesLog);
+                    //WriteWhitesProfiles();
+                }
+                else
+                {
+                    WriteProfile("*** Blacks's AI Profile Move Stats ***", _BlackItems, Logger.AddToBlacksLog);
+                    //WriteBlacksProfiles();
+                }
             }
-            else
-            {
-                WriteProfile("*** Blacks's AI Profile Move Stats ***", _BlackItems, Logger.AddToBlacksLog);
-                //WriteBlacksProfiles();
-            }
-
         }
 
         public static void WriteMainWholeGameProfile(ChessColor color)
         {
-            if (color == ChessColor.White)
+            if (_isEnabled)
             {
-                WriteProfile("*** Framework Profile Game Stats during White's turns ***", _WholeGame_WhitesMainItems, Logger.Log);
-            }
-            else
-            {
-                WriteProfile("*** Framework Profile Game Stats during Black's turns ***", _WholeGame_BlacksMainItems, Logger.Log);
+                if (color == ChessColor.White)
+                {
+                    WriteProfile("*** Framework Profile Game Stats during White's turns ***", _WholeGame_WhitesMainItems, Logger.Log);
+                }
+                else
+                {
+                    WriteProfile("*** Framework Profile Game Stats during Black's turns ***", _WholeGame_BlacksMainItems, Logger.Log);
+                }
             }
         }
 
         public static void WritePlayerWholeGameProfile(ChessColor color)
         {
-            if (color == ChessColor.White)
+            if (_isEnabled)
             {
-                WriteProfile("*** White's AI Profile Game Stats ***", _WholeGame_WhiteItems, Logger.AddToWhitesLog);
+                if (color == ChessColor.White)
+                {
+                    WriteProfile("*** White's AI Profile Game Stats ***", _WholeGame_WhiteItems, Logger.AddToWhitesLog);
+                }
+                else
+                {
+                    WriteProfile("*** Blacks's AI Profile Game Stats ***", _WholeGame_BlackItems, Logger.AddToBlacksLog);
+                }
             }
-            else
-            {
-                WriteProfile("*** Blacks's AI Profile Game Stats ***", _WholeGame_BlackItems, Logger.AddToBlacksLog);
-            }
-
         }
 
         //private static void WriteWhitesProfiles()
