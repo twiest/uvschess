@@ -12,12 +12,14 @@ namespace UvsChess.Framework
 
         public DecisionTree(ChessBoard board)
         {
+            UvsChess.Framework.Profiler.AddToMainProfile("DecisionTree.ctor(ChessBoard)");
             Children = new List<DecisionTree>();
             Board = board;
         }
 
         private DecisionTree(DecisionTree parent, ChessBoard board, ChessMove move)
         {
+            UvsChess.Framework.Profiler.AddToMainProfile("DecisionTree.ctor(DecisionTree, ChessBoard, ChessMove)");
             Children = new List<DecisionTree>();
             Parent = parent;
             Board = board;
@@ -28,6 +30,7 @@ namespace UvsChess.Framework
         {
             get
             {
+                UvsChess.Framework.Profiler.AddToMainProfile("DecisionTree.get_LastChild()");
                 return this.Children[this.Children.Count - 1];
             }                
         }
@@ -54,6 +57,7 @@ namespace UvsChess.Framework
         {
             get
             {
+                UvsChess.Framework.Profiler.AddToMainProfile("DecisionTree.get_ActualMoveValue()");
                 return Move.ValueOfMove.ToString();
             }
         }
@@ -62,6 +66,7 @@ namespace UvsChess.Framework
         {
             get
             {
+                UvsChess.Framework.Profiler.AddToMainProfile("DecisionTree.get_EventualMoveValue()");
                 if (_eventualMoveValue == null)
                 {
                     return "Not Set";
@@ -80,6 +85,7 @@ namespace UvsChess.Framework
         {
             get
             {
+                UvsChess.Framework.Profiler.AddToMainProfile("DecisionTree.get_IsRootNode()");
                 return (this.Parent == null);
             }
         }
@@ -88,11 +94,13 @@ namespace UvsChess.Framework
         {
             get
             {
+                UvsChess.Framework.Profiler.AddToMainProfile("DecisionTree.get_Board()");
                 return _board;
             }
 
             set
             {
+                UvsChess.Framework.Profiler.AddToMainProfile("DecisionTree.set_Board()");
                 _board = value.Clone();
             }
         }
@@ -101,22 +109,26 @@ namespace UvsChess.Framework
         {
             get
             {
+                UvsChess.Framework.Profiler.AddToMainProfile("DecisionTree.get_Move()");
                 return _move;
             }
 
             set
             {
+                UvsChess.Framework.Profiler.AddToMainProfile("DecisionTree.set_Move()");
                 _move = value.Clone();
             }
         }
 
         public DecisionTree Clone()
         {
+            UvsChess.Framework.Profiler.AddToMainProfile("DecisionTree.Clone()");
             return this.Clone(null);
         }
 
         public DecisionTree Clone(DecisionTree parent)
         {
+            UvsChess.Framework.Profiler.AddToMainProfile("DecisionTree.Clone(DecisionTree)");
             DecisionTree retVal = null;
 
             if (parent == null)
@@ -141,11 +153,13 @@ namespace UvsChess.Framework
 
         public void AddChild(ChessBoard board, ChessMove move)
         {
+            UvsChess.Framework.Profiler.AddToMainProfile("DecisionTree.AddChild(ChessBoard, ChessMove)");
             this.Children.Add(new DecisionTree(this, board, move));
         }
 
         public void AddFinalDecision(ChessBoard board, ChessMove move)
         {
+            UvsChess.Framework.Profiler.AddToMainProfile("DecisionTree.AddFinalDecision(ChessBoard, ChessMove)");
             DecisionTree rootNode = this;
             while (! rootNode.IsRootNode)
             {
@@ -165,6 +179,7 @@ namespace UvsChess.Framework
 
         public override string ToString()
         {
+            UvsChess.Framework.Profiler.AddToMainProfile("DecisionTree.ToString()");
             if (IsRootNode)
             {
                 return "Starting Board";
