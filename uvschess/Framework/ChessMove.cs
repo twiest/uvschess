@@ -33,10 +33,12 @@ namespace UvsChess
     {        
         public ChessMove(ChessLocation from, ChessLocation to):this(from, to, ChessFlag.NoFlag)
         {
+            UvsChess.Framework.Profiler.AddToMainProfile("ChessMove.ctor(ChessLocation, ChessLocation)");
         }
 
         public ChessMove(ChessLocation from, ChessLocation to, ChessFlag flag)
         {
+            UvsChess.Framework.Profiler.AddToMainProfile("ChessMove.ctor(ChessLocation, ChessLocation, ChessFlag)");
             From = from;
             To = to;
             Flag = flag;
@@ -79,6 +81,7 @@ namespace UvsChess
         {
             get
             {
+                UvsChess.Framework.Profiler.AddToMainProfile("ChessMove.get_IsBasicallyValid()");
                 if ( (this.Flag == ChessFlag.Stalemate) || (this.Flag == ChessFlag.AIWentOverTime) )
                 {
                     return true;
@@ -106,6 +109,7 @@ namespace UvsChess
 
         public ChessMove Clone()
         {
+            UvsChess.Framework.Profiler.AddToMainProfile("ChessMove.Clone()");
             ChessMove newMove = new ChessMove(null, null);
 
             if (this.To != null)
@@ -124,6 +128,7 @@ namespace UvsChess
 
         public override string ToString()
         {
+            UvsChess.Framework.Profiler.AddToMainProfile("ChessMove.ToString()");
             string moveText = string.Empty;
 
             if (this.From == null)
@@ -176,6 +181,7 @@ namespace UvsChess
         
         public override bool Equals(object obj)
         {
+            UvsChess.Framework.Profiler.AddToMainProfile("ChessMove.Equals(object)");
             if (obj == null)
             {
                 return false;
@@ -198,6 +204,7 @@ namespace UvsChess
         }
         public static bool operator ==(ChessMove move1, ChessMove move2)
         {
+            UvsChess.Framework.Profiler.AddToMainProfile("ChessMove.==(ChessMove, ChessMove)");
             if ((((object)move1) == null) && (((object)move2) == null))
             {
                 return true;
@@ -211,6 +218,7 @@ namespace UvsChess
 
         public static bool operator !=(ChessMove move1, ChessMove move2)
         {
+            UvsChess.Framework.Profiler.AddToMainProfile("ChessMove.!=(ChessMove, ChessMove)");
             return !(move1 == move2);
         }
 
@@ -219,7 +227,7 @@ namespace UvsChess
 
         public int CompareTo(ChessMove other)
         {
-            UvsChess.Framework.Profiler.AddToMainProfile("ChessMove.CompareTo_Run");
+            UvsChess.Framework.Profiler.AddToMainProfile("ChessMove.CompareTo(ChessMove other)");
             // Sorts it from lowest value move to highest value move
             return (this.ValueOfMove - other.ValueOfMove);
         }

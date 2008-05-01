@@ -42,6 +42,7 @@ namespace UvsChess
         #region Constructors
         public ChessLocation(int x, int y)
         {
+            UvsChess.Framework.Profiler.AddToMainProfile("ChessLocation.ctor()");
             X = x;
             Y = y;
         }
@@ -53,8 +54,16 @@ namespace UvsChess
         /// </summary>
         public int X
         {
-            get { return _x; }
-            set { _x = value; }
+            get 
+            {
+                UvsChess.Framework.Profiler.AddToMainProfile("ChessLocation.get_X()");
+                return _x; 
+            }
+            set 
+            {
+                UvsChess.Framework.Profiler.AddToMainProfile("ChessLocation.set_X()");
+                _x = value; 
+            }
         }
 
         /// <summary>
@@ -62,8 +71,16 @@ namespace UvsChess
         /// </summary>
         public int Y
         {
-            get { return _y; }
-            set { _y = value; }
+            get 
+            {
+                UvsChess.Framework.Profiler.AddToMainProfile("ChessLocation.get_Y()");
+                return _y; 
+            }
+            set 
+            {
+                UvsChess.Framework.Profiler.AddToMainProfile("ChessLocation.set_Y()");
+                _y = value; 
+            }
         }
 
         /// <summary>
@@ -73,6 +90,7 @@ namespace UvsChess
         {
             get
             {
+                UvsChess.Framework.Profiler.AddToMainProfile("ChessLocation.get_IsValid()");
                 return ((X >= 0) && (X < ChessBoard.NumberOfColumns) &&
                          (Y >= 0) && (Y < ChessBoard.NumberOfRows));
             }
@@ -82,11 +100,13 @@ namespace UvsChess
         #region Methods and Operators
         public ChessLocation Clone()
         {
+            UvsChess.Framework.Profiler.AddToMainProfile("ChessLocation.Clone()");
             return new ChessLocation(this.X, this.Y);
         }
 
         public override bool Equals(object obj)
         {
+            UvsChess.Framework.Profiler.AddToMainProfile("ChessLocation.Equals()");
             if (obj == null)
                 return false;
 
@@ -106,11 +126,13 @@ namespace UvsChess
 
         public static bool operator !=(ChessLocation lhs, ChessLocation rhs)
         {
+            UvsChess.Framework.Profiler.AddToMainProfile("ChessLocation.!=()");
             return !(lhs == rhs);
         }
 
         public static bool operator== (ChessLocation lhs, ChessLocation rhs)
         {
+            UvsChess.Framework.Profiler.AddToMainProfile("ChessLocation.==()");
             if ( ((object) lhs == null) &&
                  ((object) rhs == null) )
             {
@@ -128,6 +150,7 @@ namespace UvsChess
 	
 	    public override int GetHashCode()
 	    {
+            UvsChess.Framework.Profiler.AddToMainProfile("ChessLocation.GetHashCode()");
             return _x * 10 + _y;
 	    }
         #endregion
