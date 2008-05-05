@@ -61,21 +61,23 @@ namespace UvsChess.Framework
             LoadAI(_whitePlayer);
             LoadAI(_blackPlayer);
 
+            Profiler.BeginGame();
+
             // Hook up the AI Log methods to the GUI
             if (_whitePlayer.IsComputer)
             {
                 _whitePlayer.AI.Log += Logger.AddToWhitesLog;
-                _whitePlayer.AI.IsMyTurnOver += _whitePlayer.IsTurnOver;
-                _whitePlayer.AI.Profile += Profiler.AddToWhitesProfile;
+                _whitePlayer.AI.IsMyTurnOver += _whitePlayer.IsTurnOver;                
                 _whitePlayer.AI.SetDecisionTree += SetTmpLastDecisionTree;
+                _whitePlayer.AI.Profiler = Profiler.WhiteProfiler;
             }
 
             if (_blackPlayer.IsComputer)
             {
                 _blackPlayer.AI.Log += Logger.AddToBlacksLog;
-                _blackPlayer.AI.IsMyTurnOver += _blackPlayer.IsTurnOver;
-                _blackPlayer.AI.Profile += Profiler.AddToBlacksProfile;
+                _blackPlayer.AI.IsMyTurnOver += _blackPlayer.IsTurnOver;                
                 _blackPlayer.AI.SetDecisionTree += SetTmpLastDecisionTree;
+                _blackPlayer.AI.Profiler = Profiler.BlackProfiler;
             }
         }
 
@@ -138,42 +140,34 @@ namespace UvsChess.Framework
             {
                 if (_mainChessState.CurrentPlayerColor == ChessColor.White)
                 {
-                    //change radion button selection
-                    //SelectRadio(radWhite);
                     DoNextMove(_whitePlayer, _blackPlayer);
                 }
                 else
                 {
-                    //SelectRadio(radBlack);
                     DoNextMove(_blackPlayer, _whitePlayer);
                 }
                 
                 //Logger.Log("New chess state: " + mainChessState.ToFenBoard());
             }
+            Profiler.EndGame();
 
             TimeSpan timeOfGame = DateTime.Now - startTime;            
 
             // Remove the AI Log methods from the GUI
             if (_whitePlayer.IsComputer)
             {
-                Profiler.WritePlayerWholeGameProfile(ChessColor.White);
-                Profiler.WriteMainWholeGameProfile(ChessColor.White);
-
                 _whitePlayer.AI.Log -= Logger.AddToWhitesLog;
-                _whitePlayer.AI.IsMyTurnOver -= _whitePlayer.IsTurnOver;
-                _whitePlayer.AI.Profile -= Profiler.AddToWhitesProfile;
+                _whitePlayer.AI.IsMyTurnOver -= _whitePlayer.IsTurnOver;                
                 _whitePlayer.AI.SetDecisionTree -= SetTmpLastDecisionTree;
+                _whitePlayer.AI.Profiler = null;
             }
 
             if (_blackPlayer.IsComputer)
             {
-                Profiler.WritePlayerWholeGameProfile(ChessColor.Black);
-                Profiler.WriteMainWholeGameProfile(ChessColor.Black);
-
                 _blackPlayer.AI.Log -= Logger.AddToBlacksLog;
-                _blackPlayer.AI.IsMyTurnOver -= _blackPlayer.IsTurnOver;
-                _blackPlayer.AI.Profile -= Profiler.AddToBlacksProfile;
+                _blackPlayer.AI.IsMyTurnOver -= _blackPlayer.IsTurnOver;                
                 _blackPlayer.AI.SetDecisionTree -= SetTmpLastDecisionTree;
+                _blackPlayer.AI.Profiler = null;
             }
 
             Logger.Log("Total Time of Game: " + timeOfGame);
@@ -196,11 +190,12 @@ namespace UvsChess.Framework
 
             if (player.IsComputer)
             {
-                Profiler.ClearPlayersPerMoveProfiles(player.Color);
-
                 // Clear out the decision tree
                 _tmpDecisionTree = null;
+
+                Profiler.BeginTurn(player.Color);
                 nextMove = player.GetNextMove(_mainChessState.CurrentBoard);
+                Profiler.EndTurn();
 
                 try
                 {
@@ -210,9 +205,6 @@ namespace UvsChess.Framework
                 {
                     // do nothing, the game was ending while I was trying to set the decision tree
                 }
-
-                Profiler.WritePlayerMoveProfile(player.Color);
-                Profiler.WriteMainMoveProfile(player.Color);
 
                 if (!this.IsGameRunning)
                 {

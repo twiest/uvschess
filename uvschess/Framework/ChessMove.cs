@@ -26,6 +26,7 @@
 //		Rusty Howell  rhowell@users.sourceforge.net
 
 using System;
+using UvsChess.Framework;
 
 namespace UvsChess
 {
@@ -33,12 +34,12 @@ namespace UvsChess
     {        
         public ChessMove(ChessLocation from, ChessLocation to):this(from, to, ChessFlag.NoFlag)
         {
-            UvsChess.Framework.Profiler.AddToMainProfile("ChessMove.ctor(ChessLocation, ChessLocation)");
+            Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessMove_ctor_ChessLocation_ChessLocation);
         }
 
         public ChessMove(ChessLocation from, ChessLocation to, ChessFlag flag)
         {
-            UvsChess.Framework.Profiler.AddToMainProfile("ChessMove.ctor(ChessLocation, ChessLocation, ChessFlag)");
+            Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessMove_ctor_ChessLocation_ChessLocation_ChessFlag);
             From = from;
             To = to;
             Flag = flag;
@@ -81,7 +82,7 @@ namespace UvsChess
         {
             get
             {
-                UvsChess.Framework.Profiler.AddToMainProfile("ChessMove.get_IsBasicallyValid()");
+                Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessMove_get_IsBasicallyValid);
                 if ( (this.Flag == ChessFlag.Stalemate) || (this.Flag == ChessFlag.AIWentOverTime) )
                 {
                     return true;
@@ -109,7 +110,7 @@ namespace UvsChess
 
         public ChessMove Clone()
         {
-            UvsChess.Framework.Profiler.AddToMainProfile("ChessMove.Clone()");
+            Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessMove_Clone);
             ChessMove newMove = new ChessMove(null, null);
 
             if (this.To != null)
@@ -128,7 +129,7 @@ namespace UvsChess
 
         public override string ToString()
         {
-            UvsChess.Framework.Profiler.AddToMainProfile("ChessMove.ToString()");
+            Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessMove_ToString);
             string moveText = string.Empty;
 
             if (this.From == null)
@@ -181,7 +182,7 @@ namespace UvsChess
         
         public override bool Equals(object obj)
         {
-            UvsChess.Framework.Profiler.AddToMainProfile("ChessMove.Equals(object)");
+            Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessMove_Equals);
             if (obj == null)
             {
                 return false;
@@ -204,7 +205,7 @@ namespace UvsChess
         }
         public static bool operator ==(ChessMove move1, ChessMove move2)
         {
-            UvsChess.Framework.Profiler.AddToMainProfile("ChessMove.==(ChessMove, ChessMove)");
+            Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessMove_EQ);
             if ((((object)move1) == null) && (((object)move2) == null))
             {
                 return true;
@@ -218,7 +219,7 @@ namespace UvsChess
 
         public static bool operator !=(ChessMove move1, ChessMove move2)
         {
-            UvsChess.Framework.Profiler.AddToMainProfile("ChessMove.!=(ChessMove, ChessMove)");
+            Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessMove_NE);
             return !(move1 == move2);
         }
 
@@ -227,7 +228,7 @@ namespace UvsChess
 
         public int CompareTo(ChessMove other)
         {
-            UvsChess.Framework.Profiler.AddToMainProfile("ChessMove.CompareTo(ChessMove other)");
+            Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessMove_CompareTo_ChessMove);
             // Sorts it from lowest value move to highest value move
             return (this.ValueOfMove - other.ValueOfMove);
         }

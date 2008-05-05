@@ -25,7 +25,7 @@
 // 		Thomas Wiest  twiest@users.sourceforge.net
 //		Rusty Howell  rhowell@users.sourceforge.net
 
-#define USE_PROFILING   //Uncomment this to remove profiling calls. Do this when playing in the tournament.
+#define USE_PROFILING   //comment this out to remove profiling calls. Do this when playing in the tournament.
 
 using System;
 using System.Collections.Generic;
@@ -68,7 +68,7 @@ namespace ExampleAI
         /// Profile SHOULD NOT CONTAIN ANY CODE!!!
         /// </summary>
         /// <param name="key"></param>
-        public AIProfilerCallback Profile { get; set; }
+        public AIProfiler Profiler { get; set; }
 
         /// <summary>
         /// Call this method to tell the framework what decision print out debug information. The framework subscribes to this event
@@ -147,7 +147,7 @@ namespace ExampleAI
                     
                     //This is how to use the Profiler class
 #if USE_PROFILING
-                    Profile("Inside MoveAPawn()"); //The Profiler class will count how many times this key is called, IE how many times this section of code gets executed. 
+                    //Profile("Inside MoveAPawn()"); //The Profiler class will count how many times this key is called, IE how many times this section of code gets executed. 
 #endif
                     if (myColor == ChessColor.White)
                     {

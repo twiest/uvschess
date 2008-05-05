@@ -289,7 +289,7 @@ namespace UvsChess.Gui
             }
         }
 
-        public static void Actually_ShowDecisionTree(params object[] eventArgs)
+        private static void Actually_ShowDecisionTree(params object[] eventArgs)
         {            
             if ((eventArgs == null) || (eventArgs.Length == 0))
             {

@@ -35,13 +35,6 @@ namespace UvsChess
     public delegate void AILoggerCallback(string message);
 
     /// <summary>
-    /// This is the delegate that defines the Profile callback. You should not need to use this delegate. This is
-    /// here solely for the Profile property to use as it's return value.
-    /// </summary>
-    /// <param name="text">This is a string parameter that the Profile callback uses to pass the message to the framework.</param>
-    public delegate void AIProfilerCallback(string key);
-    
-    /// <summary>
     /// This is the delegate that defines the IsMyTurnOver callback. You should not need to use this delegate. This is
     /// here solely for the IsMyTurnOver property to use as it's return value.
     /// </summary>
@@ -100,7 +93,7 @@ namespace UvsChess
         /// Profile SHOULD NOT CONTAIN ANY CODE!!!
         /// </summary>
         /// <param name="key"></param>
-        AIProfilerCallback Profile
+        AIProfiler Profiler
         {
             get;
             set;
