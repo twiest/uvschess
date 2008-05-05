@@ -24,7 +24,7 @@
 // Authors:
 // 		Thomas Wiest  twiest@users.sourceforge.net
 //		Rusty Howell  rhowell@users.sourceforge.net
-
+using UvsChess.Framework;
 
 
 namespace UvsChess
@@ -34,15 +34,10 @@ namespace UvsChess
     /// </summary>
     public class ChessLocation
     {
-        #region Members
-        private int _x;
-        private int _y;
-        #endregion
-
         #region Constructors
         public ChessLocation(int x, int y)
         {
-            UvsChess.Framework.Profiler.AddToMainProfile("ChessLocation.ctor()");
+            Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessLocation_ctor_int_int);
             X = x;
             Y = y;
         }
@@ -52,36 +47,12 @@ namespace UvsChess
         /// <summary>
         /// Column number. Ranges from 0 - 7
         /// </summary>
-        public int X
-        {
-            get 
-            {
-                UvsChess.Framework.Profiler.AddToMainProfile("ChessLocation.get_X()");
-                return _x; 
-            }
-            set 
-            {
-                UvsChess.Framework.Profiler.AddToMainProfile("ChessLocation.set_X()");
-                _x = value; 
-            }
-        }
+        public int X { get; set; }
 
         /// <summary>
         /// Row number. Ranges from 0 - 7
         /// </summary>
-        public int Y
-        {
-            get 
-            {
-                UvsChess.Framework.Profiler.AddToMainProfile("ChessLocation.get_Y()");
-                return _y; 
-            }
-            set 
-            {
-                UvsChess.Framework.Profiler.AddToMainProfile("ChessLocation.set_Y()");
-                _y = value; 
-            }
-        }
+        public int Y { get; set; }
 
         /// <summary>
         /// Returns true if the row and column numbers are each between 0 and 7
@@ -90,7 +61,7 @@ namespace UvsChess
         {
             get
             {
-                UvsChess.Framework.Profiler.AddToMainProfile("ChessLocation.get_IsValid()");
+                Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessLocation_get_IsValid);
                 return ((X >= 0) && (X < ChessBoard.NumberOfColumns) &&
                          (Y >= 0) && (Y < ChessBoard.NumberOfRows));
             }
@@ -100,13 +71,13 @@ namespace UvsChess
         #region Methods and Operators
         public ChessLocation Clone()
         {
-            UvsChess.Framework.Profiler.AddToMainProfile("ChessLocation.Clone()");
+            Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessLocation_Clone);
             return new ChessLocation(this.X, this.Y);
         }
 
         public override bool Equals(object obj)
         {
-            UvsChess.Framework.Profiler.AddToMainProfile("ChessLocation.Equals()");
+            Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessLocation_Equals);
             if (obj == null)
                 return false;
 
@@ -126,13 +97,13 @@ namespace UvsChess
 
         public static bool operator !=(ChessLocation lhs, ChessLocation rhs)
         {
-            UvsChess.Framework.Profiler.AddToMainProfile("ChessLocation.!=()");
+            Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessLocation_NE);
             return !(lhs == rhs);
         }
 
         public static bool operator== (ChessLocation lhs, ChessLocation rhs)
         {
-            UvsChess.Framework.Profiler.AddToMainProfile("ChessLocation.==()");
+            Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessLocation_EQ);
             if ( ((object) lhs == null) &&
                  ((object) rhs == null) )
             {
@@ -150,8 +121,8 @@ namespace UvsChess
 	
 	    public override int GetHashCode()
 	    {
-            UvsChess.Framework.Profiler.AddToMainProfile("ChessLocation.GetHashCode()");
-            return _x * 10 + _y;
+            Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessLocation_GetHashCode);
+            return X * 10 + Y;
 	    }
         #endregion
     }

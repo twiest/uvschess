@@ -71,7 +71,9 @@
     <Compile Include="Framework\AI.cs" />
     <Compile Include="Framework\DecisionTree.cs" />
     <Compile Include="Framework\ChessGame.cs" />
+    <Compile Include="AIProfiler.cs" />
     <Compile Include="Framework\Profiler.cs" />
+    <Compile Include="Framework\ProfilerMethodKey.cs" />
     <Compile Include="Gui\AboutUvsChess.cs">
       <SubType>Form</SubType>
     </Compile>
