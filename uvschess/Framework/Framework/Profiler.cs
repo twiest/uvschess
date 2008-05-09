@@ -71,31 +71,54 @@ namespace UvsChess.Framework
 
         public static void BeginGame()
         {
-            WhiteProfiler = new AIProfiler();
+            WhiteProfiler = new AIProfiler(ChessColor.White);
             WhiteProfiler.FxMethodNames = Enum.GetNames(typeof(ProfilerMethodKey));
-            BlackProfiler = new AIProfiler();
+            BlackProfiler = new AIProfiler(ChessColor.Black);
             BlackProfiler.FxMethodNames = Enum.GetNames(typeof(ProfilerMethodKey));
         }
 
-        public static void EndGame()
+        public static void EndGame(TimeSpan timeOfGame)
         {
+            if (WhiteProfiler.IsEnabled || BlackProfiler.IsEnabled)
+            {
+                Logger.Log("*** Game Stats ***");
+                Logger.Log("---Begin CSV---");
+                Logger.Log("\"Date of Profile:\",\"" + DateTime.Now.ToString() + "\"");                
+                Logger.Log("\"Total Time of Game:\",\"" + timeOfGame + "\"");
+                
+                if (WhiteProfiler.IsEnabled)
+                {
+                    Logger.Log("\"Number of White Moves:\",\"" + WhiteProfiler.Turns.Count + "\"");
+                    WhiteProfiler.WriteAndEndGame(Logger.Log);
+
+                    if (BlackProfiler.IsEnabled)
+                    {
+                        Logger.Log(string.Empty);
+                    }
+                }
+
+                if (BlackProfiler.IsEnabled)
+                {
+                    Logger.Log("\"Number of Black Moves:\",\"" + BlackProfiler.Turns.Count + "\"");
+                    BlackProfiler.WriteAndEndGame(Logger.Log);
+                }
+                Logger.Log("---End CSV---");
+            }
+
             WhiteProfiler = null;
             BlackProfiler = null;
         }
 
         public static void BeginTurn(ChessColor playerColor)
         {
-            if (IsEnabled)
-            {
-                _currentPlayerColor = playerColor;
-            }
+            _currentPlayerColor = playerColor;
         }
 
-        public static void EndTurn()
+        public static void EndTurn(TimeSpan moveTime)
         {
             if (IsEnabled)
             {
-                CurrentProfiler.WriteAndEndTurn(CurrentProfilerLogger);
+                CurrentProfiler.WriteAndEndTurn(CurrentProfilerLogger, moveTime);
             }
         }
 

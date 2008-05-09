@@ -149,9 +149,9 @@ namespace UvsChess.Framework
                 
                 //Logger.Log("New chess state: " + mainChessState.ToFenBoard());
             }
-            Profiler.EndGame();
+            Profiler.EndGame(DateTime.Now - startTime);
 
-            TimeSpan timeOfGame = DateTime.Now - startTime;            
+                        
 
             // Remove the AI Log methods from the GUI
             if (_whitePlayer.IsComputer)
@@ -168,9 +168,7 @@ namespace UvsChess.Framework
                 _blackPlayer.AI.IsMyTurnOver -= _blackPlayer.IsTurnOver;                
                 _blackPlayer.AI.SetDecisionTree -= SetTmpLastDecisionTree;
                 _blackPlayer.AI.Profiler = null;
-            }
-
-            Logger.Log("Total Time of Game: " + timeOfGame);
+            }            
 
             if (DeclareResults != null)
             {
@@ -195,7 +193,7 @@ namespace UvsChess.Framework
 
                 Profiler.BeginTurn(player.Color);
                 nextMove = player.GetNextMove(_mainChessState.CurrentBoard);
-                Profiler.EndTurn();
+                Profiler.EndTurn(player.TimeOfLastMove);
 
                 try
                 {
