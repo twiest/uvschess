@@ -361,7 +361,8 @@ namespace UvsChess.Gui
         {
             string result = (string)eventArgs[0];
             Actually_StopGame();
-            System.Windows.Forms.MessageBox.Show(Gui, result);            
+            System.Windows.Forms.MessageBox.Show(Gui, result);
+            Actually_AddToMainLog(new string[] {result});
         }
 
         public static void AddToMainLog(string message)
