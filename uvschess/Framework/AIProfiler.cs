@@ -11,6 +11,8 @@ namespace UvsChess
         private int _numFrameworkMethods;
 
         public ChessColor MyColor { get; set; }
+        public string MyName { get; set; }
+        public int DefaultDepth { get; set; }
         private int[] Profile { get; set; }
         private int[] FxProfile { get; set; }
         internal List<int[]> Turns { get; set; }
@@ -23,7 +25,10 @@ namespace UvsChess
 
         public AIProfiler(ChessColor myColor)
         {
+            MyName = string.Empty;
             MyColor = myColor;
+            DefaultDepth = 0;
+
             _numFrameworkMethods = Enum.GetValues(typeof(ProfilerMethodKey)).Length;
             IsEnabled = false;
             MoveTimes = new List<TimeSpan>();
@@ -97,6 +102,18 @@ namespace UvsChess
                 }
                 else
                 {
+                    if (MyName != string.Empty)
+                    {
+                        log("\"" + MyColor.ToString() + "'s AI Name:\",\"" + this.MyName + "\"");
+                    }
+
+                    if (DefaultDepth != 0)
+                    {
+                        log("\"" + MyColor.ToString() + "'s Default Depth:\",\"" + this.DefaultDepth + "\"");
+                    }
+
+                    log("\"" + MyColor.ToString() + "'s Moves:\",\"" + this.Turns.Count + "\"");                    
+
                     StringBuilder sb = new StringBuilder("\"Color\",\"Fx or AI\",\"Method Name\",\"Total\",");
                     for (int ix=1; ix <= Turns.Count; ix++)
                     {

@@ -77,18 +77,16 @@ namespace UvsChess.Framework
             BlackProfiler.FxMethodNames = Enum.GetNames(typeof(ProfilerMethodKey));
         }
 
-        public static void EndGame(TimeSpan timeOfGame)
+        public static void EndGame()
         {
             if (WhiteProfiler.IsEnabled || BlackProfiler.IsEnabled)
             {
                 Logger.Log("*** Game Stats ***");
                 Logger.Log("---Begin CSV---");
-                Logger.Log("\"Date of Profile:\",\"" + DateTime.Now.ToString() + "\"");                
-                Logger.Log("\"Total Time of Game:\",\"" + timeOfGame + "\"");
+                Logger.Log("\"Date of Profile:\",\"" + DateTime.Now.ToString() + "\"");                                
                 
                 if (WhiteProfiler.IsEnabled)
-                {
-                    Logger.Log("\"Number of White Moves:\",\"" + WhiteProfiler.Turns.Count + "\"");
+                {                    
                     WhiteProfiler.WriteAndEndGame(Logger.Log);
 
                     if (BlackProfiler.IsEnabled)
@@ -99,7 +97,6 @@ namespace UvsChess.Framework
 
                 if (BlackProfiler.IsEnabled)
                 {
-                    Logger.Log("\"Number of Black Moves:\",\"" + BlackProfiler.Turns.Count + "\"");
                     BlackProfiler.WriteAndEndGame(Logger.Log);
                 }
                 Logger.Log("---End CSV---");
