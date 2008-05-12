@@ -70,9 +70,9 @@ namespace UvsChess
         {
             if (IsEnabled)
             {
-                if (MethodNames.Length == 0)
+                if ((MethodNames == null) || MethodNames.Length == 0)
                 {
-                    log("To use the profiler, you must set Profiler.MethodNames to a list of enum names that you used with the integer keys");
+                    log(this.MyColor.ToString() + ": To use the profiler, you must set Profiler.MethodNames to a list of enum names that you used with the integer keys");
                 }
                 else
                 {
@@ -105,7 +105,7 @@ namespace UvsChess
             {
                 if ((MethodNames == null) || (MethodNames.Length == 0))
                 {
-                    output.Add("To use the profiler, you must set Profiler.MethodNames to a list of enum names that you used with the integer keys");
+                    output.Add(this.MyColor.ToString() + ": To use the profiler, you must set Profiler.MethodNames to a list of enum names that you used with the integer keys");
                 }
                 else
                 {
