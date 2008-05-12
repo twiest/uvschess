@@ -135,7 +135,6 @@ namespace UvsChess.Framework
             //This method run in its own thread.          
 
             IsGameRunning = true;
-            DateTime startTime = DateTime.Now;
             while (IsGameRunning)
             {
                 if (_mainChessState.CurrentPlayerColor == ChessColor.White)
@@ -149,7 +148,7 @@ namespace UvsChess.Framework
                 
                 //Logger.Log("New chess state: " + mainChessState.ToFenBoard());
             }
-            Profiler.EndGame(DateTime.Now - startTime);
+            Profiler.EndGame();
 
                         
 
