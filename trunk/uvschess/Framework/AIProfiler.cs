@@ -137,7 +137,7 @@ namespace UvsChess
                         totalTime += MoveTimes[ix];
                         sb.Append("\"" + MoveTimes[ix].ToString() + "\",");
                     }
-                    sb.Insert(0, "\"" + MyColor.ToString() + "\",\"\",\"Move Times\",\"" + totalTime + "\",");
+                    sb.Insert(0, "\"" + MyColor.ToString() + "\",\"AI\",\"Move Times\",\"" + totalTime + "\",");
 
                     // Trim off the trailing ", "
                     sb.Remove(sb.Length - 1, 1);
