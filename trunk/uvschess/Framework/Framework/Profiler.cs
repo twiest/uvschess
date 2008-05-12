@@ -83,22 +83,49 @@ namespace UvsChess.Framework
             {
                 Logger.Log("*** Game Stats ***");
                 Logger.Log("---Begin CSV---");
-                Logger.Log("\"Date of Profile:\",\"" + DateTime.Now.ToString() + "\"");                                
+                Logger.Log("\"Date of Profile:\",\"" + DateTime.Now.ToString() + "\"");
+                List<string> whiteOutput = null;
+                List<string> blackOutput = null;
                 
                 if (WhiteProfiler.IsEnabled)
                 {                    
-                    WhiteProfiler.WriteAndEndGame(Logger.Log);
+                    whiteOutput = WhiteProfiler.WriteAndEndGame();
 
                     if (BlackProfiler.IsEnabled)
                     {
-                        Logger.Log(string.Empty);
+                        whiteOutput.Add(string.Empty);
                     }
                 }
 
                 if (BlackProfiler.IsEnabled)
                 {
-                    BlackProfiler.WriteAndEndGame(Logger.Log);
+                    blackOutput = BlackProfiler.WriteAndEndGame();
                 }
+
+                if (WhiteProfiler.IsEnabled &&
+                    BlackProfiler.IsEnabled &&
+                    (WhiteProfiler.NodesPerSecond > 0) &&
+                    (BlackProfiler.NodesPerSecond > 0))
+                {
+                    Logger.Log("\"Avg Nodes/Sec:\",\"" + string.Format("{0:N2}", ((WhiteProfiler.NodesPerSecond + BlackProfiler.NodesPerSecond) / 2)) + "\"");
+                }
+
+                if (whiteOutput != null)
+                {
+                    foreach (string curLine in whiteOutput)
+                    {
+                        Logger.Log(curLine);
+                    }
+                }
+
+                if (blackOutput != null)
+                {
+                    foreach (string curLine in blackOutput)
+                    {
+                        Logger.Log(curLine);
+                    }
+                }
+
                 Logger.Log("---End CSV---");
             }
 
