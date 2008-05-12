@@ -148,6 +148,11 @@ namespace UvsChess.Framework
                 
                 //Logger.Log("New chess state: " + mainChessState.ToFenBoard());
             }
+
+            if (DeclareResults != null)
+            {
+                DeclareResults(_results);
+            }
             Profiler.EndGame();
 
                         
@@ -168,12 +173,7 @@ namespace UvsChess.Framework
                 _blackPlayer.AI.SetDecisionTree -= SetTmpLastDecisionTree;
                 _blackPlayer.AI.Profiler = null;
             }            
-
-            if (DeclareResults != null)
-            {
-                DeclareResults(_results);
-            }
-            
+          
             Logger.Log("Game Over");
             //StopGame();
         }
