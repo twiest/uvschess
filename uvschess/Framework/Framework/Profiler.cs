@@ -105,7 +105,8 @@ namespace UvsChess.Framework
                 if (WhiteProfiler.IsEnabled &&
                     BlackProfiler.IsEnabled &&
                     (WhiteProfiler.NodesPerSecond > 0) &&
-                    (BlackProfiler.NodesPerSecond > 0))
+                    (BlackProfiler.NodesPerSecond > 0) &&
+                    (WhiteProfiler.MyName == BlackProfiler.MyName) )
                 {
                     Logger.Log("\"Avg Nodes/Sec:\",\"" + string.Format("{0:N2}", ((WhiteProfiler.NodesPerSecond + BlackProfiler.NodesPerSecond) / 2)) + "\"");
                 }
