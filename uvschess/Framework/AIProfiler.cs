@@ -10,6 +10,7 @@ namespace UvsChess
         internal const int MaxMethodsToProfile = 1000;
         private int _numFrameworkMethods;
 
+        internal double NodesPerSecond { get; set; }
         public ChessColor MyColor { get; set; }
         public string MyName { get; set; }
         public int DefaultDepth { get; set; }
@@ -27,6 +28,7 @@ namespace UvsChess
 
         public AIProfiler(ChessColor myColor)
         {
+            NodesPerSecond = -1;
             MinisProfileIndexNumber = -1;
             MaxsProfileIndexNumber = -1;
             MyName = string.Empty;
@@ -96,18 +98,17 @@ namespace UvsChess
             }
         }
 
-        internal void WriteAndEndGame(Logger.LogCallback log)
+        internal List<string> WriteAndEndGame()
         {
+            List<string> output = new List<string>();
             if (IsEnabled)
             {
                 if ((MethodNames == null) || (MethodNames.Length == 0))
                 {
-                    log("To use the profiler, you must set Profiler.MethodNames to a list of enum names that you used with the integer keys");
+                    output.Add("To use the profiler, you must set Profiler.MethodNames to a list of enum names that you used with the integer keys");
                 }
                 else
                 {
-                    List<string> output = new List<string>();
-
                     if (MyName != string.Empty)
                     {
                         output.Add("\"" + MyColor.ToString() + "'s AI Name:\",\"" + this.MyName + "\"");
@@ -173,7 +174,8 @@ namespace UvsChess
 
                     if (totalNodes > 0)
                     {
-                        output.Insert(1, "\"" + MyColor.ToString() + "'s Nodes/Sec:\",\"" + string.Format("{0:N2}", ((double)totalNodes / totalTime.TotalSeconds)) + "\"");
+                        this.NodesPerSecond = ((double)totalNodes / totalTime.TotalSeconds);
+                        output.Insert(1, "\"" + MyColor.ToString() + "'s Nodes/Sec:\",\"" + string.Format("{0:N2}", this.NodesPerSecond) + "\"");
                     }
 
                     for (int curFxProfiledMethod = 0; curFxProfiledMethod < FxMethodNames.Length; curFxProfiledMethod++)
@@ -193,13 +195,10 @@ namespace UvsChess
 
                         output.Add(sb.ToString());
                     }
-
-                    foreach (string curLine in output)
-                    {
-                        log(curLine);
-                    }
                 }
             }
+
+            return output;
         }
     }
 }
