@@ -120,6 +120,15 @@ namespace UvsChess.Framework
             {
                 CurrentProfiler.WriteAndEndTurn(CurrentProfilerLogger, moveTime);
             }
+
+            if (_currentPlayerColor == ChessColor.White)
+            {
+                _currentPlayerColor = ChessColor.Black;
+            }
+            else
+            {
+                _currentPlayerColor = ChessColor.White;
+            }
         }
 
         public static void AddToMainProfile(int key)
