@@ -9,10 +9,11 @@ namespace UvsChess
     {
         internal const int MaxMethodsToProfile = 1000;
         private int _numFrameworkMethods;
+        private bool _onlyProfileMiniMax = false;
 
         internal double NodesPerSecond { get; set; }
-        public ChessColor MyColor { get; set; }
-        public string MyName { get; set; }
+        public ChessColor AIColor { get; set; }
+        public string AIName { get; set; }
         public int DefaultDepth { get; set; }
         public int MinisProfileIndexNumber { get; set; }
         public int MaxsProfileIndexNumber { get; set; }
@@ -22,8 +23,32 @@ namespace UvsChess
         private List<TimeSpan> MoveTimes { get; set; }
         private List<int[]> FxTurns { get; set; }
         internal bool IsEnabled { get; set; }
-        public string[] MethodNames { get; set; }
-        internal string[] FxMethodNames { get; set; }
+        public string[] KeyNames { get; set; }
+        internal string[] FxKeyNames { get; set; }
+
+
+        public bool OnlyProfileMiniMax
+        {
+            set
+            {
+                if (MinisProfileIndexNumber < 0)
+                {
+                    throw (new Exception("AIProfiler.MinisProfileIndexNumber needs to be set before you can set this property."));
+                }
+
+                if (MaxsProfileIndexNumber < 0)
+                {
+                    throw (new Exception("AIProfiler.MaxsProfileIndexNumber needs to be set before you can set this property."));
+                }
+
+                _onlyProfileMiniMax = value;
+            }
+
+            internal get
+            {
+                return _onlyProfileMiniMax;
+            }
+        }
 
 
         public AIProfiler(ChessColor myColor)
@@ -31,8 +56,8 @@ namespace UvsChess
             NodesPerSecond = -1;
             MinisProfileIndexNumber = -1;
             MaxsProfileIndexNumber = -1;
-            MyName = string.Empty;
-            MyColor = myColor;
+            AIName = string.Empty;
+            AIColor = myColor;
             DefaultDepth = 0;
 
             _numFrameworkMethods = Enum.GetValues(typeof(ProfilerMethodKey)).Length;
@@ -44,6 +69,11 @@ namespace UvsChess
 
         public void AddToProfile(int key)
         {
+            if (OnlyProfileMiniMax && (key != MinisProfileIndexNumber) && (key != MaxsProfileIndexNumber))
+            {
+                return;
+            }
+
             if (! IsEnabled)
             {
                 IsEnabled = true;                
@@ -60,7 +90,7 @@ namespace UvsChess
 
         internal void AddToFxProfile(int key)
         {
-            if (IsEnabled)
+            if ((IsEnabled) && (! OnlyProfileMiniMax))
             {
                 ++FxProfile[key];
             }
@@ -70,22 +100,22 @@ namespace UvsChess
         {
             if (IsEnabled)
             {
-                if ((MethodNames == null) || MethodNames.Length == 0)
+                if ((KeyNames == null) || KeyNames.Length == 0)
                 {
-                    log(this.MyColor.ToString() + ": To use the profiler, you must set Profiler.MethodNames to a list of enum names that you used with the integer keys");
+                    log(this.AIColor.ToString() + ": To use the profiler, you must set Profiler.MethodNames to a list of enum names that you used with the integer keys");
                 }
                 else
                 {
                     log("*** Move Stats ***");
                     log("Move time: " + moveTime.ToString());
-                    for (int ix = 0; ix < MethodNames.Length; ix++)
+                    for (int ix = 0; ix < KeyNames.Length; ix++)
                     {
-                        log(string.Format("{0} : {1:N0}", MethodNames[ix], Profile[ix]));
+                        log(string.Format("{0} : {1:N0}", KeyNames[ix], Profile[ix]));
                     }
 
-                    for (int ix = 0; ix < FxMethodNames.Length; ix++)
+                    for (int ix = 0; ix < FxKeyNames.Length; ix++)
                     {
-                        log(string.Format("{0} : {1:N0}", FxMethodNames[ix], FxProfile[ix]));
+                        log(string.Format("{0} : {1:N0}", FxKeyNames[ix], FxProfile[ix]));
                     }
                 }
 
@@ -103,25 +133,25 @@ namespace UvsChess
             List<string> output = new List<string>();
             if (IsEnabled)
             {
-                if ((MethodNames == null) || (MethodNames.Length == 0))
+                if ((KeyNames == null) || (KeyNames.Length == 0))
                 {
-                    output.Add(this.MyColor.ToString() + ": To use the profiler, you must set Profiler.MethodNames to a list of enum names that you used with the integer keys");
+                    output.Add(this.AIColor.ToString() + ": To use the profiler, you must set Profiler.MethodNames to a list of enum names that you used with the integer keys");
                 }
                 else
                 {
-                    if (MyName != string.Empty)
+                    if (AIName != string.Empty)
                     {
-                        output.Add("\"" + MyColor.ToString() + "'s AI Name:\",\"" + this.MyName + "\"");
+                        output.Add("\"" + AIColor.ToString() + "'s AI Name:\",\"" + this.AIName + "\"");
                     }
 
                     if (DefaultDepth != 0)
                     {
-                        output.Add("\"" + MyColor.ToString() + "'s Default Depth:\",\"" + this.DefaultDepth + "\"");
+                        output.Add("\"" + AIColor.ToString() + "'s Default Depth:\",\"" + this.DefaultDepth + "\"");
                     }
 
-                    output.Add("\"" + MyColor.ToString() + "'s Moves:\",\"" + this.Turns.Count + "\"");                    
+                    output.Add("\"" + AIColor.ToString() + "'s Moves:\",\"" + this.Turns.Count + "\"");                    
 
-                    StringBuilder sb = new StringBuilder("\"Color\",\"Fx or AI\",\"Method Name\",\"Total\",");
+                    StringBuilder sb = new StringBuilder("\"Color\",\"Fx or AI\",\"Method Name\",\"Total\",\"Average\",");
                     for (int ix=1; ix <= Turns.Count; ix++)
                     {
                         sb.Append("\"Move " + ix + "\",");
@@ -138,67 +168,62 @@ namespace UvsChess
                         totalTime += MoveTimes[ix];
                         sb.Append("\"" + MoveTimes[ix].ToString() + "\",");
                     }
-                    sb.Insert(0, "\"" + MyColor.ToString() + "\",\"AI\",\"Move Times\",\"" + totalTime + "\",");
+                    TimeSpan averageTime = TimeSpan.FromMilliseconds((totalTime.TotalMilliseconds / MoveTimes.Count));
+                    sb.Insert(0, "\"" + AIColor.ToString() + "\",\"AI\",\"Move Times\",\"" + totalTime + "\",\"" + averageTime + "\",");
 
-                    // Trim off the trailing ", "
+                    // Trim off the trailing ","
                     sb.Remove(sb.Length - 1, 1);
 
                     output.Add(sb.ToString());
 
                     int totalNodes = 0;
-                    for (int curProfiledMethod = 0; curProfiledMethod < MethodNames.Length; curProfiledMethod++)
+                    for (int curProfiledMethod = 0; curProfiledMethod < KeyNames.Length; curProfiledMethod++)
                     {
-                        sb = new StringBuilder();
                         int total = 0;
-                        for (int curTurn = 0; curTurn < Turns.Count; curTurn++)
-                        {
-                            total += Turns[curTurn][curProfiledMethod];
-                            sb.Append("\"" + string.Format("{0:N0}", Turns[curTurn][curProfiledMethod])+ "\",");
-                        }
-                        
+                        output.Add(WriteProfileLine(Turns, curProfiledMethod, KeyNames, ref total));
+
                         if ((MinisProfileIndexNumber != -1) &&
                             (MaxsProfileIndexNumber != -1) &&
                             ((MinisProfileIndexNumber == curProfiledMethod) ||
                              (MaxsProfileIndexNumber == curProfiledMethod)))
                         {
                             totalNodes += total;
-                        }
-
-                        sb.Insert(0, "\"" + MyColor.ToString() + "\",\"AI\",\"" + MethodNames[curProfiledMethod].ToString() + "\",\"" + string.Format("{0:N0}", total) + "\",");
-
-                        // Trim off the trailing ", "
-                        sb.Remove(sb.Length - 1, 1);
-
-                        output.Add(sb.ToString());
+                        }                       
                     }
 
                     if (totalNodes > 0)
                     {
                         this.NodesPerSecond = ((double)totalNodes / totalTime.TotalSeconds);
-                        output.Insert(1, "\"" + MyColor.ToString() + "'s Nodes/Sec:\",\"" + string.Format("{0:N2}", this.NodesPerSecond) + "\"");
+                        output.Insert(1, "\"" + AIColor.ToString() + "'s Nodes/Sec:\",\"" + string.Format("{0:N2}", this.NodesPerSecond) + "\"");
                     }
 
-                    for (int curFxProfiledMethod = 0; curFxProfiledMethod < FxMethodNames.Length; curFxProfiledMethod++)
+                    for (int curFxProfiledMethod = 0; curFxProfiledMethod < FxKeyNames.Length; curFxProfiledMethod++)
                     {
-                        sb = new StringBuilder();
-                        int FxTotal = 0;
-                        for (int curFxTurn = 0; curFxTurn < Turns.Count; curFxTurn++)
-                        {
-                            FxTotal += FxTurns[curFxTurn][curFxProfiledMethod];
-                            sb.Append("\"" + string.Format("{0:N0}", FxTurns[curFxTurn][curFxProfiledMethod]) + "\",");
-                        }
-
-                        sb.Insert(0, "\"" + MyColor.ToString() + "\",\"Fx\",\"" + FxMethodNames[curFxProfiledMethod].ToString() + "\",\"" + string.Format("{0:N0}", FxTotal) + "\",");
-
-                        // Trim off the trailing ", "
-                        sb.Remove(sb.Length - 1, 1);
-
-                        output.Add(sb.ToString());
+                        int total = 0;
+                        output.Add(WriteProfileLine(FxTurns, curFxProfiledMethod, FxKeyNames, ref total));
                     }
                 }
             }
 
             return output;
+        }
+
+        private string WriteProfileLine(List<int[]> info, int currentKey, string[] keyNames, ref int total)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int curTurn = 0; curTurn < info.Count; curTurn++)
+            {
+                total += info[curTurn][currentKey];
+                sb.Append("\"" + string.Format("{0:N0}", info[curTurn][currentKey]) + "\",");
+            }
+
+            sb.Insert(0, "\"" + AIColor.ToString() + "\",\"AI\",\"" + keyNames[currentKey].ToString() + "\",\"" +
+                         string.Format("{0:N0}", total) + "\",\"" + string.Format("{0:N0}", ((decimal)total / (decimal)info.Count)) + "\",");
+
+            // Trim off the trailing ","
+            sb.Remove(sb.Length - 1, 1);
+
+            return sb.ToString();
         }
     }
 }
