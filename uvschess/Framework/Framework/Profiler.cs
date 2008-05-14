@@ -72,9 +72,9 @@ namespace UvsChess.Framework
         public static void BeginGame()
         {
             WhiteProfiler = new AIProfiler(ChessColor.White);
-            WhiteProfiler.FxMethodNames = Enum.GetNames(typeof(ProfilerMethodKey));
+            WhiteProfiler.FxKeyNames = Enum.GetNames(typeof(ProfilerMethodKey));
             BlackProfiler = new AIProfiler(ChessColor.Black);
-            BlackProfiler.FxMethodNames = Enum.GetNames(typeof(ProfilerMethodKey));
+            BlackProfiler.FxKeyNames = Enum.GetNames(typeof(ProfilerMethodKey));
         }
 
         public static void EndGame()
@@ -106,7 +106,7 @@ namespace UvsChess.Framework
                     BlackProfiler.IsEnabled &&
                     (WhiteProfiler.NodesPerSecond > 0) &&
                     (BlackProfiler.NodesPerSecond > 0) &&
-                    (WhiteProfiler.MyName == BlackProfiler.MyName) )
+                    (WhiteProfiler.AIName == BlackProfiler.AIName) )
                 {
                     Logger.Log("\"Avg Nodes/Sec:\",\"" + string.Format("{0:N2}", ((WhiteProfiler.NodesPerSecond + BlackProfiler.NodesPerSecond) / 2)) + "\"");
                 }
