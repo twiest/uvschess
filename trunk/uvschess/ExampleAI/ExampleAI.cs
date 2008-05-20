@@ -38,6 +38,8 @@ namespace ExampleAI
     {
         #region IChessAI Members
 
+
+        #region These should be implemented as automatic properties.
         /// <summary>
         /// This will return true when the framework starts running your AI. When the AI's time has run out,
         /// the this method will return false. Once this method returns false, your AI should return a 
@@ -80,6 +82,7 @@ namespace ExampleAI
         /// </summary>
         /// <param name="message"></param>
         public AISetDecisionTreeCallback SetDecisionTree { get; set; }
+        #endregion
 
         /// <summary>
         /// The name of your AI

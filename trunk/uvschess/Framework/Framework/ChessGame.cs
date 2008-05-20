@@ -193,6 +193,7 @@ namespace UvsChess.Framework
                 Profiler.BeginTurn(player.Color);
                 nextMove = player.GetNextMove(_mainChessState.CurrentBoard);
                 Profiler.EndTurn(player.TimeOfLastMove);
+                Logger.Log("Time Of " + player.ColorAndName + "'s last move: " + player.TimeOfLastMove);
 
                 try
                 {
