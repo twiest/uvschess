@@ -202,7 +202,18 @@
     <EmbeddedResource Include="Gui\GuiDecisionTree.resx">
       <DependentUpon>GuiDecisionTree.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Images\Chess_YellowBackground.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Chess_HighlightMove01.png" />
+    <EmbeddedResource Include="Images\Chess_HighlightMove02.png" />
+    <EmbeddedResource Include="Images\Chess_HighlightMove03.png" />
+    <EmbeddedResource Include="Images\Chess_HighlightMove04.png" />
+    <EmbeddedResource Include="Images\Chess_HighlightMove05.png" />
+    <EmbeddedResource Include="Images\Chess_HighlightMove06.png" />
+    <EmbeddedResource Include="Images\Chess_HighlightMove07.png" />
+    <EmbeddedResource Include="Images\Chess_HighlightMove08.png" />
+    <EmbeddedResource Include="Images\Chess_HighlightMove09.png" />
+    <EmbeddedResource Include="Images\Chess_HighlightMove10.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

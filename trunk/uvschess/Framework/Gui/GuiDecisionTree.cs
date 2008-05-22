@@ -65,7 +65,17 @@ namespace UvsChess.Gui
         {
             ListBox sender = (ListBox)s;
             DecisionTree curDt = (DecisionTree)sender.SelectedItem;
-            guiChessBoard1.ResetBoard(curDt.Board, curDt.Move);
+            int indexOfSelectedListBox = FindIndexOfSelectedListBox(sender);
+
+            List<ChessMove> highlightedMoves = new List<ChessMove>();
+
+            for (int curMoveIdx = 1; curMoveIdx <= indexOfSelectedListBox; curMoveIdx++)
+            {
+                highlightedMoves.Add(((DecisionTree)decisionListBoxes[curMoveIdx].SelectedItem).Move);
+            }
+
+            //guiChessBoard1.ResetBoard(curDt.Board, curDt.Move);
+            guiChessBoard1.ResetBoard(curDt.Board, highlightedMoves);
 
             if (curDt.IsRootNode)
             {
@@ -79,7 +89,7 @@ namespace UvsChess.Gui
             }
 
 
-            int indexOfSelectedListBox = FindIndexOfSelectedListBox(sender);
+            
 
             int ix = indexOfSelectedListBox + 1;
             while (ix < decisionListBoxes.Count)
