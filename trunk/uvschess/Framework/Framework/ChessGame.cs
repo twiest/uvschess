@@ -149,7 +149,7 @@ namespace UvsChess.Framework
                 //Logger.Log("New chess state: " + mainChessState.ToFenBoard());
             }
 
-            if (DeclareResults != null)
+            if ((DeclareResults != null) && (_results != string.Empty))
             {
                 DeclareResults(_results);
             }
@@ -195,14 +195,7 @@ namespace UvsChess.Framework
                 Profiler.EndTurn(player.TimeOfLastMove);
                 Logger.Log("Time Of " + player.ColorAndName + "'s last move: " + player.TimeOfLastMove);
 
-                try
-                {
-                    SetDecisionTree(_tmpDecisionTree);
-                }
-                catch
-                {
-                    // do nothing, the game was ending while I was trying to set the decision tree
-                }
+                SetDecisionTree(_tmpDecisionTree);
 
                 if (!this.IsGameRunning)
                 {

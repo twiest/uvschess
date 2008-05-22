@@ -51,6 +51,7 @@ namespace UvsChess.Framework
         private ChessBoard _currentBoard = null;
         private ChessMove _moveToReturn;
         private ManualResetEvent _waitForMoveEvent = new ManualResetEvent(true);
+        private ManualResetEvent _waitForTurnToEnd = new ManualResetEvent(true);
         private int Interval = 100;
         private Timer _pollAITimer;
 
@@ -130,6 +131,8 @@ namespace UvsChess.Framework
             else
             {
                 _forceAIToEndTurnEarly = true;
+                _waitForTurnToEnd.Reset();
+                _waitForTurnToEnd.WaitOne();
             }
         }
 
@@ -164,6 +167,7 @@ namespace UvsChess.Framework
                 // AND HERE because it would count against the AI's time.
 
                 _waitForMoveEvent.Set();
+                _waitForTurnToEnd.Set();
             }
             else
             {
