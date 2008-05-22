@@ -41,7 +41,7 @@ namespace UvsChess.Gui
         public PieceMovedByHumanDelegate PieceMovedByHuman = null;
 
         ChessBoard _board = new ChessBoard();
-        ChessMove _lastMove = null;
+        List<ChessMove> _lastFewMoves = null;
         int _boardWidth;
         int _boardHeight;
         int _tileWidth;
@@ -65,7 +65,7 @@ namespace UvsChess.Gui
         Bitmap _cornerBorder;
         Bitmap _darkTile;
         Bitmap _lightTile;
-        Bitmap _yellowTile;
+        Bitmap[] _tileHighlightColors = new Bitmap[10];
 
         public GuiChessBoard()
         {
@@ -87,9 +87,54 @@ namespace UvsChess.Gui
             {
                 switch (curRes)
                 {
-                    case "UvsChess.Images.Chess_YellowBackground.png":
-                        _yellowTile = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
-                        _yellowTile.SetResolution(res, res);                        
+                    case "UvsChess.Images.Chess_HighlightMove01.png":
+                        _tileHighlightColors[0] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _tileHighlightColors[0].SetResolution(res, res);                        
+                        break;
+
+                    case "UvsChess.Images.Chess_HighlightMove02.png":
+                        _tileHighlightColors[1] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _tileHighlightColors[1].SetResolution(res, res);
+                        break;
+
+                    case "UvsChess.Images.Chess_HighlightMove03.png":
+                        _tileHighlightColors[2] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _tileHighlightColors[2].SetResolution(res, res);
+                        break;
+
+                    case "UvsChess.Images.Chess_HighlightMove04.png":
+                        _tileHighlightColors[3] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _tileHighlightColors[3].SetResolution(res, res);
+                        break;
+
+                    case "UvsChess.Images.Chess_HighlightMove05.png":
+                        _tileHighlightColors[4] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _tileHighlightColors[4].SetResolution(res, res);
+                        break;
+
+                    case "UvsChess.Images.Chess_HighlightMove06.png":
+                        _tileHighlightColors[5] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _tileHighlightColors[5].SetResolution(res, res);
+                        break;
+
+                    case "UvsChess.Images.Chess_HighlightMove07.png":
+                        _tileHighlightColors[6] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _tileHighlightColors[6].SetResolution(res, res);
+                        break;
+
+                    case "UvsChess.Images.Chess_HighlightMove08.png":
+                        _tileHighlightColors[7] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _tileHighlightColors[7].SetResolution(res, res);
+                        break;
+
+                    case "UvsChess.Images.Chess_HighlightMove09.png":
+                        _tileHighlightColors[8] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _tileHighlightColors[8].SetResolution(res, res);
+                        break;
+
+                    case "UvsChess.Images.Chess_HighlightMove10.png":
+                        _tileHighlightColors[9] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _tileHighlightColors[9].SetResolution(res, res);
                         break;
                         
                     case "UvsChess.Images.Chess_DarkBackground.png":
@@ -502,14 +547,17 @@ namespace UvsChess.Gui
                         boardGraphics.DrawImage(_darkTile, curX, curY);
                     }
 
-                    if (_lastMove != null)
+                    if ((_lastFewMoves != null) && (_lastFewMoves.Count > 0))
                     {
                         ChessLocation curLoc = new ChessLocation(x, y);
 
-                        if ((_lastMove.From == curLoc) ||
-                            (_lastMove.To == curLoc))
+                        for (int ix = 0; ix < _lastFewMoves.Count; ix++)
                         {
-                            boardGraphics.DrawImage(_yellowTile, curX, curY);                            
+                            if ((_lastFewMoves[ix].From == curLoc) ||
+                                (_lastFewMoves[ix].To == curLoc))
+                            {
+                                boardGraphics.DrawImage(_tileHighlightColors[ix % 10], curX, curY);
+                            }
                         }
                     }
 
@@ -531,25 +579,32 @@ namespace UvsChess.Gui
         }
 
         /// <summary>
-        /// Resets the chess board to the given state
-        /// </summary>
-        /// <param name="board"></param>
-        public void ResetBoard(ChessBoard board)
-        {
-            ResetBoard(board, null);
-        }
-
-        /// <summary>
-        /// Resets the chess board to the given state
+        /// Resets the chess board to the given state highlighting the last move
         /// </summary>
         /// <param name="board"></param>
         public void ResetBoard(ChessBoard board, ChessMove lastMove)
+        {
+            if (lastMove == null)
+            {
+                ResetBoard(board, new List<ChessMove>());
+            }
+            else
+            {
+                ResetBoard(board, new List<ChessMove>() {lastMove});
+            }
+        }
+
+        /// <summary>
+        /// Resets the chess board to the given state highlighting the last few moves
+        /// </summary>
+        /// <param name="board"></param>
+        public void ResetBoard(ChessBoard board, List<ChessMove> lastFewMoves)
         {
             if (Board != board)
             {
                 Board = board.Clone();
                 _boardChanged = true;
-                _lastMove = lastMove;
+                _lastFewMoves = lastFewMoves;
 
                 this.Invalidate();
             }
