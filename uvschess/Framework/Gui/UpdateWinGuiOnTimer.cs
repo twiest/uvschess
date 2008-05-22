@@ -494,6 +494,8 @@ namespace UvsChess.Gui
             {
                 _isInGameMode = false;
 
+                _mainGame.StopGameEarly();
+
                 // Remove the ChessGame from the GuiChessBoard updates
                 Gui.chessBoardControl.PieceMovedByHuman -= _mainGame.WhitePlayer_HumanMovedPieceEvent;
                 Gui.chessBoardControl.PieceMovedByHuman -= _mainGame.BlackPlayer_HumanMovedPieceEvent;
@@ -516,8 +518,6 @@ namespace UvsChess.Gui
                 Actually_EnableRadioBtnsAndComboBoxes();
                 Actually_EnableHistoryWindowClicking();
                 UpdateWinGuiOnTimer.Actually_SetGuiChessBoard_IsLocked(new object[] { false });
-
-                _mainGame.StopGameEarly();
 
                 _mainGame = null;                
             }
