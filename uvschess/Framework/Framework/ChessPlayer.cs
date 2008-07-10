@@ -128,7 +128,7 @@ namespace UvsChess.Framework
             {
                 _waitForMoveEvent.Set();
             }
-            else if (_isMyTurn)
+            else if ((_runAIThread != null) && (_runAIThread.IsAlive))
             {
                 _forceAIToEndTurnEarly = true;
                 _waitForTurnToEnd.Reset();
