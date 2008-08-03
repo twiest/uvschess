@@ -41,13 +41,13 @@ namespace ExampleAI
 
         #region These should be implemented as automatic properties.
         /// <summary>
-        /// This will return true when the framework starts running your AI. When the AI's time has run out,
-        /// the this method will return false. Once this method returns false, your AI should return a 
+        /// This will return false when the framework starts running your AI. When the AI's time has run out,
+        /// then this method will return true. Once this method returns true, your AI should return a 
         /// move immediately.
         /// 
         /// You should NEVER EVER set this property!
-        /// IsRunning should be defined as an Automatic Property.
-        /// IsRunning SHOULD NOT CONTAIN ANY CODE!!!
+        /// This property should be defined as an Automatic Property.
+        /// This property SHOULD NOT CONTAIN ANY CODE!!!
         /// </summary>
         public AIIsMyTurnOverCallback IsMyTurnOver { get; set; }
 
@@ -55,8 +55,8 @@ namespace ExampleAI
         /// Call this method to print out debug information. The framework subscribes to this event
         /// and will provide a log window for your debug messages.
         /// 
-        /// Log should be defined as an Automatic Property.
-        /// Log SHOULD NOT CONTAIN ANY CODE!!!
+        /// This property should be defined as an Automatic Property.
+        /// This property SHOULD NOT CONTAIN ANY CODE!!!
         /// </summary>
         /// <param name="message"></param>
         public AILoggerCallback Log { get; set; }
@@ -66,8 +66,8 @@ namespace ExampleAI
         /// and will print out the profiling stats in your log window.
         /// 
         /// You should NEVER EVER set this property!
-        /// Profile should be defined as an Automatic Property.
-        /// Profile SHOULD NOT CONTAIN ANY CODE!!!
+        /// This property should be defined as an Automatic Property.
+        /// This property SHOULD NOT CONTAIN ANY CODE!!!
         /// </summary>
         /// <param name="key"></param>
         public AIProfiler Profiler { get; set; }
@@ -77,8 +77,8 @@ namespace ExampleAI
         /// and will provide a debug window for your decision tree.
         /// 
         /// You should NEVER EVER set this property!
-        /// SetDecisionTree should be defined as an Automatic Property.
-        /// SetDecisionTree SHOULD NOT CONTAIN ANY CODE!!!
+        /// This property should be defined as an Automatic Property.
+        /// This property SHOULD NOT CONTAIN ANY CODE!!!
         /// </summary>
         /// <param name="message"></param>
         public AISetDecisionTreeCallback SetDecisionTree { get; set; }
