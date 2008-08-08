@@ -69,7 +69,7 @@
     <Compile Include="ChessColor.cs" />
     <Compile Include="ChessPiece.cs" />
     <Compile Include="Framework\AI.cs" />
-    <Compile Include="Framework\DecisionTree.cs" />
+    <Compile Include="Framework\ChessState.cs" />
     <Compile Include="Framework\ChessGame.cs" />
     <Compile Include="AIProfiler.cs" />
     <Compile Include="Framework\Profiler.cs" />
@@ -89,7 +89,7 @@
     <Compile Include="Gui\GuiChessBoard.Designer.cs">
       <DependentUpon>GuiChessBoard.cs</DependentUpon>
     </Compile>
-    <Compile Include="ChessState.cs" />
+    <Compile Include="DecisionTree.cs" />
     <Compile Include="ChessLocation.cs" />
     <Compile Include="ChessMove.cs" />
     <Compile Include="Gui\GuiDecisionTree.cs">
