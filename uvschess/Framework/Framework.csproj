@@ -223,4 +223,9 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+    <PreBuildEvent>copy "$(SolutionDir)RuntAI\*.*" "$(TargetDir)"</PreBuildEvent>
+  </PropertyGroup>
 </Project>
