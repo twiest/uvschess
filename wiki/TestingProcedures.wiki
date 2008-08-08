@@ -8,7 +8,7 @@ When doing a full test run, the following situations need to be reproduced and n
 
 = Test Cases =
 
- ==Human vs. AI==
+==Human vs. AI==
   * For all test cases, elect an AI for one player, and human for the other player
   * Be sure to alternate between human and AI for each player
    
@@ -22,3 +22,5 @@ When doing a full test run, the following situations need to be reproduced and n
    * Stop the game
    * Click on a previous move in the history window.
    * Board layout should change the state selected.
+
+==AI vs. AI==
