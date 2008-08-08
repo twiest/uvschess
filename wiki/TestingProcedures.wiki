@@ -9,9 +9,9 @@ When doing a full test run, the following situations need to be reproduced and n
 = Test Cases =
 
 ==Human vs. AI==
-===Start / Stop a Game===
-* Select an AI for one player
-* Select Human for the other player
-* Start a game. 
-* Play a few moves
-* Stop the game. 
+ ===Start / Stop a Game===
+  * Select an AI for one player
+  * Select Human for the other player
+  * Start a game. 
+  * Play a few moves
+  * Stop the game. 
