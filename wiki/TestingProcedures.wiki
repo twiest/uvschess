@@ -1,14 +1,17 @@
-#summary One-sentence summary of this page.
 #labels Phase-QA
+#Testing procedure for UvsChess
 
 = Introduction =
 
 When doing a full test run, the following situations need to be reproduced and need to perform the expected behavior. If a test case fails, submit a bug (issue) and add the svn revision to the bug description.
 
 
-= Details =
+= Test Cases =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+==Human vs. AI==
+===Start / Stop a Game===
+* Select an AI for one player
+* Select Human for the other player
+* Start a game. 
+* Play a few moves
+* Stop the game. 
