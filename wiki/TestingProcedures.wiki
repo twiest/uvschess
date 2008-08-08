@@ -3,7 +3,7 @@
 
 = Introduction =
 
-Add your content here.
+When doing a full test run, the following situations need to be reproduced and need to perform the expected behavior. If a test case fails, submit a bug (issue) and add the svn revision to the bug description.
 
 
 = Details =
