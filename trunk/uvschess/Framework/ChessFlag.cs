@@ -35,7 +35,7 @@ namespace UvsChess
         Checkmate,
         Stalemate,
         AIWentOverTime,  // Students should NEVER use this flag. This is for the framework to use to flag that an AI went over time.
-        Castling,   
-        EnPassant
+        //Castling,   // Disable Casting for 1.0
+        //EnPassant // Disable EnPassant for 1.0
     }
 }
