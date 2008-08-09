@@ -30,13 +30,19 @@ namespace UvsChess
 
     public enum ChessPiece
     {
+        // We chose this order for Chess Piece on purpose. Basically everything < ChessPiece.Empty 
+        // means that the piece is black.
+        // Anything > ChessPiece.Empty means that the piece is white.
+        // This makes it _very_ quick and easy to see what color a piece at a certain location is.
         BlackPawn,
         BlackRook,
         BlackKnight,
         BlackBishop,
         BlackQueen,
         BlackKing,
+
         Empty,
+
         WhitePawn,
         WhiteRook,
         WhiteKnight,

@@ -52,7 +52,6 @@ namespace UvsChess.Framework
         DecisionTree_Clone,
         DecisionTree_Clone_DecisionTree,
         DecisionTree_AddChild_ChessBoard_ChessMove,
-        DecisionTree_AddFinalDecision_ChessBoard_ChessMove,
         DecisionTree_ToString,
     }
 }
