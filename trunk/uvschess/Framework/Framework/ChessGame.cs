@@ -236,19 +236,9 @@ namespace UvsChess.Framework
                     newstate = _mainChessState.Clone();
                     newstate.MakeMove(nextMove);
 
-                    if (opponent.IsComputer)
-                    {
-                        ChessState tmpState = newstate.Clone();
-                        isValidMove = opponent.AI.IsValidMove(tmpState.PreviousBoard,
-                                                              tmpState.PreviousMove,
-                                                              (tmpState.CurrentPlayerColor == ChessColor.White ? ChessColor.Black : ChessColor.White));
-                    }
-                    else
-                    {
-                        // All moves are valid against a human, as there's no
-                        // way for the human to object to a move.
-                        isValidMove = true;
-                    }
+                    isValidMove = opponent.IsValidMove(newstate.PreviousBoard,
+                                                       newstate.PreviousMove,
+                                                       (newstate.CurrentPlayerColor == ChessColor.White ? ChessColor.Black : ChessColor.White));
                 }
             }
             else //player is human
@@ -266,17 +256,9 @@ namespace UvsChess.Framework
                 newstate = _mainChessState.Clone();
                 newstate.MakeMove(nextMove);
 
-                if (opponent.IsHuman)
-                {
-                    isValidMove = true;
-                }
-                else
-                {
-                    ChessState tmpState = newstate.Clone();
-                    isValidMove = opponent.AI.IsValidMove(tmpState.PreviousBoard,
-                                                          tmpState.PreviousMove,
-                                                          (tmpState.CurrentPlayerColor == ChessColor.White ? ChessColor.Black : ChessColor.White));
-                }
+                isValidMove = opponent.IsValidMove(newstate.PreviousBoard,
+                                                   newstate.PreviousMove,
+                                                   (newstate.CurrentPlayerColor == ChessColor.White ? ChessColor.Black : ChessColor.White));
 
                 this.SetGuiChessBoard_IsLocked(true);
             }//end if player == human
