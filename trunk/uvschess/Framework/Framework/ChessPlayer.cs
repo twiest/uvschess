@@ -41,12 +41,15 @@ namespace UvsChess.Framework
         public IChessAI AI;
         public TimeSpan TimeOfLastMove = TimeSpan.MinValue;
 
+        private bool _isValidMove = false;
+        private bool _isGetNextMoveCall = false;
         private bool _isTurnOver = false;
         private bool _hasAIEndedTurn = false;
         private bool _forceAIToEndTurnEarly = false;
         private DateTime _startTime;
         private DateTime _endTime;
-        private Thread _runAIThread;
+        private Thread _aiThread;
+        private ChessMove _moveToCheck = null;
         private ChessBoard _currentBoard = null;
         private ChessMove _moveToReturn;
         private ManualResetEvent _waitForPlayerEvent = new ManualResetEvent(true);
@@ -82,8 +85,34 @@ namespace UvsChess.Framework
             get { return !IsHuman; }
         }
 
+        public void StartAiInTimedThread(int maxTimeToLetThreadRun)
+        {
+            _aiThread = new Thread(RunAiInThread);
+
+            // NO LOGGING ALLOWED between here
+            _startTime = DateTime.Now;
+            _endTime = _startTime.AddMilliseconds(maxTimeToLetThreadRun);
+            _aiThread.Start();
+            // AND HERE because it would count against the AI's time.
+
+            this.PollAIOnce();
+
+            _waitForPlayerEvent.Reset();
+            _waitForPlayerEvent.WaitOne();
+
+            _aiThread = null;
+
+            // Clean up the heap for the next player.
+            // This doesn't cost the AI time 
+            //(it's done after the AI's turn time has been calculated).
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+        }
+
         public ChessMove GetNextMove(ChessBoard currentBoard)
         {
+            _isGetNextMoveCall = true;
+
             _currentBoard = currentBoard.Clone();
 
             if (this.IsHuman)
@@ -93,27 +122,8 @@ namespace UvsChess.Framework
             }
             else
             {
-                _runAIThread = new Thread(GetNextAIMoveInThread);
-
-                // NO LOGGING ALLOWED between here
-                _startTime = DateTime.Now;
-                _endTime = _startTime.AddMilliseconds(UvsChess.Gui.Preferences.Time);
-                _runAIThread.Start();
-                // AND HERE because it would count against the AI's time.
-
-                this.PollAIOnce();
-
-                _waitForPlayerEvent.Reset();
-                _waitForPlayerEvent.WaitOne();
-
-                _runAIThread = null;
+                StartAiInTimedThread(UvsChess.Gui.Preferences.Time);
             }
-
-            // Clean up the heap for the next player.
-            // This doesn't cost the AI time 
-            //(it's done after the AI's turn time has been calculated).
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
 
             return _moveToReturn;
         }
@@ -125,15 +135,28 @@ namespace UvsChess.Framework
         /// <param name="moveToCheck">This is the move that needs to be checked to see if it's valid.</param>
         /// <param name="colorOfPlayerMoving">This is the color of the player who's making the move.</param>
         /// <returns>Returns true if the move was valid</returns>
-        public bool IsValidMove(ChessBoard currentBoard, ChessMove moveToCheck, ChessColor colorOfPlayerMoving)
+        public bool? IsValidMove(ChessBoard currentBoard, ChessMove moveToCheck)
         {
+            _moveToReturn = null;
+            _isGetNextMoveCall = false;
+            _isValidMove = false;
+
             if (this.IsHuman)
             {
                 // Humans don't check the AI's moves, so just always return true
                 return true;
             }
 
-            return this.AI.IsValidMove(currentBoard.Clone(), moveToCheck.Clone(), colorOfPlayerMoving);
+            _currentBoard = currentBoard.Clone();
+            _moveToCheck = moveToCheck.Clone();
+            StartAiInTimedThread(UvsChess.Gui.Preferences.CheckMoveTimeout);
+            if ((_moveToReturn != null) && (_moveToReturn.Flag == ChessFlag.AIWentOverTime))
+            {
+                // The AI Went over time while validating the move. Signal ChessGame of this.
+                return null;
+            }
+                
+            return _isValidMove;
         }
 
         public void EndTurnEarly()
@@ -142,7 +165,7 @@ namespace UvsChess.Framework
             {
                 _waitForPlayerEvent.Set();
             }
-            else if ((_runAIThread != null) && (_runAIThread.IsAlive))
+            else if ((_aiThread != null) && (_aiThread.IsAlive))
             {
                 _forceAIToEndTurnEarly = true;
                 _waitForTurnToEnd.Reset();
@@ -169,7 +192,7 @@ namespace UvsChess.Framework
                     // Start the grace period timer
                     _pollAITimer = new Timer(this.GracePeriodTimer, null, gracePeriod, System.Threading.Timeout.Infinite);
 
-                    _runAIThread.Join();
+                    _aiThread.Join();
 
                     // Turn off the grace period timer
                     _pollAITimer = new Timer(this.GracePeriodTimer, null, System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
@@ -198,7 +221,7 @@ namespace UvsChess.Framework
                 // They've now lost!
                 _moveToReturn = new ChessMove(null, null);
                 _moveToReturn.Flag = ChessFlag.AIWentOverTime;
-                _runAIThread.Abort();
+                _aiThread.Abort();
             }
         }
 
@@ -211,13 +234,21 @@ namespace UvsChess.Framework
             }
         }
 
-        private void GetNextAIMoveInThread()
+        private void RunAiInThread()
         {
             // This is the only place that IsRunning should be set to true.
             this._isTurnOver = false;
             _hasAIEndedTurn = false;
 
-            _moveToReturn = this.AI.GetNextMove(_currentBoard, this.Color);
+            if (_isGetNextMoveCall)
+            {
+                _moveToReturn = this.AI.GetNextMove(_currentBoard, this.Color);
+            }
+            else
+            {
+                _isValidMove = this.AI.IsValidMove(_currentBoard, _moveToCheck, 
+                    (this.Color == ChessColor.White ? ChessColor.Black : ChessColor.White));
+            }
 
             _hasAIEndedTurn = true;
         }

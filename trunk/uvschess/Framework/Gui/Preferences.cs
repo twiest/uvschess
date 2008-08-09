@@ -197,16 +197,12 @@ namespace UvsChess.Gui
             outfile.WriteLine("{0}={1}", CHECKMOVE, CheckMoveTimeout);
             outfile.Close();
         }
-
-        private void Preferences_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            SavePreferences();
-        }
-
         #endregion
 
         private void btnSavePrefs_Click(object sender, EventArgs e)
         {
+            SavePreferences();
+
             this.Close();//this should call FormClosing event, which should save prefs
         }
     }

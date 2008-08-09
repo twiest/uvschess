@@ -182,7 +182,7 @@ namespace UvsChess.Framework
         {
             ChessMove nextMove = null;
             //DateTime start = DateTime.Now;
-            bool isValidMove = false;
+            bool? isValidMove = false;
             ChessState newstate = null;
 
             if (player.IsComputer)
@@ -225,7 +225,7 @@ namespace UvsChess.Framework
                 {
                     // the AI went over it's time limit.
                     IsGameRunning = false;
-                    _results = player.ColorAndName + " went over the time limit and grace period. Total move time was: " + player.TimeOfLastMove.ToString();
+                    _results = player.ColorAndName + " went over the time limit to move and grace period. Total move time was: " + player.TimeOfLastMove.ToString();
                     return;
                 }
 
@@ -236,9 +236,11 @@ namespace UvsChess.Framework
                     newstate = _mainChessState.Clone();
                     newstate.MakeMove(nextMove);
 
-                    isValidMove = opponent.IsValidMove(newstate.PreviousBoard,
-                                                       newstate.PreviousMove,
-                                                       (newstate.CurrentPlayerColor == ChessColor.White ? ChessColor.Black : ChessColor.White));
+                    isValidMove = opponent.IsValidMove(newstate.PreviousBoard, newstate.PreviousMove);
+                    if (!opponent.IsHuman)
+                    {
+                        Logger.Log("Time Of " + opponent.ColorAndName + "'s validate move: " + opponent.TimeOfLastMove);
+                    }
                 }
             }
             else //player is human
@@ -256,9 +258,11 @@ namespace UvsChess.Framework
                 newstate = _mainChessState.Clone();
                 newstate.MakeMove(nextMove);
 
-                isValidMove = opponent.IsValidMove(newstate.PreviousBoard,
-                                                   newstate.PreviousMove,
-                                                   (newstate.CurrentPlayerColor == ChessColor.White ? ChessColor.Black : ChessColor.White));
+                isValidMove = opponent.IsValidMove(newstate.PreviousBoard, newstate.PreviousMove);
+                if (!opponent.IsHuman)
+                {
+                    Logger.Log("Time Of " + opponent.ColorAndName + "'s validate move: " + opponent.TimeOfLastMove);
+                }
 
                 this.SetGuiChessBoard_IsLocked(true);
             }//end if player == human
@@ -270,7 +274,15 @@ namespace UvsChess.Framework
                 UpdatedState(newstate);
             }
 
-            if (isValidMove)
+            if (isValidMove == null)
+            {
+                // the AI went over it's time limit.
+                IsGameRunning = false;
+                _results = opponent.ColorAndName + " went over the time limit to validate a move and grace period. Total move time was: " + opponent.TimeOfLastMove.ToString();
+                return;
+            }
+
+            if (isValidMove == true)
             {
                 _mainChessState = newstate;
 
