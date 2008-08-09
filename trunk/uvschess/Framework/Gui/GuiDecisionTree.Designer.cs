@@ -29,13 +29,13 @@
         private void InitializeComponent()
         {
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.hScrollBar1 = new System.Windows.Forms.HScrollBar();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.label1 = new System.Windows.Forms.Label();
-            this.lblActualMoveValue = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.lblEventualMoveValue = new System.Windows.Forms.Label();
             this.guiChessBoard1 = new UvsChess.Gui.GuiChessBoard();
+            this.lblEventualMoveValue = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.lblActualMoveValue = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.hScrollBar1 = new System.Windows.Forms.HScrollBar();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -65,20 +65,6 @@
             this.splitContainer1.TabIndex = 0;
             this.splitContainer1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer1_SplitterMoved);
             // 
-            // hScrollBar1
-            // 
-            this.hScrollBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.hScrollBar1.LargeChange = 1;
-            this.hScrollBar1.Location = new System.Drawing.Point(0, 307);
-            this.hScrollBar1.Maximum = 1;
-            this.hScrollBar1.Minimum = 1;
-            this.hScrollBar1.Name = "hScrollBar1";
-            this.hScrollBar1.Size = new System.Drawing.Size(856, 17);
-            this.hScrollBar1.TabIndex = 0;
-            this.hScrollBar1.Value = 1;
-            this.hScrollBar1.ValueChanged += new System.EventHandler(this.hScrollBar1_ValueChanged);
-            // 
             // splitContainer2
             // 
             this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -102,35 +88,14 @@
             this.splitContainer2.SplitterDistance = 462;
             this.splitContainer2.TabIndex = 0;
             // 
-            // label1
+            // guiChessBoard1
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(193, 31);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(100, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Actual Move Value:";
-            // 
-            // lblActualMoveValue
-            // 
-            this.lblActualMoveValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblActualMoveValue.AutoSize = true;
-            this.lblActualMoveValue.Location = new System.Drawing.Point(299, 31);
-            this.lblActualMoveValue.Name = "lblActualMoveValue";
-            this.lblActualMoveValue.Size = new System.Drawing.Size(43, 13);
-            this.lblActualMoveValue.TabIndex = 1;
-            this.lblActualMoveValue.Text = "Not Set";
-            // 
-            // label3
-            // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(181, 44);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(112, 13);
-            this.label3.TabIndex = 2;
-            this.label3.Text = "Eventual Move Value:";
+            this.guiChessBoard1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.guiChessBoard1.IsLocked = false;
+            this.guiChessBoard1.Location = new System.Drawing.Point(0, 0);
+            this.guiChessBoard1.Name = "guiChessBoard1";
+            this.guiChessBoard1.Size = new System.Drawing.Size(462, 462);
+            this.guiChessBoard1.TabIndex = 1;
             // 
             // lblEventualMoveValue
             // 
@@ -142,14 +107,49 @@
             this.lblEventualMoveValue.TabIndex = 3;
             this.lblEventualMoveValue.Text = "Not Set";
             // 
-            // guiChessBoard1
+            // label3
             // 
-            this.guiChessBoard1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.guiChessBoard1.IsLocked = false;
-            this.guiChessBoard1.Location = new System.Drawing.Point(0, 0);
-            this.guiChessBoard1.Name = "guiChessBoard1";
-            this.guiChessBoard1.Size = new System.Drawing.Size(462, 462);
-            this.guiChessBoard1.TabIndex = 1;
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(181, 44);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(112, 13);
+            this.label3.TabIndex = 2;
+            this.label3.Text = "Eventual Move Value:";
+            // 
+            // lblActualMoveValue
+            // 
+            this.lblActualMoveValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblActualMoveValue.AutoSize = true;
+            this.lblActualMoveValue.Location = new System.Drawing.Point(299, 31);
+            this.lblActualMoveValue.Name = "lblActualMoveValue";
+            this.lblActualMoveValue.Size = new System.Drawing.Size(43, 13);
+            this.lblActualMoveValue.TabIndex = 1;
+            this.lblActualMoveValue.Text = "Not Set";
+            // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(193, 31);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(100, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Actual Move Value:";
+            // 
+            // hScrollBar1
+            // 
+            this.hScrollBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.hScrollBar1.LargeChange = 1;
+            this.hScrollBar1.Location = new System.Drawing.Point(0, 307);
+            this.hScrollBar1.Maximum = 1;
+            this.hScrollBar1.Minimum = 1;
+            this.hScrollBar1.Name = "hScrollBar1";
+            this.hScrollBar1.Size = new System.Drawing.Size(856, 17);
+            this.hScrollBar1.TabIndex = 0;
+            this.hScrollBar1.Value = 1;
+            this.hScrollBar1.ValueChanged += new System.EventHandler(this.hScrollBar1_ValueChanged);
             // 
             // GuiDecisionTree
             // 
@@ -158,7 +158,7 @@
             this.ClientSize = new System.Drawing.Size(856, 790);
             this.Controls.Add(this.splitContainer1);
             this.Name = "GuiDecisionTree";
-            this.Text = "GuiDecisionTree";
+            this.Text = "DecisionTree Viewer";
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.ResumeLayout(false);

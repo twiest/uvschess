@@ -290,11 +290,17 @@ namespace UvsChess.Gui
         }
 
         private static void Actually_ShowDecisionTree(params object[] eventArgs)
-        {            
-            if ((eventArgs == null) || (eventArgs.Length == 0))
+        {
+            if ((_isInGameMode) && 
+                (Gui.cmbWhite.SelectedItem.ToString() != "Human") && 
+                (Gui.cmbBlack.SelectedItem.ToString() != "Human"))
+            {
+                System.Windows.Forms.MessageBox.Show(Gui, "To view the Decision Tree, at least 1 player must be human.");
+            }
+            else if ((eventArgs == null) || (eventArgs.Length == 0))
             {
                 System.Windows.Forms.MessageBox.Show(Gui, "The DecisionTree object is set to Null");
-            }
+            }            
             else
             {
                 GuiDecisionTree gdt = new GuiDecisionTree((UvsChess.DecisionTree)eventArgs[0]);
