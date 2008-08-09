@@ -47,10 +47,9 @@ namespace UvsChess.Framework
         private DateTime _startTime;
         private DateTime _endTime;
         private Thread _runAIThread;
-        private bool _isMyTurn = false;
         private ChessBoard _currentBoard = null;
         private ChessMove _moveToReturn;
-        private ManualResetEvent _waitForMoveEvent = new ManualResetEvent(true);
+        private ManualResetEvent _waitForPlayerEvent = new ManualResetEvent(true);
         private ManualResetEvent _waitForTurnToEnd = new ManualResetEvent(true);
         private int Interval = 100;
         private Timer _pollAITimer;
@@ -85,13 +84,12 @@ namespace UvsChess.Framework
 
         public ChessMove GetNextMove(ChessBoard currentBoard)
         {
-            _isMyTurn = true;
             _currentBoard = currentBoard.Clone();
 
             if (this.IsHuman)
             {
-                _waitForMoveEvent.Reset();
-                _waitForMoveEvent.WaitOne();
+                _waitForPlayerEvent.Reset();
+                _waitForPlayerEvent.WaitOne();
             }
             else
             {
@@ -105,8 +103,8 @@ namespace UvsChess.Framework
 
                 this.PollAIOnce();
 
-                _waitForMoveEvent.Reset();
-                _waitForMoveEvent.WaitOne();
+                _waitForPlayerEvent.Reset();
+                _waitForPlayerEvent.WaitOne();
 
                 _runAIThread = null;
             }
@@ -117,16 +115,32 @@ namespace UvsChess.Framework
             GC.Collect();
             GC.WaitForPendingFinalizers();
 
-            _isMyTurn = false;
-
             return _moveToReturn;
+        }
+
+        /// <summary>
+        /// Validates a move. The framework uses this to validate the opponents move.
+        /// </summary>
+        /// <param name="currentBoard">The board as it currently is.</param>
+        /// <param name="moveToCheck">This is the move that needs to be checked to see if it's valid.</param>
+        /// <param name="colorOfPlayerMoving">This is the color of the player who's making the move.</param>
+        /// <returns>Returns true if the move was valid</returns>
+        public bool IsValidMove(ChessBoard currentBoard, ChessMove moveToCheck, ChessColor colorOfPlayerMoving)
+        {
+            if (this.IsHuman)
+            {
+                // Humans don't check the AI's moves, so just always return true
+                return true;
+            }
+
+            return this.AI.IsValidMove(currentBoard.Clone(), moveToCheck.Clone(), colorOfPlayerMoving);
         }
 
         public void EndTurnEarly()
         {
             if (this.IsHuman)
             {
-                _waitForMoveEvent.Set();
+                _waitForPlayerEvent.Set();
             }
             else if ((_runAIThread != null) && (_runAIThread.IsAlive))
             {
@@ -166,7 +180,7 @@ namespace UvsChess.Framework
                 TimeOfLastMove = DateTime.Now.Subtract(_startTime);
                 // AND HERE because it would count against the AI's time.
 
-                _waitForMoveEvent.Set();
+                _waitForPlayerEvent.Set();
                 _waitForTurnToEnd.Set();
             }
             else
@@ -190,10 +204,10 @@ namespace UvsChess.Framework
 
         public void HumanMovedPieceEvent(ChessMove move)
         {
-            if ( (_isMyTurn) && (this.IsHuman) )
+            if (this.IsHuman)
             {
                 _moveToReturn = move;
-                _waitForMoveEvent.Set();
+                _waitForPlayerEvent.Set();
             }
         }
 
