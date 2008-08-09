@@ -26,7 +26,6 @@
 //		Rusty Howell  rhowell@users.sourceforge.net
 using UvsChess.Framework;
 
-
 namespace UvsChess
 {
     /// <summary>

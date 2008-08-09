@@ -27,7 +27,6 @@
 
 namespace UvsChess
 {
-
     public enum ChessPiece
     {
         // We chose this order for Chess Piece on purpose. Basically everything < ChessPiece.Empty 

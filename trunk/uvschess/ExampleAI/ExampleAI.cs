@@ -210,7 +210,7 @@ namespace ExampleAI
             Random random = new Random();
 
             // Create the decision tree object
-            UvsChess.Framework.DecisionTree dt = new UvsChess.Framework.DecisionTree(currentBoard);
+            DecisionTree dt = new DecisionTree(currentBoard);
 
             // Tell UvsChess about the decision tree object
             SetDecisionTree(dt);

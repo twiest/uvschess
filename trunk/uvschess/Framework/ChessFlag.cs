@@ -27,7 +27,6 @@
 
 namespace UvsChess
 {
-
     public enum ChessFlag
     {
         NoFlag,

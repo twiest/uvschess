@@ -51,7 +51,7 @@ namespace UvsChess.Gui
         private static List<GuiEvent> _tmpGuiEvents = null;
 
         private static bool _isShuttingDown = false;
-        private static UvsChess.Framework.DecisionTree _lastDecisionTree = null;
+        private static UvsChess.DecisionTree _lastDecisionTree = null;
 
         private static bool _wasMainLogUpdated = false;
         private static bool _tmpWasMainLogUpdated = false;
@@ -68,7 +68,7 @@ namespace UvsChess.Gui
         private static Timer _pollGuiTimer = null;
 
         delegate void NoParameterCallback();
-        delegate ChessState NoParameterChessStateReturnCallback();        
+        delegate UvsChess.Framework.ChessState NoParameterChessStateReturnCallback();        
         public delegate void ObjectParameterCallback(params object[] eventArgs);
 
         public static void PollGuiOnce()
@@ -266,7 +266,7 @@ namespace UvsChess.Gui
             }
         }
 
-        public static void SetDecisionTree(UvsChess.Framework.DecisionTree dt)
+        public static void SetDecisionTree(UvsChess.DecisionTree dt)
         {
             lock (_updateGuiDataLockObject)
             {
@@ -297,12 +297,12 @@ namespace UvsChess.Gui
             }
             else
             {
-                GuiDecisionTree gdt = new GuiDecisionTree((UvsChess.Framework.DecisionTree)eventArgs[0]);
+                GuiDecisionTree gdt = new GuiDecisionTree((UvsChess.DecisionTree)eventArgs[0]);
                 gdt.ShowDialog(Gui);
             }
         }
 
-        public static void ResetHistory(ChessState newState)
+        public static void ResetHistory(UvsChess.Framework.ChessState newState)
         {
             lock (_updateGuiDataLockObject)
             {
@@ -312,13 +312,13 @@ namespace UvsChess.Gui
 
         private static void Actually_ResetHistory(params object[] eventArgs)
         {
-            ChessState newState = (ChessState)eventArgs[0];
+            UvsChess.Framework.ChessState newState = (UvsChess.Framework.ChessState)eventArgs[0];
 
             Gui.lstHistory.Items.Clear();
             Actually_AddToHistory(new object[] {newState});
         }
 
-        public static void AddToHistory(ChessState state)
+        public static void AddToHistory(UvsChess.Framework.ChessState state)
         {
             lock (_updateGuiDataLockObject)
             {
@@ -329,7 +329,7 @@ namespace UvsChess.Gui
 
         private static void Actually_AddToHistory(params object[] eventArgs)
         {
-            ChessState state = (ChessState)eventArgs[0];
+            UvsChess.Framework.ChessState state = (UvsChess.Framework.ChessState)eventArgs[0];
 
             Gui.lstHistory.Items.Add(state);
             Gui.lstHistory.SelectedIndex = Gui.lstHistory.Items.Count - 1;
@@ -448,7 +448,7 @@ namespace UvsChess.Gui
             {
                 _isInGameMode = true;
 
-                ChessState item = Actually_GetUpdated_LstHistory_SelectedItem();                
+                UvsChess.Framework.ChessState item = Actually_GetUpdated_LstHistory_SelectedItem();                
 
                 _mainGame = new UvsChess.Framework.ChessGame(item, UpdateWinGuiOnTimer.WhitePlayerName, UpdateWinGuiOnTimer.BlackPlayerName);
 
@@ -665,7 +665,7 @@ namespace UvsChess.Gui
                 StreamReader reader = new StreamReader(Gui.openFileDialog1.FileName);
                 string line = reader.ReadLine();
 
-                ResetHistory(new ChessState(line));
+                ResetHistory(new UvsChess.Framework.ChessState(line));
 
                 reader.Close();
             }
@@ -690,7 +690,7 @@ namespace UvsChess.Gui
                 AddToMainLog("Saving board to: " + Gui.saveFileDialog1.FileName);
 
 
-                ChessState item = Actually_GetUpdated_LstHistory_SelectedItem();
+                UvsChess.Framework.ChessState item = Actually_GetUpdated_LstHistory_SelectedItem();
                 string fenboard = item.ToFenBoard();
 
                 writer.WriteLine(fenboard);
@@ -737,9 +737,9 @@ namespace UvsChess.Gui
             Gui.lstBlacksLog.Items.Clear();
         }
 
-        private static ChessState Actually_GetUpdated_LstHistory_SelectedItem()
+        private static UvsChess.Framework.ChessState Actually_GetUpdated_LstHistory_SelectedItem()
         {
-            ChessState selectedState = (ChessState)Gui.lstHistory.SelectedItem;
+            UvsChess.Framework.ChessState selectedState = (UvsChess.Framework.ChessState)Gui.lstHistory.SelectedItem;
             if (Gui.radWhite.Checked)
             {
                 selectedState.CurrentPlayerColor = ChessColor.White;
@@ -755,7 +755,7 @@ namespace UvsChess.Gui
             return selectedState;
         }
 
-        public static void UpdateBoardBasedOnLstHistory(ChessState selectedItem)
+        public static void UpdateBoardBasedOnLstHistory(UvsChess.Framework.ChessState selectedItem)
         {
             lock (_updateGuiDataLockObject)
             {
@@ -765,7 +765,7 @@ namespace UvsChess.Gui
 
         private static void Actually_UpdateBoardBasedOnLstHistory(params object[] eventArgs)
         {
-            ChessState selectedItem = (ChessState)eventArgs[0];
+            UvsChess.Framework.ChessState selectedItem = (UvsChess.Framework.ChessState)eventArgs[0];
 
             if (selectedItem.CurrentPlayerColor == ChessColor.White)
             {
@@ -782,7 +782,7 @@ namespace UvsChess.Gui
             Gui.chessBoardControl.ResetBoard(selectedItem.CurrentBoard, selectedItem.PreviousMove);
         }
 
-        public static void UpdateBoardBasedOnMove(ChessState selectedItem, ChessMove move, bool isWhiteChecked)
+        public static void UpdateBoardBasedOnMove(UvsChess.Framework.ChessState selectedItem, ChessMove move, bool isWhiteChecked)
         {
             lock (_updateGuiDataLockObject)
             {
@@ -792,7 +792,7 @@ namespace UvsChess.Gui
 
         private static void Actually_UpdateBoardBasedOnMove(params object[] eventArgs)
         {
-            ChessState selectedItem = (ChessState)eventArgs[0];
+            UvsChess.Framework.ChessState selectedItem = (UvsChess.Framework.ChessState)eventArgs[0];
             ChessMove move = (ChessMove)eventArgs[1];
             bool isWhiteChecked = (bool)eventArgs[2];
             
