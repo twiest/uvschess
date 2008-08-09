@@ -87,7 +87,11 @@ namespace ExampleAI
         /// </summary>
         public string Name
         {
+#if DEBUG
+            get { return "ExampleAI (Debug)"; }
+#else
             get { return "ExampleAI"; }
+#endif
         }
 
         /// <summary>
