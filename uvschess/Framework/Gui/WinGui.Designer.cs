@@ -67,7 +67,6 @@ namespace UvsChess.Gui
             this.clearHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewDecisionTreeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.preferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutUvsChessToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -215,18 +214,11 @@ namespace UvsChess.Gui
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.helpToolStripMenuItem1,
             this.preferencesToolStripMenuItem,
             this.aboutUvsChessToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
-            this.helpToolStripMenuItem.Text = "Help";
-            // 
-            // helpToolStripMenuItem1
-            // 
-            this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(164, 22);
-            this.helpToolStripMenuItem1.Text = "Help";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(75, 20);
+            this.helpToolStripMenuItem.Text = "Information";
             // 
             // preferencesToolStripMenuItem
             // 
@@ -658,7 +650,6 @@ namespace UvsChess.Gui
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem aboutUvsChessToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem;
         public  System.Windows.Forms.ToolStripMenuItem clearHistoryToolStripMenuItem;
