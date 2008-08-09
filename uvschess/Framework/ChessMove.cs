@@ -43,7 +43,10 @@ namespace UvsChess
             From = from;
             To = to;
             Flag = flag;
+            ToStringPrefix = string.Empty;
         }
+
+        internal string ToStringPrefix { get; set; }
 
         public ChessFlag Flag
         {
@@ -167,7 +170,7 @@ namespace UvsChess
             }
             else
             {
-                moveText = "From: [" + this.From.X + ", " + this.From.Y + "]   To: [" + this.To.X + ", " + this.To.Y + "] ";
+                moveText = ToStringPrefix + "From: [" + this.From.X + ", " + this.From.Y + "]   To: [" + this.To.X + ", " + this.To.Y + "] ";
 
                 if (this.Flag != ChessFlag.NoFlag)
                 {

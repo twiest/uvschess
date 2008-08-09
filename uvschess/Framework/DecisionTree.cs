@@ -10,11 +10,14 @@ namespace UvsChess.Framework
         private ChessBoard _board = null;
         private string _eventualMoveValue = null;
 
+        public ChessMove DecidedMove { get; set; }
+
         public DecisionTree(ChessBoard board)
         {
             UvsChess.Framework.Profiler.AddToMainProfile((int)ProfilerMethodKey.DecisionTree_ctor_ChessBoard);
             Children = new List<DecisionTree>();
             Board = board;
+            DecidedMove = null;
         }
 
         private DecisionTree(DecisionTree parent, ChessBoard board, ChessMove move)
@@ -24,6 +27,7 @@ namespace UvsChess.Framework
             Parent = parent;
             Board = board;
             Move = move;
+            DecidedMove = null;
         }
 
         public DecisionTree LastChild
@@ -33,12 +37,6 @@ namespace UvsChess.Framework
                 UvsChess.Framework.Profiler.AddToMainProfile((int)ProfilerMethodKey.DecisionTree_get_LastChild);
                 return this.Children[this.Children.Count - 1];
             }                
-        }
-
-        internal DecisionTree FinalDecision
-        {
-            get;
-            private set;
         }
 
         internal List<DecisionTree> Children
@@ -141,7 +139,7 @@ namespace UvsChess.Framework
             }
 
             retVal.EventualMoveValue = this.EventualMoveValue;
-            retVal.FinalDecision = this.FinalDecision;
+            retVal.DecidedMove = this.DecidedMove;
 
             foreach (DecisionTree curChild in this.Children)
             {
@@ -165,16 +163,6 @@ namespace UvsChess.Framework
             {
                 rootNode = rootNode.Parent;
             }
-
-            foreach (DecisionTree curDt in rootNode.Children)
-            {
-                if (curDt.Move == move)
-                {
-                    rootNode.FinalDecision = new DecisionTree(rootNode, board, move);
-                    rootNode.FinalDecision.EventualMoveValue = curDt.EventualMoveValue;
-                    break;
-                }
-            }            
         }
 
         public override string ToString()
@@ -183,11 +171,6 @@ namespace UvsChess.Framework
             if (IsRootNode)
             {
                 return "Starting Board";
-            }
-            else if ((this.Parent.IsRootNode) && (this == this.Parent.FinalDecision))
-            {
-                // This is the Final Decision!
-                return "Final Decision";
             }
             else
             {
