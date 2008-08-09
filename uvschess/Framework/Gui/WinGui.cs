@@ -41,11 +41,11 @@ namespace UvsChess.Gui
         {
             InitializeComponent();
 
-            UpdateWinGuiOnTimer.Gui = this;
+            GuiEventLoop.Gui = this;
 
-            UpdateWinGuiOnTimer.ResetHistory(new ChessState());
+            GuiEventLoop.ResetHistory(new ChessState());
 
-            UpdateWinGuiOnTimer.PollGuiOnce();
+            GuiEventLoop.PollGuiOnce();
 
             chessBoardControl.PieceMovedByHuman += PieceMovedByHuman_Changed;
         }
@@ -66,18 +66,18 @@ namespace UvsChess.Gui
         
         public void PieceMovedByHuman_Changed(ChessMove move)
         {
-            UpdateWinGuiOnTimer.UpdateBoardBasedOnMove((ChessState)this.lstHistory.SelectedItem, move, this.radWhite.Checked);
+            GuiEventLoop.UpdateBoardBasedOnMove((ChessState)this.lstHistory.SelectedItem, move, this.radWhite.Checked);
         }
 
         #region File menu
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            UpdateWinGuiOnTimer.OpenStateFromDisk();
+            GuiEventLoop.OpenStateFromDisk();
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            UpdateWinGuiOnTimer.SaveSelectedStateToDisk();
+            GuiEventLoop.SaveSelectedStateToDisk();
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -89,22 +89,22 @@ namespace UvsChess.Gui
         #region Game menu
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            UpdateWinGuiOnTimer.ResetHistory(new ChessState());
+            GuiEventLoop.ResetHistory(new ChessState());
         }
 
         private void startToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            UpdateWinGuiOnTimer.StartGame();
+            GuiEventLoop.StartGame();
         }
 
         private void stopToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            UpdateWinGuiOnTimer.StopGame();
+            GuiEventLoop.StopGame();
         }
 
         private void clearHistoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            UpdateWinGuiOnTimer.ResetHistory(new ChessState());
+            GuiEventLoop.ResetHistory(new ChessState());
         }
         #endregion
 
@@ -125,62 +125,62 @@ namespace UvsChess.Gui
         #region AISelector controls
         private void cmbWhite_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UpdateWinGuiOnTimer.UpdateWhitesName(this.cmbWhite.SelectedItem.ToString());
+            GuiEventLoop.UpdateWhitesName(this.cmbWhite.SelectedItem.ToString());
         }
 
         private void cmbBlack_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UpdateWinGuiOnTimer.UpdateBlacksName(this.cmbBlack.SelectedItem.ToString());
+            GuiEventLoop.UpdateBlacksName(this.cmbBlack.SelectedItem.ToString());
         }
         #endregion
 
         #region Update ChessState Info
         private void lstHistory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UpdateWinGuiOnTimer.UpdateBoardBasedOnLstHistory((ChessState)this.lstHistory.SelectedItem);
+            GuiEventLoop.UpdateBoardBasedOnLstHistory((ChessState)this.lstHistory.SelectedItem);
         }
         #endregion
 
         #region Log Tabs
         private void btnSaveMainLog_Click(object sender, EventArgs e)
         {
-            UpdateWinGuiOnTimer.SaveMainLogToDisk();
+            GuiEventLoop.SaveMainLogToDisk();
         }
 
         private void btnSaveWhitesLog_Click(object sender, EventArgs e)
         {
-            UpdateWinGuiOnTimer.SaveWhitesLogToDisk();
+            GuiEventLoop.SaveWhitesLogToDisk();
         }
 
         private void btnSaveBlacksLog_Click(object sender, EventArgs e)
         {
-            UpdateWinGuiOnTimer.SaveBlacksLogToDisk();
+            GuiEventLoop.SaveBlacksLogToDisk();
         }
 
         private void btnClearMainLog_Click(object sender, EventArgs e)
         {
-            UpdateWinGuiOnTimer.ClearMainLog();
+            GuiEventLoop.ClearMainLog();
         }
 
         private void btnClearWhitesLog_Click(object sender, EventArgs e)
         {
-            UpdateWinGuiOnTimer.ClearWhitesLog();
+            GuiEventLoop.ClearWhitesLog();
         }
 
         private void btnClearBlacksLog_Click(object sender, EventArgs e)
         {
-            UpdateWinGuiOnTimer.ClearBlacksLog();
+            GuiEventLoop.ClearBlacksLog();
         }
         #endregion
 
         private void WinGui_FormClosing(object sender, FormClosingEventArgs e)
         {            
-            UpdateWinGuiOnTimer.ShutdownGuiEventLoop();
+            GuiEventLoop.ShutdownGuiEventLoop();
         }
 
         private void viewDecisionTreeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            UpdateWinGuiOnTimer.ShowDecisionTree();
+            GuiEventLoop.ShowDecisionTree();
         }
     }
 }

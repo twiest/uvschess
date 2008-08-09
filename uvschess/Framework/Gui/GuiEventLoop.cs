@@ -32,7 +32,7 @@ using System.IO;
 
 namespace UvsChess.Gui
 {
-    public static class UpdateWinGuiOnTimer
+    public static class GuiEventLoop
     {
         public static WinGui Gui = null;
 
@@ -278,13 +278,13 @@ namespace UvsChess.Gui
         {
             lock (_updateGuiDataLockObject)
             {
-                if (UpdateWinGuiOnTimer._lastDecisionTree == null)
+                if (GuiEventLoop._lastDecisionTree == null)
                 {
                     _guiEvents.Add(new GuiEvent(Actually_ShowDecisionTree, null));
                 }
                 else
                 {
-                    _guiEvents.Add(new GuiEvent(Actually_ShowDecisionTree, UpdateWinGuiOnTimer._lastDecisionTree.Clone()));
+                    _guiEvents.Add(new GuiEvent(Actually_ShowDecisionTree, GuiEventLoop._lastDecisionTree.Clone()));
                 }
             }
         }
@@ -456,7 +456,7 @@ namespace UvsChess.Gui
 
                 UvsChess.Framework.ChessState item = Actually_GetUpdated_LstHistory_SelectedItem();                
 
-                _mainGame = new UvsChess.Framework.ChessGame(item, UpdateWinGuiOnTimer.WhitePlayerName, UpdateWinGuiOnTimer.BlackPlayerName);
+                _mainGame = new UvsChess.Framework.ChessGame(item, GuiEventLoop.WhitePlayerName, GuiEventLoop.BlackPlayerName);
 
                 // Remove WinGui from the GuiChessBoard updates
                 Gui.chessBoardControl.PieceMovedByHuman -= Gui.PieceMovedByHuman_Changed;
@@ -466,21 +466,21 @@ namespace UvsChess.Gui
                 Gui.chessBoardControl.PieceMovedByHuman += _mainGame.BlackPlayer_HumanMovedPieceEvent;
 
                 // Add WinGui to the ChessGame updates event
-                _mainGame.UpdatedState += UpdateWinGuiOnTimer.AddToHistory;
+                _mainGame.UpdatedState += GuiEventLoop.AddToHistory;
 
-                _mainGame.SetGuiChessBoard_IsLocked += UpdateWinGuiOnTimer.SetGuiChessBoard_IsLocked;
+                _mainGame.SetGuiChessBoard_IsLocked += GuiEventLoop.SetGuiChessBoard_IsLocked;
 
                 // Add WinGui to the DeclareResults event
-                _mainGame.DeclareResults += UpdateWinGuiOnTimer.DeclareResults;
+                _mainGame.DeclareResults += GuiEventLoop.DeclareResults;
 
-                _mainGame.SetDecisionTree += UpdateWinGuiOnTimer.SetDecisionTree;
+                _mainGame.SetDecisionTree += GuiEventLoop.SetDecisionTree;
 
                 Actually_RemoveHistoryAfterSelected();
 
                 Actually_DisableMenuItemsDuringPlay();
                 Actually_DisableRadioBtnsAndComboBoxes();
                 Actually_DisableHistoryWindowClicking();
-                UpdateWinGuiOnTimer.Actually_SetGuiChessBoard_IsLocked(new object[] { true });
+                GuiEventLoop.Actually_SetGuiChessBoard_IsLocked(new object[] { true });
 
                 _mainGame.StartGame();
             }
@@ -508,14 +508,14 @@ namespace UvsChess.Gui
 
                 // Remove WinGui from the ChessGame updates event
                 //_mainGame.Updated -= OnChessGameUpdated;
-                _mainGame.UpdatedState -= UpdateWinGuiOnTimer.AddToHistory;
+                _mainGame.UpdatedState -= GuiEventLoop.AddToHistory;
 
-                _mainGame.SetGuiChessBoard_IsLocked -= UpdateWinGuiOnTimer.SetGuiChessBoard_IsLocked;
+                _mainGame.SetGuiChessBoard_IsLocked -= GuiEventLoop.SetGuiChessBoard_IsLocked;
 
                 // Remove WinGui from the DeclareResults event
-                _mainGame.DeclareResults -= UpdateWinGuiOnTimer.DeclareResults;
+                _mainGame.DeclareResults -= GuiEventLoop.DeclareResults;
 
-                _mainGame.SetDecisionTree -= UpdateWinGuiOnTimer.SetDecisionTree;
+                _mainGame.SetDecisionTree -= GuiEventLoop.SetDecisionTree;
 
                 // Add WinGui to the GuiChessBoard updates
                 Gui.chessBoardControl.PieceMovedByHuman += Gui.PieceMovedByHuman_Changed;
@@ -523,7 +523,7 @@ namespace UvsChess.Gui
                 Actually_EnableMenuItemsAfterPlay();
                 Actually_EnableRadioBtnsAndComboBoxes();
                 Actually_EnableHistoryWindowClicking();
-                UpdateWinGuiOnTimer.Actually_SetGuiChessBoard_IsLocked(new object[] { false });
+                GuiEventLoop.Actually_SetGuiChessBoard_IsLocked(new object[] { false });
 
                 _mainGame = null;                
             }

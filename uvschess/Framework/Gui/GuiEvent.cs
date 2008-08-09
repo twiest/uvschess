@@ -6,10 +6,10 @@ namespace UvsChess.Gui
 {
     public class GuiEvent
     {
-        public UpdateWinGuiOnTimer.ObjectParameterCallback EventCallback { get; set; }
+        public GuiEventLoop.ObjectParameterCallback EventCallback { get; set; }
         public object[] EventArgs { get; set; }
 
-        public GuiEvent(UpdateWinGuiOnTimer.ObjectParameterCallback eventCallback, params object[] eventArgs)
+        public GuiEvent(GuiEventLoop.ObjectParameterCallback eventCallback, params object[] eventArgs)
         {
             EventCallback = eventCallback;
             EventArgs = eventArgs;
