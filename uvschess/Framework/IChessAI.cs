@@ -27,6 +27,7 @@
 
 namespace UvsChess
 {
+    #region Delegates for the interface
     /// <summary>
     /// This is the delegate that defines the Log callback. You should not need to use this delegate. This is
     /// here solely for the Log property to use as it's return value.
@@ -46,6 +47,7 @@ namespace UvsChess
     /// </summary>
     /// <param name="dt"></param>
     public delegate void AISetDecisionTreeCallback(UvsChess.Framework.DecisionTree dt);
+    #endregion
 
     /// <summary>
     /// This is the interface that your AI must implement in order to be used by the chess framework.
@@ -129,14 +131,16 @@ namespace UvsChess
         /// </summary>
         /// <param name="board">Current chess board</param>
         /// <param name="yourColor">Your color</param>
-        /// <returns> Returns the best chess move for the given chess board</returns>
+        /// <returns> Returns the best chess move the player has for the given chess board</returns>
         ChessMove GetNextMove(ChessBoard board, ChessColor yourColor);
 
         /// <summary>
-        /// Validates the opponents move. The framework will have you validate your opponents move.
+        /// Validates a move. The framework uses this to validate the opponents move.
         /// </summary>
-        /// <param name="currentState">ChessState, including previous state, previous move. </param>
-        /// <returns>Returns true if the opponents move was valid</returns>
-        bool IsValidMove(ChessBoard currentBoard, ChessMove moveToCheck, ChessColor colorOfPlayerMoving);
+        /// <param name="boardBeforeMove">The board as it currently is _before_ the move.</param>
+        /// <param name="moveToCheck">This is the move that needs to be checked to see if it's valid.</param>
+        /// <param name="colorOfPlayerMoving">This is the color of the player who's making the move.</param>
+        /// <returns>Returns true if the move was valid</returns>
+        bool IsValidMove(ChessBoard boardBeforeMove, ChessMove moveToCheck, ChessColor colorOfPlayerMoving);
     }
 }

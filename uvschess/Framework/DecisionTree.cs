@@ -155,16 +155,6 @@ namespace UvsChess.Framework
             this.Children.Add(new DecisionTree(this, board, move));
         }
 
-        public void AddFinalDecision(ChessBoard board, ChessMove move)
-        {
-            UvsChess.Framework.Profiler.AddToMainProfile((int)ProfilerMethodKey.DecisionTree_AddFinalDecision_ChessBoard_ChessMove);
-            DecisionTree rootNode = this;
-            while (! rootNode.IsRootNode)
-            {
-                rootNode = rootNode.Parent;
-            }
-        }
-
         public override string ToString()
         {
             UvsChess.Framework.Profiler.AddToMainProfile((int)ProfilerMethodKey.DecisionTree_ToString);

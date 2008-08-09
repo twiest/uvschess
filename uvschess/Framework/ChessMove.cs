@@ -46,34 +46,8 @@ namespace UvsChess
             ToStringPrefix = string.Empty;
         }
 
+        #region internal properties
         internal string ToStringPrefix { get; set; }
-
-        public ChessFlag Flag
-        {
-            get;
-            set;
-        }
-
-        public ChessLocation From
-        {
-            get;
-            set;
-        }
-
-        public ChessLocation To
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// This is the value of the board after this move has been made.
-        /// </summary>
-        public int ValueOfMove
-        {
-            get;
-            set;
-        }
 
         /// <summary>
         /// This property is used by the framework to see if the move is on the board,
@@ -81,12 +55,12 @@ namespace UvsChess
         /// as it doesn't actually check the move to see if it is actually a valid chess
         /// move.
         /// </summary>
-        public bool IsBasicallyValid
+        internal bool IsBasicallyValid
         {
             get
             {
                 Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessMove_get_IsBasicallyValid);
-                if ( (this.Flag == ChessFlag.Stalemate) || (this.Flag == ChessFlag.AIWentOverTime) )
+                if ((this.Flag == ChessFlag.Stalemate) || (this.Flag == ChessFlag.AIWentOverTime))
                 {
                     return true;
                 }
@@ -109,8 +83,48 @@ namespace UvsChess
                 return true;
             }
         }
+        #endregion
 
+        /// <summary>
+        /// The Flag that is set for this move.
+        /// </summary>
+        public ChessFlag Flag
+        {
+            get;
+            set;
+        }
 
+        /// <summary>
+        /// The location to move the piece from
+        /// </summary>
+        public ChessLocation From
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// The location to move the piece to
+        /// </summary>
+        public ChessLocation To
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// This is the value of the board after this move has been made.
+        /// </summary>
+        public int ValueOfMove
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Create a ChessMove exactly like this one.
+        /// </summary>
+        /// <returns>The cloned move</returns>
         public ChessMove Clone()
         {
             Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessMove_Clone);
@@ -127,8 +141,6 @@ namespace UvsChess
 
             return newMove;
         }
-
-        // TODO: We need to add == and != stuff so they can compare two moves.
 
         public override string ToString()
         {
@@ -182,7 +194,9 @@ namespace UvsChess
 
             return moveText;
         }
-        
+
+        #region operator overloads
+
         public override bool Equals(object obj)
         {
             Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessMove_Equals);
@@ -226,6 +240,7 @@ namespace UvsChess
             return !(move1 == move2);
         }
 
+        #endregion
 
         #region IComparable<ChessMove> Members
 

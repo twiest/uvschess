@@ -25,8 +25,6 @@
 // 		Thomas Wiest  twiest@users.sourceforge.net
 //		Rusty Howell  rhowell@users.sourceforge.net
 
-#define USE_PROFILING   //comment this out to remove profiling calls. Do this when playing in the tournament.
-
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -38,8 +36,7 @@ namespace ExampleAI
     {
         #region IChessAI Members
 
-
-        #region These should be implemented as automatic properties.
+        #region These should be implemented as automatic properties and should NEVER be touched by students
         /// <summary>
         /// This will return false when the framework starts running your AI. When the AI's time has run out,
         /// then this method will return true. Once this method returns true, your AI should return a 
@@ -55,6 +52,7 @@ namespace ExampleAI
         /// Call this method to print out debug information. The framework subscribes to this event
         /// and will provide a log window for your debug messages.
         /// 
+        /// You should NEVER EVER set this property!
         /// This property should be defined as an Automatic Property.
         /// This property SHOULD NOT CONTAIN ANY CODE!!!
         /// </summary>
@@ -98,12 +96,11 @@ namespace ExampleAI
         /// </summary>
         /// <param name="board">Current chess board</param>
         /// <param name="yourColor">Your color</param>
-        /// <returns> Returns the best chess move for the given chess board</returns>
+        /// <returns> Returns the best chess move the player has for the given chess board</returns>
         public ChessMove GetNextMove(ChessBoard board, ChessColor myColor)
         {
             ChessMove myNextMove = null;
 
-            //while (! IsMyTurnOver()) ;// uncomment this to test over time conditions
             while (! IsMyTurnOver())
             {
                 if (myNextMove == null)
@@ -121,12 +118,16 @@ namespace ExampleAI
         }
 
         /// <summary>
-        /// Validates a move. The framework will use this to validate your opponents move.
+        /// Validates a move. The framework uses this to validate the opponents move.
         /// </summary>
-        /// <param name="currentState">ChessState, including previous state, previous move. </param>
+        /// <param name="boardBeforeMove">The board as it currently is _before_ the move.</param>
+        /// <param name="moveToCheck">This is the move that needs to be checked to see if it's valid.</param>
+        /// <param name="colorOfPlayerMoving">This is the color of the player who's making the move.</param>
         /// <returns>Returns true if the move was valid</returns>
-        public bool IsValidMove(ChessBoard currentBoard, ChessMove moveToCheck, ChessColor colorOfPlayerMoving)
+        public bool IsValidMove(ChessBoard boardBeforeMove, ChessMove moveToCheck, ChessColor colorOfPlayerMoving)
         {
+            // This AI isn't sophisticated enough to validate moves, therefore
+            // just tell UvsChess that all moves are valid.
             return true;
         }
         #endregion
@@ -140,26 +141,52 @@ namespace ExampleAI
         /// <returns>A chess move.</returns>
         ChessMove MoveAPawn(ChessBoard currentBoard, ChessColor myColor)
         {
-            // This logic only moves pawns one space forward. It does not move any other pieces.        
-            ChessMove newMove = null;
+            List<ChessMove> allMyMoves = GetAllMoves(currentBoard, myColor);
+            ChessMove myChosenMove = null;
+            Random random = new Random();
+            int myChosenMoveNumber = random.Next(allMyMoves.Count);
 
+            if (allMyMoves.Count == 0)
+            {
+                // If I couldn't find a valid move easily, 
+                // I'll just create an empty move and flag a stalemate.
+                myChosenMove = new ChessMove(null, null);
+                myChosenMove.Flag = ChessFlag.Stalemate;
+            }
+            else
+            {
+                myChosenMove = allMyMoves[myChosenMoveNumber];               
+
+                AddAllPossibleMovesToDecisionTree(allMyMoves, myChosenMove, currentBoard.Clone(), myColor);
+            }
+
+            return myChosenMove;
+        }
+
+        /// <summary>
+        /// This method generates all valid moves for myColor based on the currentBoard
+        /// </summary>
+        /// <param name="currentBoard">This is the current board to generate the moves for.</param>
+        /// <param name="myColor">This is the color of the player to generate the moves for.</param>
+        /// <returns>List of ChessMoves</returns>
+        List<ChessMove> GetAllMoves(ChessBoard currentBoard, ChessColor myColor)
+        {
+            // This method only generates moves for pawns to move one space forward.
+            // It does not generate moves for any other pieces.
+            List<ChessMove> allMoves = new List<ChessMove>();
+
+            // Got through the entire board one tile at a time looking for pawns I can move
             for (int Y = 1; Y < ChessBoard.NumberOfRows - 1; Y++)
             {
                 for (int X = 0; X < ChessBoard.NumberOfColumns; X++)
                 {
-                    
-                    //This is how to use the Profiler class
-#if USE_PROFILING
-                    //Profile("Inside MoveAPawn()"); //The Profiler class will count how many times this key is called, IE how many times this section of code gets executed. 
-#endif
                     if (myColor == ChessColor.White)
-                    {
+                    {                        
                         if ((currentBoard[X, Y-1] == ChessPiece.Empty) &&
                             (currentBoard[X, Y] == ChessPiece.WhitePawn))
                         {
-                            newMove = new ChessMove(new ChessLocation(X, Y), new ChessLocation(X, Y - 1));
-
-                            return newMove;
+                            // Generate a move to move my pawn 1 tile forward
+                            allMoves.Add(new ChessMove(new ChessLocation(X, Y), new ChessLocation(X, Y - 1)));
                         }
                     }
                     else // myColor is black
@@ -167,21 +194,75 @@ namespace ExampleAI
                         if ((currentBoard[X, Y+1] == ChessPiece.Empty) &&
                             (currentBoard[X, Y] == ChessPiece.BlackPawn))
                         {
-                            newMove = new ChessMove(new ChessLocation(X, Y), new ChessLocation(X, Y + 1));
-
-                            return newMove;
+                            // Generate a move to move my pawn 1 tile forward
+                            allMoves.Add(new ChessMove(new ChessLocation(X, Y), new ChessLocation(X, Y + 1)));
                         }
                     }
                 }
             }
 
-            // If I couldn't find a valid move easily, 
-            // I'll just create an empty move and flag a stalemate.
-            newMove = new ChessMove(null, null);
-            //newMove.Flag = ChessFlag.Stalemate;
-            newMove.Flag = ChessFlag.Stalemate;
+            return allMoves;
+        }
 
-            return newMove;
+        public void AddAllPossibleMovesToDecisionTree(List<ChessMove> allMyMoves, ChessMove myChosenMove, 
+                                                      ChessBoard currentBoard, ChessColor myColor)
+        {
+            Random random = new Random();
+
+            // Create the decision tree object
+            UvsChess.Framework.DecisionTree dt = new UvsChess.Framework.DecisionTree(currentBoard);
+
+            // Tell UvsChess about the decision tree object
+            SetDecisionTree(dt);
+            dt.DecidedMove = myChosenMove;
+
+            // Go through all of my moves, add them to the decision tree
+            // Then go through each of these moves and generate all of my
+            // opponents moves and add those to the decision tree as well.
+            for (int ix = 0; ix < allMyMoves.Count; ix++)
+            {
+                ChessMove myCurMove = allMyMoves[ix];
+                ChessBoard boardAfterMyCurMove = currentBoard.Clone();
+                boardAfterMyCurMove.MakeMove(myCurMove);
+
+                // Add the new move and board to the decision tree
+                dt.AddChild(boardAfterMyCurMove, myCurMove);
+
+                // Descend the decision tree to the last child added so we can 
+                // add all of the opponents response moves to our move.
+                dt = dt.LastChild;
+
+                // Get all of the opponents response moves to my move
+                ChessColor oppColor = (myColor == ChessColor.White ? ChessColor.Black : ChessColor.White);
+                List<ChessMove> allOppMoves = GetAllMoves(boardAfterMyCurMove, oppColor);
+
+                // Go through all of my opponent moves and add them to the decision tree
+                foreach (ChessMove oppCurMove in allOppMoves)
+                {
+                    ChessBoard boardAfterOppCurMove = boardAfterMyCurMove.Clone();
+                    boardAfterOppCurMove.MakeMove(oppCurMove);
+                    dt.AddChild(boardAfterOppCurMove, oppCurMove);
+
+                    // Setting all of the opponents eventual move values to 0 (see below).
+                    dt.LastChild.EventualMoveValue = "0";
+                }
+
+                if (allOppMoves.Count > 0)
+                {
+                    // Tell the decision tree which move we think our opponent will choose.
+                    int chosenOppMoveNumber = random.Next(allOppMoves.Count);
+                    dt.DecidedMove = allOppMoves[chosenOppMoveNumber];
+                }
+
+                // Tell the decision tree what this moves eventual value will be.
+                // Since this AI can't evaulate anything, I'm just going to set this
+                // value to 0.
+                dt.EventualMoveValue = "0";
+
+                // All of the opponents response moves have been added to this childs move, 
+                // so return to the parent so we can do the loop again for our next move.
+                dt = dt.Parent;
+            }
         }
         #endregion
     }

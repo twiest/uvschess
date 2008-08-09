@@ -148,11 +148,13 @@ namespace UvsChess.Gui
             this.Controls.Add(this.txtTime);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "Preferences";
             this.Text = "UvsChess Preferences";
             this.Load += new System.EventHandler(this.Preferences_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         #endregion
