@@ -28,7 +28,7 @@
 using System;
 using System.Text;
 
-namespace UvsChess
+namespace UvsChess.Framework
 {
     public class ChessState
     {

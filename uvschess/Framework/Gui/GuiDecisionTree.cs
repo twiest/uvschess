@@ -5,13 +5,12 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using UvsChess.Framework;
 
 namespace UvsChess.Gui
 {
     public partial class GuiDecisionTree : Form
     {
-        UvsChess.Framework.DecisionTree _dt = null;
+        UvsChess.DecisionTree _dt = null;
         List<ListBox> decisionListBoxes = new List<ListBox>();
 
         public GuiDecisionTree(DecisionTree dt)

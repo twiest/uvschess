@@ -46,7 +46,7 @@ namespace UvsChess
     /// here solely for the SetDecisionTree property to use as it's return value.
     /// </summary>
     /// <param name="dt"></param>
-    public delegate void AISetDecisionTreeCallback(UvsChess.Framework.DecisionTree dt);
+    public delegate void AISetDecisionTreeCallback(UvsChess.DecisionTree dt);
     #endregion
 
     /// <summary>
