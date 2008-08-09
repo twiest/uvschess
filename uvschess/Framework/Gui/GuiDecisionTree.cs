@@ -115,7 +115,8 @@ namespace UvsChess.Gui
             {
                 ListBox newLb = NewDecisionListBox(curDt.Children);
                 newLb.Location = new Point(sender.Location.X + sender.Width, 0);
-                decisionListBoxes.Add(newLb);
+                newLb.BackColor = guiChessBoard1.GetMoveHighlightColor(decisionListBoxes.Count - 1);
+                decisionListBoxes.Add(newLb);                
                 this.splitContainer1.Panel2.Controls.Add(newLb);
             }
 

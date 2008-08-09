@@ -41,17 +41,17 @@ namespace UvsChess.Framework
             //Console.WriteLine(msg);
             //UpdateWinGuiOnTimer.AddToMainLog("[" + System.AppDomain.GetCurrentThreadId().ToString() + "] " + 
             //                                    Environment.TickCount.ToString() + ": " + msg); 
-            UpdateWinGuiOnTimer.AddToMainLog(msg); 
+            GuiEventLoop.AddToMainLog(msg); 
         }
 
         public static void AddToWhitesLog(string msg)
         {
-            UpdateWinGuiOnTimer.AddToWhitesLog(msg);
+            GuiEventLoop.AddToWhitesLog(msg);
         }
 
         public static void AddToBlacksLog(string msg)
         {
-            UpdateWinGuiOnTimer.AddToBlacksLog(msg);
+            GuiEventLoop.AddToBlacksLog(msg);
         }
     }
 }
