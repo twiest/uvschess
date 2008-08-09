@@ -22,14 +22,7 @@ namespace UvsChess.Gui
 
             ListBox rootNodeListBox = null;
 
-            if (_dt.FinalDecision == null)
-            {
-                rootNodeListBox = NewDecisionListBox(new List<DecisionTree>() { _dt });
-            }
-            else
-            {
-                rootNodeListBox = NewDecisionListBox(new List<DecisionTree>() { _dt, _dt.FinalDecision });
-            }
+            rootNodeListBox = NewDecisionListBox(new List<DecisionTree>() { _dt });
 
             //rootNodeListBox.Location = new Point(-5, 0);
             decisionListBoxes.Add(rootNodeListBox);
@@ -44,12 +37,31 @@ namespace UvsChess.Gui
         public ListBox NewDecisionListBox(List<DecisionTree> dtChildren)
         {
             ListBox retVal = new ListBox();
+            retVal.Font = new Font("Courier New", 8);
             retVal.ScrollAlwaysVisible = true;
-            retVal.Width = 150;
+            retVal.Width = 223;
             retVal.BeginUpdate();
 
             foreach (DecisionTree curDecision in dtChildren)
             {
+                if (curDecision.Move != null)
+                {
+                    if ((curDecision.Parent != null) &&
+                        (curDecision.Parent.DecidedMove != null) &&
+                        (curDecision.Parent.DecidedMove == curDecision.Move))
+                    {
+                        curDecision.Move.ToStringPrefix = "-> ";
+                    }
+                    else
+                    {
+                        curDecision.Move.ToStringPrefix = "   ";
+                    }
+                }
+                else
+                {
+                    retVal.Width = 140;
+                }
+
                 retVal.Items.Add(curDecision);
             }
 
@@ -87,9 +99,6 @@ namespace UvsChess.Gui
                 lblActualMoveValue.Text = curDt.ActualMoveValue;
                 lblEventualMoveValue.Text = curDt.EventualMoveValue;
             }
-
-
-            
 
             int ix = indexOfSelectedListBox + 1;
             while (ix < decisionListBoxes.Count)
