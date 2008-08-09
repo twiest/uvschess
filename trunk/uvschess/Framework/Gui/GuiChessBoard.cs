@@ -65,7 +65,7 @@ namespace UvsChess.Gui
         Bitmap _cornerBorder;
         Bitmap _darkTile;
         Bitmap _lightTile;
-        Bitmap[] _tileHighlightColors = new Bitmap[10];
+        Bitmap[] _tileHighlightBitmaps = new Bitmap[10];
 
         public GuiChessBoard()
         {
@@ -88,53 +88,53 @@ namespace UvsChess.Gui
                 switch (curRes)
                 {
                     case "UvsChess.Images.Chess_HighlightMove01.png":
-                        _tileHighlightColors[0] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
-                        _tileHighlightColors[0].SetResolution(res, res);                        
+                        _tileHighlightBitmaps[0] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _tileHighlightBitmaps[0].SetResolution(res, res);                        
                         break;
 
                     case "UvsChess.Images.Chess_HighlightMove02.png":
-                        _tileHighlightColors[1] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
-                        _tileHighlightColors[1].SetResolution(res, res);
+                        _tileHighlightBitmaps[1] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _tileHighlightBitmaps[1].SetResolution(res, res);
                         break;
 
                     case "UvsChess.Images.Chess_HighlightMove03.png":
-                        _tileHighlightColors[2] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
-                        _tileHighlightColors[2].SetResolution(res, res);
+                        _tileHighlightBitmaps[2] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _tileHighlightBitmaps[2].SetResolution(res, res);
                         break;
 
                     case "UvsChess.Images.Chess_HighlightMove04.png":
-                        _tileHighlightColors[3] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
-                        _tileHighlightColors[3].SetResolution(res, res);
+                        _tileHighlightBitmaps[3] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _tileHighlightBitmaps[3].SetResolution(res, res);
                         break;
 
                     case "UvsChess.Images.Chess_HighlightMove05.png":
-                        _tileHighlightColors[4] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
-                        _tileHighlightColors[4].SetResolution(res, res);
+                        _tileHighlightBitmaps[4] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _tileHighlightBitmaps[4].SetResolution(res, res);
                         break;
 
                     case "UvsChess.Images.Chess_HighlightMove06.png":
-                        _tileHighlightColors[5] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
-                        _tileHighlightColors[5].SetResolution(res, res);
+                        _tileHighlightBitmaps[5] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _tileHighlightBitmaps[5].SetResolution(res, res);
                         break;
 
                     case "UvsChess.Images.Chess_HighlightMove07.png":
-                        _tileHighlightColors[6] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
-                        _tileHighlightColors[6].SetResolution(res, res);
+                        _tileHighlightBitmaps[6] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _tileHighlightBitmaps[6].SetResolution(res, res);
                         break;
 
                     case "UvsChess.Images.Chess_HighlightMove08.png":
-                        _tileHighlightColors[7] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
-                        _tileHighlightColors[7].SetResolution(res, res);
+                        _tileHighlightBitmaps[7] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _tileHighlightBitmaps[7].SetResolution(res, res);
                         break;
 
                     case "UvsChess.Images.Chess_HighlightMove09.png":
-                        _tileHighlightColors[8] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
-                        _tileHighlightColors[8].SetResolution(res, res);
+                        _tileHighlightBitmaps[8] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _tileHighlightBitmaps[8].SetResolution(res, res);
                         break;
 
                     case "UvsChess.Images.Chess_HighlightMove10.png":
-                        _tileHighlightColors[9] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
-                        _tileHighlightColors[9].SetResolution(res, res);
+                        _tileHighlightBitmaps[9] = (Bitmap)Bitmap.FromStream(asm.GetManifestResourceStream(curRes));
+                        _tileHighlightBitmaps[9].SetResolution(res, res);
                         break;
                         
                     case "UvsChess.Images.Chess_DarkBackground.png":
@@ -556,7 +556,7 @@ namespace UvsChess.Gui
                             if ((_lastFewMoves[ix].From == curLoc) ||
                                 (_lastFewMoves[ix].To == curLoc))
                             {
-                                boardGraphics.DrawImage(_tileHighlightColors[ix % 10], curX, curY);
+                                boardGraphics.DrawImage(_tileHighlightBitmaps[ix % 10], curX, curY);
                             }
                         }
                     }
@@ -608,6 +608,12 @@ namespace UvsChess.Gui
 
                 this.Invalidate();
             }
+        }
+
+        public Color GetMoveHighlightColor(int moveIndex)
+        {
+            Bitmap tile = _tileHighlightBitmaps[moveIndex % 10];
+            return tile.GetPixel(tile.Height / 2, tile.Width / 2);
         }
     }
 }
