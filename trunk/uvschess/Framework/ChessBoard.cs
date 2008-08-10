@@ -31,6 +31,11 @@ using UvsChess.Framework;
 
 namespace UvsChess
 {
+    /// <summary>
+    /// Represents a chess board.
+    /// Pieces can be accessed using x,y coordinates.
+    /// Tiles are either a white piece, black piece, or are empty.
+    /// </summary>
     public class ChessBoard
     {
         #region Members
@@ -38,12 +43,23 @@ namespace UvsChess
         public const int NumberOfColumns = 8;
         #endregion
 
+        #region private automatic properties
+        private ChessPiece[,] Board { get; set; }
+        #endregion
+
         #region Constructors
+        /// <summary>
+        /// The main constructor that defaults the ChessBoard to the normal starting chess board state.
+        /// </summary>
         public ChessBoard():this(ChessState.FenStartState)
         {
             Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessBoard_ctor);
         }
 
+        /// <summary>
+        /// Helper constructor that creates a new chess board based off of a Fen string.
+        /// </summary>
+        /// <param name="fenBoard">The Fen string that represents the board.</param>
         public ChessBoard(string fenBoard)
         {
             Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessBoard_ctor_string);
@@ -52,6 +68,10 @@ namespace UvsChess
             FromFenBoard(fenBoard);
         }
 
+        /// <summary>
+        /// Helper constructor that creates a new chess board based off of a ChessPiece array board.
+        /// </summary>
+        /// <param name="board">The ChessPiece array that represents the board.</param>
         public ChessBoard(ChessPiece[,] board)
         {
             Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessBoard_ctor_ChessPieceArray);
@@ -99,12 +119,10 @@ namespace UvsChess
             }
         }
 
-        private ChessPiece[,] Board
-        {
-            get;
-            set;
-        }
-
+        /// <summary>
+        /// Helper property that returns a copy of the raw chess board as a ChessPiece array.
+        /// Any modifications to the raw board are _not_ reflected in this ChessBoard object.
+        /// </summary>
         public ChessPiece[,] RawBoard
         {
             get 
@@ -131,12 +149,20 @@ namespace UvsChess
             return retBoard;
         }
 
+        /// <summary>
+        /// Creates a complete copy of this object and returns it.
+        /// </summary>
+        /// <returns>The copy ChessBoard</returns>
         public ChessBoard Clone()
         {
             Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessBoard_Clone);
             return new ChessBoard(this.Board);
         }
 
+        /// <summary>
+        /// Executes a move on the ChessBoard.
+        /// </summary>
+        /// <param name="move">The move to execute.</param>
         public void MakeMove(ChessMove move)
         {
             Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessBoard_MakeMove_ChessMove);
@@ -161,9 +187,9 @@ namespace UvsChess
         }
 
         /// <summary>
-        /// This function accepts a full fen board and sets the ChessBoard object to that state.
+        /// Accepts a full Fen board and sets the ChessBoard object to that state.
         /// </summary>
-        /// <param name="fenBoard"></param>
+        /// <param name="fenBoard">The Fen string</param>
         public void FromFenBoard(string fenBoard)
         {
             Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessBoard_FromFenBoard_string);
@@ -237,6 +263,11 @@ namespace UvsChess
             }
         }
 
+        /// <summary>
+        /// Creates a partial Fen string from the ChessBoard.
+        /// It is only partial however, since Fen strings contain more data than just the board.
+        /// </summary>
+        /// <returns>The partial Fen string.</returns>
         public string ToPartialFenBoard()
         {
             Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessBoard_ToPartialFenBoard);
@@ -288,7 +319,6 @@ namespace UvsChess
                         case ChessPiece.Empty:
                             ++spaces;
                             continue;
-                        //break;
                         default:
                             throw new Exception("Invalid chess piece");
                     }
@@ -313,6 +343,10 @@ namespace UvsChess
             return strBuild.ToString();
         }
 
+        /// <summary>
+        /// Returns the hashcode for this object
+        /// </summary>
+        /// <returns>the hash code.</returns>
         public override int GetHashCode()
         {
             Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessBoard_GetHashCode);

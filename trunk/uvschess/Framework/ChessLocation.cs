@@ -56,7 +56,7 @@ namespace UvsChess
         /// <summary>
         /// Returns true if the row and column numbers are each between 0 and 7
         /// </summary>
-        public bool IsValid
+        internal bool IsValid
         {
             get
             {
@@ -67,13 +67,19 @@ namespace UvsChess
         }
         #endregion
 
-        #region Methods and Operators
+        #region methods
+        /// <summary>
+        /// Creates a complete copy of this object and returns it.
+        /// </summary>
+        /// <returns>The ChessLocation copy.</returns>
         public ChessLocation Clone()
         {
             Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessLocation_Clone);
             return new ChessLocation(this.X, this.Y);
         }
+        #endregion
 
+        #region operator and hashcode overloads
         public override bool Equals(object obj)
         {
             Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessLocation_Equals);

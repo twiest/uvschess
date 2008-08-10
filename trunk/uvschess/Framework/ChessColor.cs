@@ -27,6 +27,9 @@
 
 namespace UvsChess
 {
+    /// <summary>
+    /// An enum that represents the two colors in chess, White and Black.
+    /// </summary>
     public enum ChessColor
     {
         White,

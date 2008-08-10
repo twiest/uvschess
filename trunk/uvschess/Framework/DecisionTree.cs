@@ -32,20 +32,30 @@ using UvsChess.Framework;
 
 namespace UvsChess
 {
+    /// <summary>
+    /// Represents the AI's decision making process while running through MiniMax.
+    /// </summary>
     public class DecisionTree
     {
         private ChessMove _move = null;
         private ChessBoard _board = null;
         private string _eventualMoveValue = null;
 
-        public ChessMove DecidedMove { get; set; }
+        /// <summary>
+        /// Gets or Sets which child move the AI has determined is the best.
+        /// </summary>
+        public ChessMove BestChildMove { get; set; }
 
+        /// <summary>
+        /// Constructor that creates a decision tree off of a chess board.
+        /// </summary>
+        /// <param name="board">The chess board that the decision tree starts from.</param>
         public DecisionTree(ChessBoard board)
         {
             UvsChess.Framework.Profiler.AddToMainProfile((int)ProfilerMethodKey.DecisionTree_ctor_ChessBoard);
             Children = new List<DecisionTree>();
             Board = board;
-            DecidedMove = null;
+            BestChildMove = null;
         }
 
         private DecisionTree(DecisionTree parent, ChessBoard board, ChessMove move)
@@ -55,9 +65,12 @@ namespace UvsChess
             Parent = parent;
             Board = board;
             Move = move;
-            DecidedMove = null;
+            BestChildMove = null;
         }
 
+        /// <summary>
+        /// The last child decsion added to the decision tree.
+        /// </summary>
         public DecisionTree LastChild
         {
             get
@@ -67,18 +80,18 @@ namespace UvsChess
             }                
         }
 
-        internal List<DecisionTree> Children
-        {
-            get;
-            set;
-        }
-
+        /// <summary>
+        /// The parent decision of this part of the decision tree.
+        /// </summary>
         public DecisionTree Parent
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Returns this decision's actual move value.
+        /// </summary>
         public string ActualMoveValue
         {
             get
@@ -88,6 +101,9 @@ namespace UvsChess
             }
         }
 
+        /// <summary>
+        /// Returns this decisions eventual move value.
+        /// </summary>
         public string EventualMoveValue
         {
             get
@@ -105,6 +121,72 @@ namespace UvsChess
             {
                 _eventualMoveValue = value;
             }
+        }
+
+        /// <summary>
+        /// Create a DecisionTree exactly like this one.
+        /// </summary>
+        /// <param name="parent">The parent decision</param>
+        /// <returns>The cloned decision tree</returns>
+        public DecisionTree Clone(DecisionTree parent)
+        {
+            UvsChess.Framework.Profiler.AddToMainProfile((int)ProfilerMethodKey.DecisionTree_Clone_DecisionTree);
+            DecisionTree retVal = null;
+
+            if (parent == null)
+            {
+                retVal = new DecisionTree(this.Board);
+            }
+            else
+            {
+                retVal = new DecisionTree(parent, this.Board, this.Move);
+            }
+
+            retVal.EventualMoveValue = this.EventualMoveValue;
+            retVal.BestChildMove = this.BestChildMove;
+
+            foreach (DecisionTree curChild in this.Children)
+            {
+                retVal.Children.Add(curChild.Clone(this));
+            }
+
+            return retVal;
+        }
+
+        /// <summary>
+        /// Adds a child decision to the decision tree.
+        /// </summary>
+        /// <param name="board">The board the decision was made from</param>
+        /// <param name="move">The move decided.</param>
+        public void AddChild(ChessBoard board, ChessMove move)
+        {
+            UvsChess.Framework.Profiler.AddToMainProfile((int)ProfilerMethodKey.DecisionTree_AddChild_ChessBoard_ChessMove);
+            this.Children.Add(new DecisionTree(this, board, move));
+        }
+
+        /// <summary>
+        /// Creates a string representation of the DecisionTree at this point.
+        /// </summary>
+        /// <returns>the string representation</returns>
+        public override string ToString()
+        {
+            UvsChess.Framework.Profiler.AddToMainProfile((int)ProfilerMethodKey.DecisionTree_ToString);
+            if (IsRootNode)
+            {
+                return "Starting Board";
+            }
+            else
+            {
+                return Move.ToString();
+            }
+        }
+
+        #region Internal Properties
+
+        internal List<DecisionTree> Children
+        {
+            get;
+            set;
         }
 
         internal bool IsRootNode
@@ -152,48 +234,6 @@ namespace UvsChess
             return this.Clone(null);
         }
 
-        public DecisionTree Clone(DecisionTree parent)
-        {
-            UvsChess.Framework.Profiler.AddToMainProfile((int)ProfilerMethodKey.DecisionTree_Clone_DecisionTree);
-            DecisionTree retVal = null;
-
-            if (parent == null)
-            {
-                retVal = new DecisionTree(this.Board);
-            }
-            else
-            {
-                retVal = new DecisionTree(parent, this.Board, this.Move);
-            }
-
-            retVal.EventualMoveValue = this.EventualMoveValue;
-            retVal.DecidedMove = this.DecidedMove;
-
-            foreach (DecisionTree curChild in this.Children)
-            {
-                retVal.Children.Add(curChild.Clone(this));
-            }
-
-            return retVal;
-        }
-
-        public void AddChild(ChessBoard board, ChessMove move)
-        {
-            UvsChess.Framework.Profiler.AddToMainProfile((int)ProfilerMethodKey.DecisionTree_AddChild_ChessBoard_ChessMove);
-            this.Children.Add(new DecisionTree(this, board, move));
-        }
-
-        public override string ToString()
-        {
-            UvsChess.Framework.Profiler.AddToMainProfile((int)ProfilerMethodKey.DecisionTree_ToString);
-            if (IsRootNode)
-            {
-                return "Starting Board";
-            }
-            else
-            {
-                return Move.ToString();
-            }
-        }
+        #endregion
     }
 }

@@ -46,8 +46,8 @@ namespace UvsChess.Gui
                 if (curDecision.Move != null)
                 {
                     if ((curDecision.Parent != null) &&
-                        (curDecision.Parent.DecidedMove != null) &&
-                        (curDecision.Parent.DecidedMove == curDecision.Move))
+                        (curDecision.Parent.BestChildMove != null) &&
+                        (curDecision.Parent.BestChildMove == curDecision.Move))
                     {
                         curDecision.Move.ToStringPrefix = "-> ";
                     }
