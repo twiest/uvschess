@@ -36,29 +36,55 @@ namespace UvsChess
     {
         internal const int MaxMethodsToProfile = 1000;
         private int _numFrameworkMethods;
-        private bool _onlyProfileMiniMax = false;
 
-        internal double NodesPerSecond { get; set; }
-        public ChessColor AIColor { get; set; }
-        public string AIName { get; set; }
-        public int Depth { get; set; }
-        public int MinisProfileIndexNumber { get; set; }
-        public int MaxsProfileIndexNumber { get; set; }
+        #region private properties
+        private ChessColor AIColor { get; set; }
         private int[] Profile { get; set; }
         private int[] FxProfile { get; set; }
-        internal List<int[]> Turns { get; set; }
         private List<int> MoveDepths { get; set; }
         private List<TimeSpan> MoveTimes { get; set; }
+        private List<int[]> Turns { get; set; }
         private List<int[]> FxTurns { get; set; }
-        internal bool IsEnabled { get; set; }
-        public string[] KeyNames { get; set; }
-        internal string[] FxKeyNames { get; set; }
+        private int Depth { get; set; }
+        #endregion
 
-        public AIProfiler(ChessColor myColor)
+        #region internal properties
+        internal double NodesPerSecond { get; set; }
+        internal string AIName { get; set; }
+        internal bool IsEnabled { get; set; }
+        internal string[] FxKeyNames { get; set; }
+        #endregion
+
+        #region public properties
+        /// <summary>
+        /// Use this property to assign names to each of the method key values.
+        /// </summary>
+        public string[] KeyNames { private get; set; }
+
+        /// <summary>
+        /// Use this property to assign the method key number for the AI's Mini method.
+        /// This needs to be set in order for the profiler to calculate the AI's nodes/sec value.
+        /// </summary>
+        public int MinisMethodKeyNumber { private get; set; }
+
+        /// <summary>
+        /// Use this property to assign the method key number for the AI's Max method.
+        /// This needs to be set in order for the profiler to calculate the AI's nodes/sec value.
+        /// </summary>
+        public int MaxsMethodKeyNumber { private get; set; }
+        #endregion
+
+
+        /// <summary>
+        /// AIProfiler keeps the profiling stats for the AI. This object is what's passed
+        /// to each AI when they call the Profiler property from IChessAI
+        /// </summary>
+        /// <param name="myColor">This is the color of the AI being profiled. It's mostly used when outputing the results</param>
+        internal AIProfiler(ChessColor myColor)
         {
             NodesPerSecond = -1;
-            MinisProfileIndexNumber = -1;
-            MaxsProfileIndexNumber = -1;
+            MinisMethodKeyNumber = -1;
+            MaxsMethodKeyNumber = -1;
             AIName = string.Empty;
             AIColor = myColor;
             Depth = 0;
@@ -71,7 +97,11 @@ namespace UvsChess
             FxTurns = new List<int[]>();
         }
 
-        public void AddToProfile(int key)
+        /// <summary>
+        /// This method increments the method call count by 1 for the method with the specified method key.
+        /// </summary>
+        /// <param name="methodKey">The method key for the method that was called.</param>
+        public void AddToProfile(int methodKey)
         {
             if (! IsEnabled)
             {
@@ -84,17 +114,35 @@ namespace UvsChess
                 Profile = new int[MaxMethodsToProfile];
             }
 
-            ++Profile[key];
+            ++Profile[methodKey];
         }
 
-        internal void AddToFxProfile(int key)
+        /// <summary>
+        /// This method records the MiniMax depth reached by the AI during this turn.
+        /// </summary>
+        /// <param name="depth">depth reached</param>
+        public void SetDepthReachedDuringThisTurn(int depth)
+        {
+            Depth = depth;
+        }
+
+        /// <summary>
+        /// This method is used by the framework to increment the method call count for the framework methods.
+        /// </summary>
+        /// <param name="methodKey">framework method key for the method that was called.</param>
+        internal void AddToFxProfile(int methodKey)
         {
             if (IsEnabled)
             {
-                ++FxProfile[key];
+                ++FxProfile[methodKey];
             }
         }
 
+        /// <summary>
+        /// Ends the turn and records the necessary stats.
+        /// </summary>
+        /// <param name="log">The logger to log to if there's an error.</param>
+        /// <param name="moveTime">The time that the AI took to make a move.</param>
         internal void EndTurn(Logger.LogCallback log, TimeSpan moveTime)
         {
             if (IsEnabled)
@@ -118,6 +166,10 @@ namespace UvsChess
             }
         }
 
+        /// <summary>
+        /// Stops the AI profiling and compiles the profiling report.
+        /// </summary>
+        /// <returns>the profiling report as a list of strings</returns>
         internal List<string> WriteAndEndGame()
         {
             List<string> output = new List<string>();
@@ -190,10 +242,10 @@ namespace UvsChess
                         int total = 0;
                         output.Add(WriteProfileLine("AI", Turns, curProfiledMethod, KeyNames, ref total));
 
-                        if ((MinisProfileIndexNumber != -1) &&
-                            (MaxsProfileIndexNumber != -1) &&
-                            ((MinisProfileIndexNumber == curProfiledMethod) ||
-                             (MaxsProfileIndexNumber == curProfiledMethod)))
+                        if ((MinisMethodKeyNumber != -1) &&
+                            (MaxsMethodKeyNumber != -1) &&
+                            ((MinisMethodKeyNumber == curProfiledMethod) ||
+                             (MaxsMethodKeyNumber == curProfiledMethod)))
                         {
                             totalNodes += total;
                         }                       
@@ -216,6 +268,15 @@ namespace UvsChess
             return output;
         }
 
+        /// <summary>
+        /// Internal helper method that returns a csv formatted line of profiling data.
+        /// </summary>
+        /// <param name="fxOrAi">tells whether the line of profiling data is for AI methods or framework methods.</param>
+        /// <param name="info">the profiling data for all of the turns</param>
+        /// <param name="currentKey">the method key to output the line of profiling data for</param>
+        /// <param name="keyNames">all of the AI method names that map to the method keys</param>
+        /// <param name="total">This contains the total number of method calls for all turns</param>
+        /// <returns>a csv formatted line of profiling data</returns>
         private string WriteProfileLine(string fxOrAi, List<int[]> info, int currentKey, string[] keyNames, ref int total)
         {
             StringBuilder sb = new StringBuilder();

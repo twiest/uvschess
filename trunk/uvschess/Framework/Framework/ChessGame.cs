@@ -70,6 +70,7 @@ namespace UvsChess.Framework
                 _whitePlayer.AI.IsMyTurnOver += _whitePlayer.IsTurnOver;                
                 _whitePlayer.AI.SetDecisionTree += SetTmpLastDecisionTree;
                 _whitePlayer.AI.Profiler = Profiler.WhiteProfiler;
+                Profiler.WhiteProfiler.AIName = _whitePlayer.AI.Name;
             }
 
             if (_blackPlayer.IsComputer)
@@ -78,6 +79,7 @@ namespace UvsChess.Framework
                 _blackPlayer.AI.IsMyTurnOver += _blackPlayer.IsTurnOver;                
                 _blackPlayer.AI.SetDecisionTree += SetTmpLastDecisionTree;
                 _blackPlayer.AI.Profiler = Profiler.BlackProfiler;
+                Profiler.BlackProfiler.AIName = _blackPlayer.AI.Name;
             }
         }
 

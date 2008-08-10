@@ -57,7 +57,7 @@ namespace ExampleAI
         /// <returns> Returns the best chess move the player has for the given chess board</returns>
         public ChessMove GetNextMove(ChessBoard board, ChessColor myColor)
         {
-            // This adds 1 call for this method to the profiler
+            // This increments the method call count by 1 for GetNextMove in the profiler
             Profiler.AddToProfile((int)ExampleAIProfilerMethodKey.GetNextMove);
 
             ChessMove myNextMove = null;
@@ -75,15 +75,20 @@ namespace ExampleAI
                 }
             }
 
-            // This is how you setup the profiler
+            // This is how you setup the profiler. This should be done in GetNextMove.
             Profiler.KeyNames = Enum.GetNames(typeof(ExampleAIProfilerMethodKey));
-            Profiler.AIName = this.Name;
-            Profiler.Depth = 2;
 
-            // In this case, our mini and max methods are the same,
-            // usually they are not.
-            Profiler.MinisProfileIndexNumber = (int)ExampleAIProfilerMethodKey.GetAllMoves;
-            Profiler.MaxsProfileIndexNumber = (int)ExampleAIProfilerMethodKey.GetAllMoves;
+            // In order for the profiler to calculate the AI's nodes/sec value,
+            // I need to tell the profiler which method key's are for MiniMax.
+            // In this case our mini and max methods are the same,
+            // but usually they are not.
+            Profiler.MinisMethodKeyNumber = (int)ExampleAIProfilerMethodKey.GetAllMoves;
+            Profiler.MaxsMethodKeyNumber = (int)ExampleAIProfilerMethodKey.GetAllMoves;
+
+            // Finally I need to tell the profiler how many levels deep my MiniMax got during
+            // this turn. Normally I would give it a variable, but since I hardcoded ExampleAI
+            // to go 2 levels deep, I'll just statically put 2.
+            Profiler.SetDepthReachedDuringThisTurn(2);
 
             return myNextMove;
         }
