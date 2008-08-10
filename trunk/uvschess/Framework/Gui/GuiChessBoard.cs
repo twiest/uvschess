@@ -556,7 +556,7 @@ namespace UvsChess.Gui
                             if ((_lastFewMoves[ix].From == curLoc) ||
                                 (_lastFewMoves[ix].To == curLoc))
                             {
-                                boardGraphics.DrawImage(_tileHighlightBitmaps[ix % 10], curX, curY);
+                                boardGraphics.DrawImage(_tileHighlightBitmaps[ix % _tileHighlightBitmaps.Length], curX, curY);
                             }
                         }
                     }
@@ -612,7 +612,7 @@ namespace UvsChess.Gui
 
         public Color GetMoveHighlightColor(int moveIndex)
         {
-            Bitmap tile = _tileHighlightBitmaps[moveIndex % 10];
+            Bitmap tile = _tileHighlightBitmaps[moveIndex % _tileHighlightBitmaps.Length];
             return tile.GetPixel(tile.Height / 2, tile.Width / 2);
         }
     }

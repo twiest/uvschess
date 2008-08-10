@@ -143,7 +143,7 @@ namespace UvsChess.Framework
         {
             if (IsEnabled)
             {
-                CurrentProfiler.WriteAndEndTurn(CurrentProfilerLogger, moveTime);
+                CurrentProfiler.EndTurn(CurrentProfilerLogger, moveTime);
             }
 
             if (_currentPlayerColor == ChessColor.White)
