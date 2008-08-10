@@ -34,7 +34,7 @@ namespace UvsChess.Gui
 {
     public static class GuiEventLoop
     {
-        public static WinGui Gui = null;
+        public static WinGui MainForm = null;
 
         private static string WhitePlayerName = string.Empty;
         private static string BlackPlayerName = string.Empty;
@@ -185,9 +185,9 @@ namespace UvsChess.Gui
 
         private static void RunThroughAllGuiEvents()
         {
-            if (Gui.InvokeRequired)
+            if (MainForm.InvokeRequired)
             {
-                Gui.Invoke(new NoParameterCallback(RunThroughAllGuiEvents));
+                MainForm.Invoke(new NoParameterCallback(RunThroughAllGuiEvents));
             }
             else
             {
@@ -196,6 +196,13 @@ namespace UvsChess.Gui
                 while ((!_isShuttingDown) && (_tmpGuiEvents != null) && (_tmpGuiEvents.Count > 0))
                 {
                     GuiEvent curEvent = _tmpGuiEvents[0];
+
+                    //if (curEvent.EventCallback == Actually_DeclareResults)
+                    //{
+                    //    _tmpGuiEvents.Add(curEvent);
+                    //    _tmpGuiEvents.RemoveAt(0);
+                    //    curEvent = _tmpGuiEvents[0];
+                    //}
 
                     try
                     {
@@ -224,22 +231,22 @@ namespace UvsChess.Gui
         {
             if (_tmpWasHistoryUpdated)
             {
-                Gui.lstHistory.BeginUpdate();
+                MainForm.lstHistory.BeginUpdate();
             }
 
             if (_tmpWasMainLogUpdated)
             {
-                Gui.lstMainLog.BeginUpdate();
+                MainForm.lstMainLog.BeginUpdate();
             }
 
             if (_tmpWasWhitesLogUpdated)
             {
-                Gui.lstWhitesLog.BeginUpdate();
+                MainForm.lstWhitesLog.BeginUpdate();
             }
 
             if (_tmpWasBlacksLogUpdated)
             {
-                Gui.lstBlacksLog.BeginUpdate();
+                MainForm.lstBlacksLog.BeginUpdate();
             }
         }
 
@@ -247,22 +254,22 @@ namespace UvsChess.Gui
         {
             if (_tmpWasHistoryUpdated)
             {
-                Gui.lstHistory.EndUpdate();
+                MainForm.lstHistory.EndUpdate();
             }
 
             if (_tmpWasMainLogUpdated)
             {
-                Gui.lstMainLog.EndUpdate();
+                MainForm.lstMainLog.EndUpdate();
             }
 
             if (_tmpWasWhitesLogUpdated)
             {
-                Gui.lstWhitesLog.EndUpdate();
+                MainForm.lstWhitesLog.EndUpdate();
             }
 
             if (_tmpWasBlacksLogUpdated)
             {
-                Gui.lstBlacksLog.EndUpdate();
+                MainForm.lstBlacksLog.EndUpdate();
             }
         }
 
@@ -292,19 +299,19 @@ namespace UvsChess.Gui
         private static void Actually_ShowDecisionTree(params object[] eventArgs)
         {
             if ((_isInGameMode) && 
-                (Gui.cmbWhite.SelectedItem.ToString() != "Human") && 
-                (Gui.cmbBlack.SelectedItem.ToString() != "Human"))
+                (MainForm.cmbWhite.SelectedItem.ToString() != "Human") && 
+                (MainForm.cmbBlack.SelectedItem.ToString() != "Human"))
             {
-                System.Windows.Forms.MessageBox.Show(Gui, "To view the Decision Tree, at least 1 player must be human.");
+                MessageBox.Show("To view the Decision Tree, at least 1 player must be human.");
             }
             else if ((eventArgs == null) || (eventArgs.Length == 0))
             {
-                System.Windows.Forms.MessageBox.Show(Gui, "The DecisionTree object is set to Null");
+                MessageBox.Show("The DecisionTree object is set to Null");
             }            
             else
             {
                 GuiDecisionTree gdt = new GuiDecisionTree((UvsChess.DecisionTree)eventArgs[0]);
-                gdt.ShowDialog(Gui);
+                gdt.ShowDialog(MainForm);
             }
         }
 
@@ -320,7 +327,7 @@ namespace UvsChess.Gui
         {
             UvsChess.Framework.ChessState newState = (UvsChess.Framework.ChessState)eventArgs[0];
 
-            Gui.lstHistory.Items.Clear();
+            MainForm.lstHistory.Items.Clear();
             Actually_AddToHistory(new object[] {newState});
         }
 
@@ -337,8 +344,8 @@ namespace UvsChess.Gui
         {
             UvsChess.Framework.ChessState state = (UvsChess.Framework.ChessState)eventArgs[0];
 
-            Gui.lstHistory.Items.Add(state);
-            Gui.lstHistory.SelectedIndex = Gui.lstHistory.Items.Count - 1;
+            MainForm.lstHistory.Items.Add(state);
+            MainForm.lstHistory.SelectedIndex = MainForm.lstHistory.Items.Count - 1;
         }
 
         public static void SetGuiChessBoard_IsLocked(bool isLocked)
@@ -352,7 +359,7 @@ namespace UvsChess.Gui
         private static void Actually_SetGuiChessBoard_IsLocked(params object[] eventArgs)
         {
             bool isLocked = (bool)eventArgs[0];
-            Gui.chessBoardControl.IsLocked = isLocked;
+            MainForm.chessBoardControl.IsLocked = isLocked;
         }
 
         public static void DeclareResults(string results)
@@ -367,7 +374,7 @@ namespace UvsChess.Gui
         {
             string result = (string)eventArgs[0];
             Actually_StopGame();
-            System.Windows.Forms.MessageBox.Show(Gui, result);
+            MessageBox.Show(result);
             Actually_AddToMainLog(new string[] {result});
         }
 
@@ -383,14 +390,14 @@ namespace UvsChess.Gui
         private static void Actually_AddToMainLog(params object[] eventArgs)
         {
             string message = (string)eventArgs[0];
-            Gui.lstMainLog.Items.Add(message);
+            MainForm.lstMainLog.Items.Add(message);
 
             // It's ok to call MainLog.Checked here since this is an
             // "up to the minute" operation
-            if (Gui.chkBxAutoScrollMainLog.Checked)
+            if (MainForm.chkBxAutoScrollMainLog.Checked)
             {
-                Gui.lstMainLog.SelectedIndex = Gui.lstMainLog.Items.Count - 1;
-                Gui.lstMainLog.ClearSelected();
+                MainForm.lstMainLog.SelectedIndex = MainForm.lstMainLog.Items.Count - 1;
+                MainForm.lstMainLog.ClearSelected();
             }
         }
 
@@ -406,14 +413,14 @@ namespace UvsChess.Gui
         private static void Actually_AddToWhitesLog(params object[] eventArgs)
         {
             string message = (string)eventArgs[0];
-            Gui.lstWhitesLog.Items.Add(message);
+            MainForm.lstWhitesLog.Items.Add(message);
 
             // It's ok to call MainLog.Checked here since this is an
             // "up to the minute" operation
-            if (Gui.chkBxAutoScrollWhitesLog.Checked)
+            if (MainForm.chkBxAutoScrollWhitesLog.Checked)
             {
-                Gui.lstWhitesLog.SelectedIndex = Gui.lstWhitesLog.Items.Count - 1;
-                Gui.lstWhitesLog.ClearSelected();
+                MainForm.lstWhitesLog.SelectedIndex = MainForm.lstWhitesLog.Items.Count - 1;
+                MainForm.lstWhitesLog.ClearSelected();
             }
         }
 
@@ -429,14 +436,14 @@ namespace UvsChess.Gui
         private static void Actually_AddToBlacksLog(params object[] eventArgs)
         {
             string message = (string)eventArgs[0];
-            Gui.lstBlacksLog.Items.Add(message);
+            MainForm.lstBlacksLog.Items.Add(message);
 
             // It's ok to call MainLog.Checked here since this is an
             // "up to the minute" operation
-            if (Gui.chkBxAutoScrollBlacksLog.Checked)
+            if (MainForm.chkBxAutoScrollBlacksLog.Checked)
             {
-                Gui.lstBlacksLog.SelectedIndex = Gui.lstBlacksLog.Items.Count - 1;
-                Gui.lstBlacksLog.ClearSelected();
+                MainForm.lstBlacksLog.SelectedIndex = MainForm.lstBlacksLog.Items.Count - 1;
+                MainForm.lstBlacksLog.ClearSelected();
             }
         }
 
@@ -459,11 +466,11 @@ namespace UvsChess.Gui
                 _mainGame = new UvsChess.Framework.ChessGame(item, GuiEventLoop.WhitePlayerName, GuiEventLoop.BlackPlayerName);
 
                 // Remove WinGui from the GuiChessBoard updates
-                Gui.chessBoardControl.PieceMovedByHuman -= Gui.PieceMovedByHuman_Changed;
+                MainForm.chessBoardControl.PieceMovedByHuman -= MainForm.PieceMovedByHuman_Changed;
 
                 // Add the ChessGame to the GuiChessBoard updates
-                Gui.chessBoardControl.PieceMovedByHuman += _mainGame.WhitePlayer_HumanMovedPieceEvent;
-                Gui.chessBoardControl.PieceMovedByHuman += _mainGame.BlackPlayer_HumanMovedPieceEvent;
+                MainForm.chessBoardControl.PieceMovedByHuman += _mainGame.WhitePlayer_HumanMovedPieceEvent;
+                MainForm.chessBoardControl.PieceMovedByHuman += _mainGame.BlackPlayer_HumanMovedPieceEvent;
 
                 // Add WinGui to the ChessGame updates event
                 _mainGame.UpdatedState += GuiEventLoop.AddToHistory;
@@ -503,8 +510,8 @@ namespace UvsChess.Gui
                 _mainGame.StopGameEarly();
 
                 // Remove the ChessGame from the GuiChessBoard updates
-                Gui.chessBoardControl.PieceMovedByHuman -= _mainGame.WhitePlayer_HumanMovedPieceEvent;
-                Gui.chessBoardControl.PieceMovedByHuman -= _mainGame.BlackPlayer_HumanMovedPieceEvent;
+                MainForm.chessBoardControl.PieceMovedByHuman -= _mainGame.WhitePlayer_HumanMovedPieceEvent;
+                MainForm.chessBoardControl.PieceMovedByHuman -= _mainGame.BlackPlayer_HumanMovedPieceEvent;
 
                 // Remove WinGui from the ChessGame updates event
                 //_mainGame.Updated -= OnChessGameUpdated;
@@ -518,7 +525,7 @@ namespace UvsChess.Gui
                 _mainGame.SetDecisionTree -= GuiEventLoop.SetDecisionTree;
 
                 // Add WinGui to the GuiChessBoard updates
-                Gui.chessBoardControl.PieceMovedByHuman += Gui.PieceMovedByHuman_Changed;
+                MainForm.chessBoardControl.PieceMovedByHuman += MainForm.PieceMovedByHuman_Changed;
 
                 Actually_EnableMenuItemsAfterPlay();
                 Actually_EnableRadioBtnsAndComboBoxes();
@@ -531,79 +538,79 @@ namespace UvsChess.Gui
 
         private static void Actually_RemoveHistoryAfterSelected()
         {
-            int sel = Gui.lstHistory.SelectedIndex;
+            int sel = MainForm.lstHistory.SelectedIndex;
 
-            Gui.lstHistory.BeginUpdate();
-            while (Gui.lstHistory.Items.Count > sel + 1)
+            MainForm.lstHistory.BeginUpdate();
+            while (MainForm.lstHistory.Items.Count > sel + 1)
             {
-                Gui.lstHistory.Items.RemoveAt(Gui.lstHistory.Items.Count - 1);
+                MainForm.lstHistory.Items.RemoveAt(MainForm.lstHistory.Items.Count - 1);
             }
-            Gui.lstHistory.EndUpdate();
+            MainForm.lstHistory.EndUpdate();
         }
 
         private static void Actually_DisableMenuItemsDuringPlay()
         {
-            Gui.startToolStripMenuItem.Enabled = false;
-            Gui.clearHistoryToolStripMenuItem.Enabled = false;
-            Gui.newToolStripMenuItem.Enabled = false;
+            MainForm.startToolStripMenuItem.Enabled = false;
+            MainForm.clearHistoryToolStripMenuItem.Enabled = false;
+            MainForm.newToolStripMenuItem.Enabled = false;
 
-            Gui.openToolStripMenuItem.Enabled = false;
-            Gui.saveToolStripMenuItem.Enabled = false;
+            MainForm.openToolStripMenuItem.Enabled = false;
+            MainForm.saveToolStripMenuItem.Enabled = false;
 
-            Gui.stopToolStripMenuItem.Enabled = true;
+            MainForm.stopToolStripMenuItem.Enabled = true;
         }
 
         private static void Actually_DisableRadioBtnsAndComboBoxes()
         {
-            Gui.radBlack.Enabled = false;
-            Gui.radWhite.Enabled = false;
-            Gui.cmbBlack.Enabled = false;
-            Gui.cmbWhite.Enabled = false;
-            Gui.numFullMoves.Enabled = false;
-            Gui.numHalfMoves.Enabled = false;
+            MainForm.radBlack.Enabled = false;
+            MainForm.radWhite.Enabled = false;
+            MainForm.cmbBlack.Enabled = false;
+            MainForm.cmbWhite.Enabled = false;
+            MainForm.numFullMoves.Enabled = false;
+            MainForm.numHalfMoves.Enabled = false;
         }
 
         private static void Actually_DisableHistoryWindowClicking()
         {
-            Gui.lstHistory.Enabled = false;
+            MainForm.lstHistory.Enabled = false;
         }
 
         private static void Actually_EnableMenuItemsAfterPlay()
         {
-            Gui.startToolStripMenuItem.Enabled = true;
-            Gui.clearHistoryToolStripMenuItem.Enabled = true;
-            Gui.newToolStripMenuItem.Enabled = true;
+            MainForm.startToolStripMenuItem.Enabled = true;
+            MainForm.clearHistoryToolStripMenuItem.Enabled = true;
+            MainForm.newToolStripMenuItem.Enabled = true;
 
-            Gui.openToolStripMenuItem.Enabled = true;
-            Gui.saveToolStripMenuItem.Enabled = true;
+            MainForm.openToolStripMenuItem.Enabled = true;
+            MainForm.saveToolStripMenuItem.Enabled = true;
 
-            Gui.stopToolStripMenuItem.Enabled = false;
+            MainForm.stopToolStripMenuItem.Enabled = false;
         }
 
         private static void Actually_EnableRadioBtnsAndComboBoxes()
         {
-            Gui.radBlack.Enabled = true;
-            Gui.radWhite.Enabled = true;
-            Gui.cmbBlack.Enabled = true;
-            Gui.cmbWhite.Enabled = true;
-            Gui.numFullMoves.Enabled = true;
-            Gui.numHalfMoves.Enabled = true;
+            MainForm.radBlack.Enabled = true;
+            MainForm.radWhite.Enabled = true;
+            MainForm.cmbBlack.Enabled = true;
+            MainForm.cmbWhite.Enabled = true;
+            MainForm.numFullMoves.Enabled = true;
+            MainForm.numHalfMoves.Enabled = true;
         }
 
         private static void Actually_EnableHistoryWindowClicking()
         {
-            Gui.lstHistory.Enabled = true;
+            MainForm.lstHistory.Enabled = true;
         }
 
         private static void SaveLogToDisk(string message, System.Windows.Forms.ListBox lstBox)
         {
-            Gui.saveFileDialog1.Filter = "Text Files (*.txt) | *.txt";
-            System.Windows.Forms.DialogResult result = Gui.saveFileDialog1.ShowDialog();
+            MainForm.saveFileDialog1.Filter = "Text Files (*.txt) | *.txt";
+            System.Windows.Forms.DialogResult result = MainForm.saveFileDialog1.ShowDialog();
             if (result == System.Windows.Forms.DialogResult.OK)
             {
-                StreamWriter writer = new StreamWriter(Gui.saveFileDialog1.FileName);
+                StreamWriter writer = new StreamWriter(MainForm.saveFileDialog1.FileName);
 
-                AddToMainLog(message + Gui.saveFileDialog1.FileName);
+                AddToMainLog(message + MainForm.saveFileDialog1.FileName);
 
                 foreach (string curLine in lstBox.Items)
                 {
@@ -624,7 +631,7 @@ namespace UvsChess.Gui
 
         private static void Actually_SaveMainLogToDisk(params object[] eventArgs)
         {
-            SaveLogToDisk("Saving Main Log to: ", Gui.lstMainLog);
+            SaveLogToDisk("Saving Main Log to: ", MainForm.lstMainLog);
         }
 
         public static void SaveWhitesLogToDisk()
@@ -637,7 +644,7 @@ namespace UvsChess.Gui
 
         private static void Actually_SaveWhitesLogToDisk(params object[] eventArgs)
         {
-            SaveLogToDisk("Saving White AI's Log to: ", Gui.lstWhitesLog);
+            SaveLogToDisk("Saving White AI's Log to: ", MainForm.lstWhitesLog);
         }
 
         public static void SaveBlacksLogToDisk()
@@ -650,7 +657,7 @@ namespace UvsChess.Gui
 
         private static void Actually_SaveBlacksLogToDisk(params object[] eventArgs)
         {
-            SaveLogToDisk("Saving Black AI's Log to: ", Gui.lstBlacksLog);
+            SaveLogToDisk("Saving Black AI's Log to: ", MainForm.lstBlacksLog);
         }
 
         public static void OpenStateFromDisk()
@@ -663,12 +670,12 @@ namespace UvsChess.Gui
 
         private static void Actually_OpenStateFromDisk(params object[] eventArgs)
         {
-            Gui.openFileDialog1.Filter = "FEN files (*.fen)|*.fen|All files (*.*)| *.*";
-            System.Windows.Forms.DialogResult result = Gui.openFileDialog1.ShowDialog();
+            MainForm.openFileDialog1.Filter = "FEN files (*.fen)|*.fen|All files (*.*)| *.*";
+            System.Windows.Forms.DialogResult result = MainForm.openFileDialog1.ShowDialog();
             if (result == System.Windows.Forms.DialogResult.OK)
             {
                 AddToMainLog("Resetting chess board");
-                StreamReader reader = new StreamReader(Gui.openFileDialog1.FileName);
+                StreamReader reader = new StreamReader(MainForm.openFileDialog1.FileName);
                 string line = reader.ReadLine();
 
                 ResetHistory(new UvsChess.Framework.ChessState(line));
@@ -687,13 +694,13 @@ namespace UvsChess.Gui
 
         private static void Actually_SaveSelectedStateToDisk(params object[] eventArgs)
         {
-            Gui.saveFileDialog1.Filter = "FEN files (*.fen) | *.fen";
-            System.Windows.Forms.DialogResult result = Gui.saveFileDialog1.ShowDialog();
+            MainForm.saveFileDialog1.Filter = "FEN files (*.fen) | *.fen";
+            System.Windows.Forms.DialogResult result = MainForm.saveFileDialog1.ShowDialog();
             if (result == System.Windows.Forms.DialogResult.OK)
             {
-                StreamWriter writer = new StreamWriter(Gui.saveFileDialog1.FileName);
+                StreamWriter writer = new StreamWriter(MainForm.saveFileDialog1.FileName);
 
-                AddToMainLog("Saving board to: " + Gui.saveFileDialog1.FileName);
+                AddToMainLog("Saving board to: " + MainForm.saveFileDialog1.FileName);
 
 
                 UvsChess.Framework.ChessState item = Actually_GetUpdated_LstHistory_SelectedItem();
@@ -714,7 +721,7 @@ namespace UvsChess.Gui
 
         private static void Actually_ClearMainLog(params object[] eventArgs)
         {
-            Gui.lstMainLog.Items.Clear();
+            MainForm.lstMainLog.Items.Clear();
         }
 
         public static void ClearWhitesLog()
@@ -727,7 +734,7 @@ namespace UvsChess.Gui
 
         private static void Actually_ClearWhitesLog(params object[] eventArgs)
         {
-            Gui.lstWhitesLog.Items.Clear();
+            MainForm.lstWhitesLog.Items.Clear();
         }
 
         public static void ClearBlacksLog()
@@ -740,13 +747,13 @@ namespace UvsChess.Gui
 
         private static void Actually_ClearBlacksLog(params object[] eventArgs)
         {
-            Gui.lstBlacksLog.Items.Clear();
+            MainForm.lstBlacksLog.Items.Clear();
         }
 
         private static UvsChess.Framework.ChessState Actually_GetUpdated_LstHistory_SelectedItem()
         {
-            UvsChess.Framework.ChessState selectedState = (UvsChess.Framework.ChessState)Gui.lstHistory.SelectedItem;
-            if (Gui.radWhite.Checked)
+            UvsChess.Framework.ChessState selectedState = (UvsChess.Framework.ChessState)MainForm.lstHistory.SelectedItem;
+            if (MainForm.radWhite.Checked)
             {
                 selectedState.CurrentPlayerColor = ChessColor.White;
             }
@@ -755,8 +762,8 @@ namespace UvsChess.Gui
                 selectedState.CurrentPlayerColor = ChessColor.Black;
             }
 
-            selectedState.HalfMoves = Convert.ToInt32(Gui.numHalfMoves.Value);
-            selectedState.FullMoves = Convert.ToInt32(Gui.numFullMoves.Value);
+            selectedState.HalfMoves = Convert.ToInt32(MainForm.numHalfMoves.Value);
+            selectedState.FullMoves = Convert.ToInt32(MainForm.numFullMoves.Value);
 
             return selectedState;
         }
@@ -775,17 +782,17 @@ namespace UvsChess.Gui
 
             if (selectedItem.CurrentPlayerColor == ChessColor.White)
             {
-                Gui.radWhite.Checked = true;
+                MainForm.radWhite.Checked = true;
             }
             else
             {
-                Gui.radBlack.Checked = true;
+                MainForm.radBlack.Checked = true;
             }
 
-            Gui.numFullMoves.Value = selectedItem.FullMoves;
-            Gui.numHalfMoves.Value = selectedItem.HalfMoves;
+            MainForm.numFullMoves.Value = selectedItem.FullMoves;
+            MainForm.numHalfMoves.Value = selectedItem.HalfMoves;
 
-            Gui.chessBoardControl.ResetBoard(selectedItem.CurrentBoard, selectedItem.PreviousMove);
+            MainForm.chessBoardControl.ResetBoard(selectedItem.CurrentBoard, selectedItem.PreviousMove);
         }
 
         public static void UpdateBoardBasedOnMove(UvsChess.Framework.ChessState selectedItem, ChessMove move, bool isWhiteChecked)
@@ -820,7 +827,7 @@ namespace UvsChess.Gui
 
             // This causes the "selected index changed event"
             //lstHistory.Items[lstHistory.SelectedIndex] = tmpState;
-            Gui.lstHistory.SelectedItem = selectedItem;
+            MainForm.lstHistory.SelectedItem = selectedItem;
 
             // Force update the lstHistory and the GuiChessBoard
             Actually_UpdateBoardBasedOnLstHistory(selectedItem);
