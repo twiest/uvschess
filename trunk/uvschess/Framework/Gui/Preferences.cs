@@ -133,7 +133,7 @@ namespace UvsChess.Gui
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+                System.Windows.Forms.MessageBox.Show(ex.ToString());
 
                 Time = time_default;
                 GracePeriod = grace_default;

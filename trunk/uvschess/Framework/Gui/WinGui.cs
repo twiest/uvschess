@@ -41,7 +41,8 @@ namespace UvsChess.Gui
         {
             InitializeComponent();
 
-            GuiEventLoop.Gui = this;
+            MessageBox.MainForm = this;
+            GuiEventLoop.MainForm = this;
 
             GuiEventLoop.ResetHistory(new ChessState());
 
@@ -108,7 +109,7 @@ namespace UvsChess.Gui
         }
         #endregion
 
-        #region Help menu
+        #region Information menu
         private void aboutUvsChessToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AboutUvsChess about = new AboutUvsChess();
