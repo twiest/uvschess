@@ -34,53 +34,7 @@ namespace ExampleAI
 {
     public class ExampleAI : IChessAI
     {
-        #region IChessAI Members
-
-        #region These should be implemented as automatic properties and should NEVER be touched by students
-        /// <summary>
-        /// This will return false when the framework starts running your AI. When the AI's time has run out,
-        /// then this method will return true. Once this method returns true, your AI should return a 
-        /// move immediately.
-        /// 
-        /// You should NEVER EVER set this property!
-        /// This property should be defined as an Automatic Property.
-        /// This property SHOULD NOT CONTAIN ANY CODE!!!
-        /// </summary>
-        public AIIsMyTurnOverCallback IsMyTurnOver { get; set; }
-
-        /// <summary>
-        /// Call this method to print out debug information. The framework subscribes to this event
-        /// and will provide a log window for your debug messages.
-        /// 
-        /// You should NEVER EVER set this property!
-        /// This property should be defined as an Automatic Property.
-        /// This property SHOULD NOT CONTAIN ANY CODE!!!
-        /// </summary>
-        /// <param name="message"></param>
-        public AILoggerCallback Log { get; set; }
-
-        /// <summary>
-        /// Call this method to catch profiling information. The framework subscribes to this event
-        /// and will print out the profiling stats in your log window.
-        /// 
-        /// You should NEVER EVER set this property!
-        /// This property should be defined as an Automatic Property.
-        /// This property SHOULD NOT CONTAIN ANY CODE!!!
-        /// </summary>
-        /// <param name="key"></param>
-        public AIProfiler Profiler { get; set; }
-
-        /// <summary>
-        /// Call this method to tell the framework what decision print out debug information. The framework subscribes to this event
-        /// and will provide a debug window for your decision tree.
-        /// 
-        /// You should NEVER EVER set this property!
-        /// This property should be defined as an Automatic Property.
-        /// This property SHOULD NOT CONTAIN ANY CODE!!!
-        /// </summary>
-        /// <param name="message"></param>
-        public AISetDecisionTreeCallback SetDecisionTree { get; set; }
-        #endregion
+        #region IChessAI Members that are implemented by the Student
 
         /// <summary>
         /// The name of your AI
@@ -149,6 +103,7 @@ namespace ExampleAI
             // just tell UvsChess that all moves are valid.
             return true;
         }
+
         #endregion
 
         #region My AI Logic
@@ -286,6 +241,52 @@ namespace ExampleAI
                 dt = dt.Parent;
             }
         }
+        #endregion
+
+        #region IChessAI Members that should be implemented as automatic properties and should NEVER be touched by students.
+        /// <summary>
+        /// This will return false when the framework starts running your AI. When the AI's time has run out,
+        /// then this method will return true. Once this method returns true, your AI should return a 
+        /// move immediately.
+        /// 
+        /// You should NEVER EVER set this property!
+        /// This property should be defined as an Automatic Property.
+        /// This property SHOULD NOT CONTAIN ANY CODE!!!
+        /// </summary>
+        public AIIsMyTurnOverCallback IsMyTurnOver { get; set; }
+
+        /// <summary>
+        /// Call this method to print out debug information. The framework subscribes to this event
+        /// and will provide a log window for your debug messages.
+        /// 
+        /// You should NEVER EVER set this property!
+        /// This property should be defined as an Automatic Property.
+        /// This property SHOULD NOT CONTAIN ANY CODE!!!
+        /// </summary>
+        /// <param name="message"></param>
+        public AILoggerCallback Log { get; set; }
+
+        /// <summary>
+        /// Call this method to catch profiling information. The framework subscribes to this event
+        /// and will print out the profiling stats in your log window.
+        /// 
+        /// You should NEVER EVER set this property!
+        /// This property should be defined as an Automatic Property.
+        /// This property SHOULD NOT CONTAIN ANY CODE!!!
+        /// </summary>
+        /// <param name="key"></param>
+        public AIProfiler Profiler { get; set; }
+
+        /// <summary>
+        /// Call this method to tell the framework what decision print out debug information. The framework subscribes to this event
+        /// and will provide a debug window for your decision tree.
+        /// 
+        /// You should NEVER EVER set this property!
+        /// This property should be defined as an Automatic Property.
+        /// This property SHOULD NOT CONTAIN ANY CODE!!!
+        /// </summary>
+        /// <param name="message"></param>
+        public AISetDecisionTreeCallback SetDecisionTree { get; set; }
         #endregion
 
         private enum ExampleAIProfilerMethodKey

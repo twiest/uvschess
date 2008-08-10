@@ -27,35 +27,39 @@
 
 namespace UvsChess
 {
-    #region Delegates for the interface
-    /// <summary>
-    /// This is the delegate that defines the Log callback. You should not need to use this delegate. This is
-    /// here solely for the Log property to use as it's return value.
-    /// </summary>
-    /// <param name="text">This is a string parameter that the Log callback uses to pass the message to the framework.</param>
-    public delegate void AILoggerCallback(string message);
-
-    /// <summary>
-    /// This is the delegate that defines the IsMyTurnOver callback. You should not need to use this delegate. This is
-    /// here solely for the IsMyTurnOver property to use as it's return value.
-    /// </summary>
-    public delegate bool AIIsMyTurnOverCallback();
-
-    /// <summary>
-    /// This is the delegate that defines the SetDecisionTree callback. You should not need to use this delegate. This is
-    /// here solely for the SetDecisionTree property to use as it's return value.
-    /// </summary>
-    /// <param name="dt"></param>
-    public delegate void AISetDecisionTreeCallback(UvsChess.DecisionTree dt);
-    #endregion
-
     /// <summary>
     /// This is the interface that your AI must implement in order to be used by the chess framework.
     /// The framework will call these methods to signal your AI to do work.
     /// </summary>
     public interface IChessAI
     {
-        #region These should be implemented as automatic properties.
+        /// <summary>
+        /// The name of your AI
+        /// </summary>
+        string Name
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Evaluates the chess board and decided which move to make. This is the main method of the AI.
+        /// The framework will call this method when it's your turn.
+        /// </summary>
+        /// <param name="board">Current chess board</param>
+        /// <param name="yourColor">Your color</param>
+        /// <returns> Returns the best chess move the player has for the given chess board</returns>
+        ChessMove GetNextMove(ChessBoard board, ChessColor yourColor);
+
+        /// <summary>
+        /// Validates a move. The framework uses this to validate the opponents move.
+        /// </summary>
+        /// <param name="boardBeforeMove">The board as it currently is _before_ the move.</param>
+        /// <param name="moveToCheck">This is the move that needs to be checked to see if it's valid.</param>
+        /// <param name="colorOfPlayerMoving">This is the color of the player who's making the move.</param>
+        /// <returns>Returns true if the move was valid</returns>
+        bool IsValidMove(ChessBoard boardBeforeMove, ChessMove moveToCheck, ChessColor colorOfPlayerMoving);
+
+        #region These should be implemented as automatic properties and should NEVER be touched by students.
         /// <summary>
         /// This will return true when the framework starts running your AI. When the AI's time has run out,
         /// the this method will return false. Once this method returns false, your AI should return a 
@@ -116,31 +120,27 @@ namespace UvsChess
             set;
         }
         #endregion
-
-        /// <summary>
-        /// The name of your AI
-        /// </summary>
-        string Name
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Evaluates the chess board and decided which move to make. This is the main method of the AI.
-        /// The framework will call this method when it's your turn.
-        /// </summary>
-        /// <param name="board">Current chess board</param>
-        /// <param name="yourColor">Your color</param>
-        /// <returns> Returns the best chess move the player has for the given chess board</returns>
-        ChessMove GetNextMove(ChessBoard board, ChessColor yourColor);
-
-        /// <summary>
-        /// Validates a move. The framework uses this to validate the opponents move.
-        /// </summary>
-        /// <param name="boardBeforeMove">The board as it currently is _before_ the move.</param>
-        /// <param name="moveToCheck">This is the move that needs to be checked to see if it's valid.</param>
-        /// <param name="colorOfPlayerMoving">This is the color of the player who's making the move.</param>
-        /// <returns>Returns true if the move was valid</returns>
-        bool IsValidMove(ChessBoard boardBeforeMove, ChessMove moveToCheck, ChessColor colorOfPlayerMoving);
     }
+
+    #region Delegates for the interface
+    /// <summary>
+    /// This is the delegate that defines the Log callback. You should not need to use this delegate. This is
+    /// here solely for the Log property to use as it's return value.
+    /// </summary>
+    /// <param name="text">This is a string parameter that the Log callback uses to pass the message to the framework.</param>
+    public delegate void AILoggerCallback(string message);
+
+    /// <summary>
+    /// This is the delegate that defines the IsMyTurnOver callback. You should not need to use this delegate. This is
+    /// here solely for the IsMyTurnOver property to use as it's return value.
+    /// </summary>
+    public delegate bool AIIsMyTurnOverCallback();
+
+    /// <summary>
+    /// This is the delegate that defines the SetDecisionTree callback. You should not need to use this delegate. This is
+    /// here solely for the SetDecisionTree property to use as it's return value.
+    /// </summary>
+    /// <param name="dt"></param>
+    public delegate void AISetDecisionTreeCallback(UvsChess.DecisionTree dt);
+    #endregion
 }
