@@ -27,11 +27,15 @@
 
 namespace UvsChess
 {
+    /// <summary>
+    /// An enum that represents all of the possible chess pieces (including their colors), and also an empty tile.
+    /// The order of this enum was chosen on purpose. See the comments in ChessPiece.cs for more information.
+    /// </summary>
     public enum ChessPiece
     {
-        // We chose this order for Chess Piece on purpose. Basically everything < ChessPiece.Empty 
-        // means that the piece is black.
-        // Anything > ChessPiece.Empty means that the piece is white.
+        // We chose this order for Chess Piece on purpose.
+        // Basically anything < ChessPiece.Empty means that the piece is black and 
+        // anything > ChessPiece.Empty means that the piece is white.
         // This makes it _very_ quick and easy to see what color a piece at a certain location is.
         BlackPawn,
         BlackRook,

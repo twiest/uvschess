@@ -30,13 +30,27 @@ using UvsChess.Framework;
 
 namespace UvsChess
 {
+    /// <summary>
+    /// Represents a chess move.
+    /// </summary>
     public class ChessMove:IComparable<ChessMove>
     {        
+        /// <summary>
+        /// Constructor that creates a new ChessMove object based on two ChessLocations
+        /// </summary>
+        /// <param name="from">From ChessLocation</param>
+        /// <param name="to">To ChessLocation</param>
         public ChessMove(ChessLocation from, ChessLocation to):this(from, to, ChessFlag.NoFlag)
         {
             Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessMove_ctor_ChessLocation_ChessLocation);
         }
 
+        /// <summary>
+        /// Constructor that creates a new ChessMove object based on two ChessLocations and a ChessFlag
+        /// </summary>
+        /// <param name="from">From ChessLocation</param>
+        /// <param name="to">To ChessLocation</param>
+        /// <param name="flag">The ChessFlag to create the move with.</param>
         public ChessMove(ChessLocation from, ChessLocation to, ChessFlag flag)
         {
             Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessMove_ctor_ChessLocation_ChessLocation_ChessFlag);
@@ -45,46 +59,7 @@ namespace UvsChess
             Flag = flag;
             ToStringPrefix = string.Empty;
         }
-
-        #region internal properties
-        internal string ToStringPrefix { get; set; }
-
-        /// <summary>
-        /// This property is used by the framework to see if the move is on the board,
-        /// has a non-null To and From, etc. This property should NOT be used by students
-        /// as it doesn't actually check the move to see if it is actually a valid chess
-        /// move.
-        /// </summary>
-        internal bool IsBasicallyValid
-        {
-            get
-            {
-                Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessMove_get_IsBasicallyValid);
-                if ((this.Flag == ChessFlag.Stalemate) || (this.Flag == ChessFlag.AIWentOverTime))
-                {
-                    return true;
-                }
-
-                if ((this.To == null) || (this.From == null))
-                {
-                    return false;
-                }
-
-                if ((!this.To.IsValid) || (!this.From.IsValid))
-                {
-                    return false;
-                }
-
-                if (this.From == this.To)
-                {
-                    return false;
-                }
-
-                return true;
-            }
-        }
-        #endregion
-
+        
         /// <summary>
         /// The Flag that is set for this move.
         /// </summary>
@@ -142,6 +117,10 @@ namespace UvsChess
             return newMove;
         }
 
+        /// <summary>
+        /// Creates a string that shows the describes the chess move.
+        /// </summary>
+        /// <returns>The description string.</returns>
         public override string ToString()
         {
             Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessMove_ToString);
@@ -195,8 +174,46 @@ namespace UvsChess
             return moveText;
         }
 
-        #region operator overloads
+        #region internal properties
+        internal string ToStringPrefix { get; set; }
 
+        /// <summary>
+        /// This property is used by the framework to see if the move is on the board,
+        /// has a non-null To and From, etc. This property should NOT be used by students
+        /// as it doesn't actually check the move to see if it is actually a valid chess
+        /// move.
+        /// </summary>
+        internal bool IsBasicallyValid
+        {
+            get
+            {
+                Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessMove_get_IsBasicallyValid);
+                if ((this.Flag == ChessFlag.Stalemate) || (this.Flag == ChessFlag.AIWentOverTime))
+                {
+                    return true;
+                }
+
+                if ((this.To == null) || (this.From == null))
+                {
+                    return false;
+                }
+
+                if ((!this.To.IsValid) || (!this.From.IsValid))
+                {
+                    return false;
+                }
+
+                if (this.From == this.To)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+        }
+        #endregion
+
+        #region operator overloads
         public override bool Equals(object obj)
         {
             Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessMove_Equals);
@@ -239,11 +256,14 @@ namespace UvsChess
             Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessMove_NE);
             return !(move1 == move2);
         }
-
         #endregion
 
         #region IComparable<ChessMove> Members
-
+        /// <summary>
+        /// This is used to allow sorting of ChessMoves based on their values.
+        /// </summary>
+        /// <param name="other">a ChessMove to compare.</param>
+        /// <returns></returns>
         public int CompareTo(ChessMove other)
         {
             Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessMove_CompareTo_ChessMove);
@@ -251,6 +271,11 @@ namespace UvsChess
             return (this.ValueOfMove - other.ValueOfMove);
         }
 
+        public override int GetHashCode()
+        {
+            Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessMove_GetHashCode);
+            return From.GetHashCode() * 10 + To.GetHashCode();
+        }
         #endregion
     }
 }

@@ -38,6 +38,7 @@ namespace UvsChess.Framework
         ChessMove_EQ,
         ChessMove_NE,
         ChessMove_CompareTo_ChessMove,
+        ChessMove_GetHashCode,
 
         DecisionTree_ctor_ChessBoard,
         DecisionTree_ctor_DecisionTree_ChessBoard_ChessMove,

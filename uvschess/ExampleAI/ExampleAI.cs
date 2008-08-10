@@ -196,7 +196,7 @@ namespace ExampleAI
 
             // Tell UvsChess about the decision tree object
             SetDecisionTree(dt);
-            dt.DecidedMove = myChosenMove;
+            dt.BestChildMove = myChosenMove;
 
             // Go through all of my moves, add them to the decision tree
             // Then go through each of these moves and generate all of my
@@ -233,7 +233,7 @@ namespace ExampleAI
                 {
                     // Tell the decision tree which move we think our opponent will choose.
                     int chosenOppMoveNumber = random.Next(allOppMoves.Count);
-                    dt.DecidedMove = allOppMoves[chosenOppMoveNumber];
+                    dt.BestChildMove = allOppMoves[chosenOppMoveNumber];
                 }
 
                 // Tell the decision tree what this moves eventual value will be.

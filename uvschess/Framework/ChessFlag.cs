@@ -27,6 +27,11 @@
 
 namespace UvsChess
 {
+    /// <summary>
+    /// An enum used to communicate with the framework as to what's happening in a Move.
+    /// e.g. When the AI thinks that his next move will checkmate his apponent, the move returned
+    /// by the AI should be flagged with ChessFlag.CheckMate.
+    /// </summary>
     public enum ChessFlag
     {
         NoFlag,
