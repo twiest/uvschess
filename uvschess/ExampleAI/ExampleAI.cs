@@ -103,6 +103,9 @@ namespace ExampleAI
         /// <returns> Returns the best chess move the player has for the given chess board</returns>
         public ChessMove GetNextMove(ChessBoard board, ChessColor myColor)
         {
+            // This adds 1 call for this method to the profiler
+            Profiler.AddToProfile((int)ExampleAIProfilerMethodKey.GetNextMove);
+
             ChessMove myNextMove = null;
 
             while (! IsMyTurnOver())
@@ -118,6 +121,16 @@ namespace ExampleAI
                 }
             }
 
+            // This is how you setup the profiler
+            Profiler.KeyNames = Enum.GetNames(typeof(ExampleAIProfilerMethodKey));
+            Profiler.AIName = this.Name;
+            Profiler.Depth = 2;
+
+            // In this case, our mini and max methods are the same,
+            // usually they are not.
+            Profiler.MinisProfileIndexNumber = (int)ExampleAIProfilerMethodKey.GetAllMoves;
+            Profiler.MaxsProfileIndexNumber = (int)ExampleAIProfilerMethodKey.GetAllMoves;
+
             return myNextMove;
         }
 
@@ -130,6 +143,8 @@ namespace ExampleAI
         /// <returns>Returns true if the move was valid</returns>
         public bool IsValidMove(ChessBoard boardBeforeMove, ChessMove moveToCheck, ChessColor colorOfPlayerMoving)
         {
+            Profiler.AddToProfile((int)ExampleAIProfilerMethodKey.IsValidMove);
+
             // This AI isn't sophisticated enough to validate moves, therefore
             // just tell UvsChess that all moves are valid.
             return true;
@@ -145,6 +160,7 @@ namespace ExampleAI
         /// <returns>A chess move.</returns>
         ChessMove MoveAPawn(ChessBoard currentBoard, ChessColor myColor)
         {
+            Profiler.AddToProfile((int)ExampleAIProfilerMethodKey.MoveAPawn);
             List<ChessMove> allMyMoves = GetAllMoves(currentBoard, myColor);
             ChessMove myChosenMove = null;
             Random random = new Random();
@@ -175,6 +191,7 @@ namespace ExampleAI
         /// <returns>List of ChessMoves</returns>
         List<ChessMove> GetAllMoves(ChessBoard currentBoard, ChessColor myColor)
         {
+            Profiler.AddToProfile((int)ExampleAIProfilerMethodKey.GetAllMoves);
             // This method only generates moves for pawns to move one space forward.
             // It does not generate moves for any other pieces.
             List<ChessMove> allMoves = new List<ChessMove>();
@@ -211,6 +228,7 @@ namespace ExampleAI
         public void AddAllPossibleMovesToDecisionTree(List<ChessMove> allMyMoves, ChessMove myChosenMove, 
                                                       ChessBoard currentBoard, ChessColor myColor)
         {
+            Profiler.AddToProfile((int)ExampleAIProfilerMethodKey.AddAllPossibleMovesToDecisionTree);
             Random random = new Random();
 
             // Create the decision tree object
@@ -269,5 +287,14 @@ namespace ExampleAI
             }
         }
         #endregion
+
+        private enum ExampleAIProfilerMethodKey
+        {
+            AddAllPossibleMovesToDecisionTree,
+            GetAllMoves,
+            GetNextMove,
+            IsValidMove,
+            MoveAPawn
+        }
     }
 }

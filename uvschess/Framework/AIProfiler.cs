@@ -95,27 +95,13 @@ namespace UvsChess
             }
         }
 
-        internal void WriteAndEndTurn(Logger.LogCallback log, TimeSpan moveTime)
+        internal void EndTurn(Logger.LogCallback log, TimeSpan moveTime)
         {
             if (IsEnabled)
             {
                 if ((KeyNames == null) || KeyNames.Length == 0)
                 {
                     log(this.AIColor.ToString() + ": To use the profiler, you must set Profiler.MethodNames to a list of enum names that you used with the integer keys");
-                }
-                else
-                {
-                    log("*** Move Stats ***");
-                    log("Move time: " + moveTime.ToString());
-                    for (int ix = 0; ix < KeyNames.Length; ix++)
-                    {
-                        log(string.Format("{0} : {1:N0}", KeyNames[ix], Profile[ix]));
-                    }
-
-                    for (int ix = 0; ix < FxKeyNames.Length; ix++)
-                    {
-                        log(string.Format("{0} : {1:N0}", FxKeyNames[ix], FxProfile[ix]));
-                    }
                 }
 
                 if (Depth != 0)
