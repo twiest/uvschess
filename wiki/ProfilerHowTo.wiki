@@ -133,11 +133,11 @@ Profiler output from ExampleAI
 ...
 
 ---End CSV---
+}}}
 
 Importing the data into a spreadsheet will help you analyze the data.
 http://uvschess.googlecode.com/svn/wiki/profiler_spreadsheet.png
 
-}}}
 
 
 
