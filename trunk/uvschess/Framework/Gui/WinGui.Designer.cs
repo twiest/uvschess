@@ -80,7 +80,6 @@ namespace UvsChess.Gui
             this.cmbWhite = new System.Windows.Forms.ComboBox();
             this.lstHistory = new System.Windows.Forms.ListBox();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.chessBoardControl = new UvsChess.Gui.GuiChessBoard();
             this.tabLogs = new System.Windows.Forms.TabControl();
             this.tabMainLog = new System.Windows.Forms.TabPage();
             this.btnSaveMainLog = new System.Windows.Forms.Button();
@@ -99,6 +98,7 @@ namespace UvsChess.Gui
             this.lstBlacksLog = new System.Windows.Forms.ListBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.chessBoardControl = new UvsChess.Gui.GuiChessBoard();
             this.menuStrip1.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -264,7 +264,7 @@ namespace UvsChess.Gui
             this.numHalfMoves.Location = new System.Drawing.Point(79, 67);
             this.numHalfMoves.Name = "numHalfMoves";
             this.numHalfMoves.Size = new System.Drawing.Size(51, 20);
-            this.numHalfMoves.TabIndex = 6;
+            this.numHalfMoves.TabIndex = 4;
             // 
             // numFullMoves
             // 
@@ -287,7 +287,7 @@ namespace UvsChess.Gui
             this.cmbBlack.Location = new System.Drawing.Point(71, 33);
             this.cmbBlack.Name = "cmbBlack";
             this.cmbBlack.Size = new System.Drawing.Size(188, 21);
-            this.cmbBlack.TabIndex = 4;
+            this.cmbBlack.TabIndex = 3;
             this.cmbBlack.SelectedIndexChanged += new System.EventHandler(this.cmbBlack_SelectedIndexChanged);
             // 
             // label1
@@ -306,7 +306,7 @@ namespace UvsChess.Gui
             this.radBlack.Location = new System.Drawing.Point(12, 29);
             this.radBlack.Name = "radBlack";
             this.radBlack.Size = new System.Drawing.Size(52, 17);
-            this.radBlack.TabIndex = 3;
+            this.radBlack.TabIndex = 2;
             this.radBlack.Text = "Black";
             this.radBlack.UseVisualStyleBackColor = true;
             // 
@@ -327,7 +327,7 @@ namespace UvsChess.Gui
             this.radWhite.Location = new System.Drawing.Point(12, 6);
             this.radWhite.Name = "radWhite";
             this.radWhite.Size = new System.Drawing.Size(53, 17);
-            this.radWhite.TabIndex = 2;
+            this.radWhite.TabIndex = 0;
             this.radWhite.TabStop = true;
             this.radWhite.Text = "White";
             this.radWhite.UseVisualStyleBackColor = true;
@@ -353,7 +353,7 @@ namespace UvsChess.Gui
             this.lstHistory.Location = new System.Drawing.Point(3, 104);
             this.lstHistory.Name = "lstHistory";
             this.lstHistory.Size = new System.Drawing.Size(256, 615);
-            this.lstHistory.TabIndex = 0;
+            this.lstHistory.TabIndex = 6;
             this.lstHistory.SelectedIndexChanged += new System.EventHandler(this.lstHistory_SelectedIndexChanged);
             // 
             // splitContainer2
@@ -377,16 +377,6 @@ namespace UvsChess.Gui
             this.splitContainer2.SplitterDistance = 333;
             this.splitContainer2.TabIndex = 0;
             // 
-            // chessBoardControl
-            // 
-            this.chessBoardControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.chessBoardControl.IsLocked = false;
-            this.chessBoardControl.Location = new System.Drawing.Point(0, 0);
-            this.chessBoardControl.Name = "chessBoardControl";
-            this.chessBoardControl.Size = new System.Drawing.Size(333, 333);
-            this.chessBoardControl.TabIndex = 0;
-            this.chessBoardControl.TabStop = false;
-            // 
             // tabLogs
             // 
             this.tabLogs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -399,7 +389,7 @@ namespace UvsChess.Gui
             this.tabLogs.Name = "tabLogs";
             this.tabLogs.SelectedIndex = 0;
             this.tabLogs.Size = new System.Drawing.Size(798, 386);
-            this.tabLogs.TabIndex = 0;
+            this.tabLogs.TabIndex = 8;
             // 
             // tabMainLog
             // 
@@ -421,7 +411,7 @@ namespace UvsChess.Gui
             this.btnSaveMainLog.Location = new System.Drawing.Point(628, 3);
             this.btnSaveMainLog.Name = "btnSaveMainLog";
             this.btnSaveMainLog.Size = new System.Drawing.Size(75, 23);
-            this.btnSaveMainLog.TabIndex = 3;
+            this.btnSaveMainLog.TabIndex = 10;
             this.btnSaveMainLog.Text = "Save...";
             this.btnSaveMainLog.UseVisualStyleBackColor = true;
             this.btnSaveMainLog.Click += new System.EventHandler(this.btnSaveMainLog_Click);
@@ -432,7 +422,7 @@ namespace UvsChess.Gui
             this.btnClearMainLog.Location = new System.Drawing.Point(709, 3);
             this.btnClearMainLog.Name = "btnClearMainLog";
             this.btnClearMainLog.Size = new System.Drawing.Size(75, 23);
-            this.btnClearMainLog.TabIndex = 2;
+            this.btnClearMainLog.TabIndex = 11;
             this.btnClearMainLog.Text = "Clear";
             this.btnClearMainLog.UseVisualStyleBackColor = true;
             this.btnClearMainLog.Click += new System.EventHandler(this.btnClearMainLog_Click);
@@ -445,7 +435,7 @@ namespace UvsChess.Gui
             this.chkBxAutoScrollMainLog.Location = new System.Drawing.Point(3, 5);
             this.chkBxAutoScrollMainLog.Name = "chkBxAutoScrollMainLog";
             this.chkBxAutoScrollMainLog.Size = new System.Drawing.Size(77, 17);
-            this.chkBxAutoScrollMainLog.TabIndex = 1;
+            this.chkBxAutoScrollMainLog.TabIndex = 9;
             this.chkBxAutoScrollMainLog.Text = "Auto Scroll";
             this.chkBxAutoScrollMainLog.UseVisualStyleBackColor = true;
             // 
@@ -460,7 +450,7 @@ namespace UvsChess.Gui
             this.lstMainLog.Location = new System.Drawing.Point(0, 28);
             this.lstMainLog.Name = "lstMainLog";
             this.lstMainLog.Size = new System.Drawing.Size(787, 312);
-            this.lstMainLog.TabIndex = 0;
+            this.lstMainLog.TabIndex = 12;
             // 
             // tabWhitesLog
             // 
@@ -585,6 +575,16 @@ namespace UvsChess.Gui
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
+            // 
+            // chessBoardControl
+            // 
+            this.chessBoardControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.chessBoardControl.IsLocked = false;
+            this.chessBoardControl.Location = new System.Drawing.Point(0, 0);
+            this.chessBoardControl.Name = "chessBoardControl";
+            this.chessBoardControl.Size = new System.Drawing.Size(333, 333);
+            this.chessBoardControl.TabIndex = 0;
+            this.chessBoardControl.TabStop = false;
             // 
             // WinGui
             // 
