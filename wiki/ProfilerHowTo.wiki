@@ -37,7 +37,7 @@ The enum for ExampleAI defines 5 tags, each named after the method that the tag 
 
 In `GetNextMove()` before anything else, set `Profiler.KeyNames` to the tags in your enum.
 {{{
-   Profiler.KeyNames = Enum.GetNames(typeof(ExampleAIProfilerTags));
+   Profiler.TagNames = Enum.GetNames(typeof(ExampleAIProfilerTags));
 }}}
 
 
@@ -76,7 +76,7 @@ The Profiler has two special properties that are used to calculate the number of
 
 {{{
 #if DEBUG
-	Profiler.KeyNames = Enum.GetNames(typeof(ExampleAIProfilerTags));
+	Profiler.TagNames = Enum.GetNames(typeof(ExampleAIProfilerTags));
 
 	Profiler.MinisProfilerTag = (int)ExampleAIProfilerTags.MiniMoves;
 	Profiler.MaxsProfilerTag = (int)ExampleAIProfilerTags.MaxMoves;
