@@ -116,22 +116,26 @@ In the columns Move n are listed the number of times each profiler tag was calle
 
 Profiler output from ExampleAI
 {{{
-
 ---Begin CSV---
-"Date of Profile:","8/11/2008 2:56:08 PM"
+"Date of Profile:","8/11/2008 5:07:49 PM"
 "White's AI Name:","ExampleAI (Debug)"
-"White's Nodes/Sec:","79.45"
-"White's Moves:","4"
-"Color","Fx or AI","Method Name","Total","Average","Move 1","Move 2","Move 3","Move 4"
-"White","AI","Move Depths","","2","2","2","2","2"
-"White","AI","Move Times","00:00:00.4531250","00:00:00.1130000","00:00:00.1250000","00:00:00.1093750","00:00:00.1093750","00:00:00.1093750"
-"White","AI","AddAllPossibleMovesToDecisionTree","4","1","1","1","1","1"
-"White","AI","GetAllMoves","36","9","9","9","9","9"
-"White","AI","GetNextMove","4","1","1","1","1","1"
+"White's Nodes/Sec:","70.24"
+"White's Moves:","5"
+"Color","Fx or AI","Method Name","Total","Average","Move 1","Move 2","Move 3","Move 4","Move 5"
+"White","AI","Move Depths","","2","2","2","2","2","2"
+"White","AI","Move Times","00:00:00.6406250","00:00:00.1280000","00:00:00.1250000","00:00:00.1250000","00:00:00.1250000","00:00:00.1406250","00:00:00.1250000"
+"White","AI","AddAllPossibleMovesToDecisionTree","5","1","1","1","1","1","1"
+"White","AI","GetAllMoves","45","9","9","9","9","9","9"
+"White","AI","GetNextMove","5","1","1","1","1","1","1"
+"White","AI","IsValidMove","4","1","0","1","1","1","1"
+"White","AI","MoveAPawn","5","1","1","1","1","1","1"
 
 ...
 
 ---End CSV---
+
+Importing the data into a spreadsheet will help you analyze the data.
+http://uvschess.googlecode.com/svn/wiki/profiler_spreadsheet.png
 
 }}}
 
