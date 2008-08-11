@@ -4,6 +4,24 @@
 
 The chess program calls 
 
+==Create the Enum==
+
+The profiler utilizes an custom enum in the students AI. This enum has a value for every profiler call. 
+{{{
+        private enum ExampleAIProfilerMethodKey
+        {
+            AddAllPossibleMovesToDecisionTree,
+            GetAllMoves,
+            GetNextMove,
+            IsValidMove,
+            MoveAPawn
+        }
+}}}
+
 == Initialize the profiler ==
+
+
+In GetNextMove(), set Profiler.KeyNames
+
 
 == Add Profiler calls ==
