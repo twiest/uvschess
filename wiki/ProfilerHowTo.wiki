@@ -26,22 +26,58 @@ The enum for ExampleAI defines 5 tags, each named after the method that the tag 
 == Initialize the profiler ==
 
 
-In GetNextMove() before anything else, set Profiler.KeyNames to the tags in your enum.
+In `GetNextMove()` before anything else, set `Profiler.KeyNames` to the tags in your enum.
 {{{
    Profiler.KeyNames = Enum.GetNames(typeof(ExampleAIProfilerMethodKey));
 }}}
 
 
-
-
-
-
 == Add Profiler calls ==
-In your code, you need to add profiling tags where ever you want to profiler your code. A profiling tag looks like this.
+In your code, you need to add profiling tags where ever you want to profiler your code. A profiling tag looks like this. Make sure you wrap each call in `#if` statements. This will come in handy when your ready to compile your dll for the competetion.
+
 {{{
-   Profiler.AddToProfile((int)ExampleAIProfilerMethodKey.GetNextMove);
+	private void DoSomeSeriousAIStuff()
+	{
+#if USE_PROFILING
+		Profiler.AddToProfile((int)ExampleAIProfilerMethodKey.DoSomeSeriousAIStuff);
+#endif
+
+		/*
+			Some serious AI code
+		*/
+
+		// You can also profile blocks of code as well, like a loop
+		for(int i = 0; i < numMoves; ++i)
+		{
+
+#if USE_PROFILING
+			Profiler.AddToProfile((int)ExampleAIProfilerMethodKey.DoSomeSeriousAIStuff_ForLoop);
+#endif
+			/*  
+				More serious AI code
+			*/
+		}
+	}
 }}}
-This call will tell the profiler to increment the counter for this tag. So at the end of the run, the profiler will output that the tag 'GetNextMove' was called N times.
+- OR - 
+
+This call will tell the profiler to increment the counter for this tag. So at the end of the run, the profiler will output that the tag 'DoSomeSeriousAIStuff()' was called N times, and the `for` loop in `DoSomeSeriousAISutff()` was called M times.
+
+== Add Nodes per Minute ==
+The Profiler has two special properties that are used to calculate the number of nodes visited per second. You will need to set these properties properly in order to have this functionality. First, you need to create two profiler tags, one for Mini and one for Max.  Then set the Profiler property in `GetNextMove()` right after the key names.
+
+{{{
+#if USE_PROFILER
+	Profiler.KeyNames = Enum.GetNames(typeof(ExampleAIProfilerMethodKey));
+
+	Profiler.MinisMethodKeyNumber = (int)ExampleAIProfilerMethodKey.MiniMoves;
+	Profiler.MaxsMethodKeyNumber = (int)ExampleAIProfilerMethodKey.MaxMoves;
+#endif
+
+}}}
+
+The Profiler automatically logs the time (in milliseconds) for each turn. The profiler will use the two tags that you define to calculate the nodes per second rate. Finally, add the profiling tags in your Mini and Max methods, such that the tag will get called once per node visited.
+
 
 ==Viewing Profiler Results==
 
