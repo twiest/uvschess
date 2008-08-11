@@ -6,22 +6,23 @@ Your chess AI will call some methods hundreds of thousands, if not millions, of 
 Profiling lets you know how many times your AI executes a certain block of code in a single run. By knowing what block of code (ie methods) are called most, you can spend time optimizing those methods to make them as fast as possible. 
 The Profiler allows you to have up 1000 profile tags. 
 
-{{{
-#if USE_PROFILER
-	//Some code that only gets compiled when USE_PROFILER is defined
-#endif
-}}}
 
 ==Using #if==
 Before we get started with the profiler, know that using the profiler adds some overhead to your AI. This means that your AI will run slower and reach less nodes than if the profiler were not there. With that in mind, you will want to wrap all of your profiling code in `#if` statements. This will allow you to easily compile your AI without the profiling overhead when it comes time to compete.
 
+{{{
+#if DEBUG
+	//Some code that only gets compiled when DEBUG is defined
+#endif
+}}}
+
 ==Create the Enum==
 
 The profiler tags are defined using an enum. This enum has a value for every profiler tag in your code. Remember, this enum cannot contain more than 1000 values.
-The enum for ExampleAI defines 5 tags, each named after the method that the tag is profiling. The naming of the tags is completely arbitrary, but it's best if you name them after the method or block of code their profiling. Of course, you can always add more tags as your AI becomes more and more complex.
+The enum for ExampleAI defines 5 tags, each named after the method that the tag is profiling. The naming of the tags is completely arbitrary, but it's best if you name them after the method or block of code they're profiling. Of course, you can always add more tags as your AI becomes more and more complex.
 
 {{{
-        private enum ExampleAIProfilerMethodKey
+        private enum ExampleAIProfilerTags
         {
             AddAllPossibleMovesToDecisionTree,
             GetAllMoves,
@@ -36,18 +37,18 @@ The enum for ExampleAI defines 5 tags, each named after the method that the tag 
 
 In `GetNextMove()` before anything else, set `Profiler.KeyNames` to the tags in your enum.
 {{{
-   Profiler.KeyNames = Enum.GetNames(typeof(ExampleAIProfilerMethodKey));
+   Profiler.KeyNames = Enum.GetNames(typeof(ExampleAIProfilerTags));
 }}}
 
 
 == Add Profiler calls ==
-In your code, you need to add profiling tags where ever you want to profiler your code. A profiling tag looks like this. Don't forget to wrap each call in `#if` statements.
+In your code, you need to add profiling tags whereever you want to profile your code. A profiling tag looks like this. Don't forget to wrap each call in `#if` statements.
 
 {{{
 	private void DoSomeSeriousAIStuff()
 	{
-#if USE_PROFILING
-		Profiler.AddToProfile((int)ExampleAIProfilerMethodKey.DoSomeSeriousAIStuff);
+#if DEBUG
+		Profiler.IncrementTagCount((int)ExampleAIProfilerTags.DoSomeSeriousAIStuff);
 #endif
 
 		/*
@@ -58,8 +59,8 @@ In your code, you need to add profiling tags where ever you want to profiler you
 		for(int i = 0; i < numMoves; ++i)
 		{
 
-#if USE_PROFILING
-			Profiler.AddToProfile((int)ExampleAIProfilerMethodKey.DoSomeSeriousAIStuff_ForLoop);
+#if DEBUG
+			Profiler.IncrementTagCount((int)ExampleAIProfilerTags.DoSomeSeriousAIStuff_ForLoop);
 #endif
 			/*  
 				More serious AI code
@@ -68,17 +69,17 @@ In your code, you need to add profiling tags where ever you want to profiler you
 	}
 }}}
 
-This call will tell the profiler to increment the counter for this tag. So at the end of the run, the profiler will output that the tag 'DoSomeSeriousAIStuff()' was called N times, and the `for` loop in `DoSomeSeriousAISutff()` was called M times.
+This call will tell the profiler to increment the counter for this tag. So at the end of the run, the profiler will output that the tag 'DoSomeSeriousAIStuff' was called N times, and the `for` loop in `DoSomeSeriousAISutff()` was called M times.
 
 == Add Nodes per Minute ==
 The Profiler has two special properties that are used to calculate the number of nodes visited per second. You will need to set these properties properly in order to have this functionality. First, you need to create two profiler tags, one for `Mini()` and one for `Max()`.  Then tell the profiler what tags to use in its calculation by setting the Profiler property in `GetNextMove()` right after the key names.
 
 {{{
-#if USE_PROFILER
-	Profiler.KeyNames = Enum.GetNames(typeof(ExampleAIProfilerMethodKey));
+#if DEBUG
+	Profiler.KeyNames = Enum.GetNames(typeof(ExampleAIProfilerTags));
 
-	Profiler.MinisMethodKeyNumber = (int)ExampleAIProfilerMethodKey.MiniMoves;
-	Profiler.MaxsMethodKeyNumber = (int)ExampleAIProfilerMethodKey.MaxMoves;
+	Profiler.MinisProfilerTag = (int)ExampleAIProfilerTags.MiniMoves;
+	Profiler.MaxsProfilerTag = (int)ExampleAIProfilerTags.MaxMoves;
 #endif
 
 }}}
@@ -87,8 +88,8 @@ The Profiler automatically logs the time (in milliseconds) for each turn. The pr
 {{{
 	private Mini()
 	{
-#if USE_PROFILER
-		Profiler.AddToProfile((int)ExampleAIProfilerMethodKey.MiniMoves);
+#if DEBUG
+		Profiler.IncrementTagCount((int)ExampleAIProfilerTags.MiniMoves);
 #endif
 		/*
 			your mini-max code
@@ -96,8 +97,8 @@ The Profiler automatically logs the time (in milliseconds) for each turn. The pr
 	}
 	private Max()
 	{
-#if USE_PROFILER
-		Profiler.AddToProfile((int)ExampleAIProfilerMethodKey.MaxMoves);
+#if DEBUG
+		Profiler.IncrementTagCount((int)ExampleAIProfilerTags.MaxMoves);
 #endif
 		/*
 			your mini-max code
@@ -108,7 +109,7 @@ The Profiler automatically logs the time (in milliseconds) for each turn. The pr
 
 ==Viewing Profiler Results==
 
-The profiler data is output to the main debug window when a game is stopped. The data is output in csv format to make it easier to dump the data in a spreadsheet. 
+The profiler data is output to the main log window when a game is stopped. The data is output in csv format to make it easier to import the data into a spreadsheet. 
 The csv data is marked by `---Begin CSV---` and `---End CSV---` markers. The columns in the csv begin with Color, AI or Fx Framework, Method Name (Tag Name), Total, Average, Move 1, Move 2, ..., Move N.
 
 In the columns Move n are listed the number of times each profiler tag was called in that move. The number of calls per move are totaled and averaged in the columns "Total" and "Average" (obviously). 
