@@ -6,6 +6,12 @@ Your chess AI will call some methods hundreds of thousands, if not millions, of 
 Profiling lets you know how many times your AI executes a certain block of code in a single run. By knowing what block of code (ie methods) are called most, you can spend time optimizing those methods to make them as fast as possible. 
 The Profiler allows you to have up 1000 profile tags. 
 
+{{{
+#if USE_PROFILER
+	//Some code that only gets compiled when USE_PROFILER is defined
+#endif
+}}}
+
 ==Using #if==
 Before we get started with the profiler, know that using the profiler adds some overhead to your AI. This means that your AI will run slower and reach less nodes than if the profiler were not there. With that in mind, you will want to wrap all of your profiling code in `#if` statements. This will allow you to easily compile your AI without the profiling overhead when it comes time to compete.
 
@@ -105,6 +111,8 @@ The Profiler automatically logs the time (in milliseconds) for each turn. The pr
 The profiler data is output to the main debug window when a game is stopped. The data is output in csv format to make it easier to dump the data in a spreadsheet. 
 The csv data is marked by `---Begin CSV---` and `---End CSV---` markers. The columns in the csv begin with Color, AI or Fx Framework, Method Name (Tag Name), Total, Average, Move 1, Move 2, ..., Move N.
 
+In the columns Move n are listed the number of times each profiler tag was called in that move. The number of calls per move are totaled and averaged in the columns "Total" and "Average" (obviously). 
+
 Profiler output from ExampleAI
 {{{
 
@@ -119,6 +127,10 @@ Profiler output from ExampleAI
 "White","AI","AddAllPossibleMovesToDecisionTree","4","1","1","1","1","1"
 "White","AI","GetAllMoves","36","9","9","9","9","9"
 "White","AI","GetNextMove","4","1","1","1","1","1"
+
+...
+
+---End CSV---
 
 }}}
 
