@@ -1,0 +1,9 @@
+#summary How to use the built-in profiler in your AI
+
+= Introduction =
+
+The chess program calls 
+
+== Initialize the profiler ==
+
+== Add Profiler calls ==
