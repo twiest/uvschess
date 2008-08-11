@@ -57,8 +57,22 @@ namespace ExampleAI
         /// <returns> Returns the best chess move the player has for the given chess board</returns>
         public ChessMove GetNextMove(ChessBoard board, ChessColor myColor)
         {
+
+            //For more information about using the profiler, visit http://code.google.com/p/uvschess/wiki/ProfilerHowTo
+
+            // This is how you setup the profiler. This should be done in GetNextMove.
+            Profiler.TagNames = Enum.GetNames(typeof(ExampleAIProfilerTags));
+
+            // In order for the profiler to calculate the AI's nodes/sec value,
+            // I need to tell the profiler which method key's are for MiniMax.
+            // In this case our mini and max methods are the same,
+            // but usually they are not.
+            Profiler.MinisProfilerTag = (int)ExampleAIProfilerTags.GetAllMoves;
+            Profiler.MaxsProfilerTag = (int)ExampleAIProfilerTags.GetAllMoves;
+
             // This increments the method call count by 1 for GetNextMove in the profiler
-            Profiler.AddToProfile((int)ExampleAIProfilerMethodKey.GetNextMove);
+            Profiler.IncrementTagCount((int)ExampleAIProfilerTags.GetNextMove);
+
 
             ChessMove myNextMove = null;
 
@@ -76,14 +90,14 @@ namespace ExampleAI
             }
 
             // This is how you setup the profiler. This should be done in GetNextMove.
-            Profiler.KeyNames = Enum.GetNames(typeof(ExampleAIProfilerMethodKey));
+            Profiler.TagNames = Enum.GetNames(typeof(ExampleAIProfilerTags));
 
             // In order for the profiler to calculate the AI's nodes/sec value,
             // I need to tell the profiler which method key's are for MiniMax.
             // In this case our mini and max methods are the same,
             // but usually they are not.
-            Profiler.MinisMethodKeyNumber = (int)ExampleAIProfilerMethodKey.GetAllMoves;
-            Profiler.MaxsMethodKeyNumber = (int)ExampleAIProfilerMethodKey.GetAllMoves;
+            Profiler.MinisProfilerTag = (int)ExampleAIProfilerTags.GetAllMoves;
+            Profiler.MaxsProfilerTag = (int)ExampleAIProfilerTags.GetAllMoves;
 
             // Finally I need to tell the profiler how many levels deep my MiniMax got during
             // this turn. Normally I would give it a variable, but since I hardcoded ExampleAI
@@ -102,7 +116,7 @@ namespace ExampleAI
         /// <returns>Returns true if the move was valid</returns>
         public bool IsValidMove(ChessBoard boardBeforeMove, ChessMove moveToCheck, ChessColor colorOfPlayerMoving)
         {
-            Profiler.AddToProfile((int)ExampleAIProfilerMethodKey.IsValidMove);
+            Profiler.IncrementTagCount((int)ExampleAIProfilerTags.IsValidMove);
 
             // This AI isn't sophisticated enough to validate moves, therefore
             // just tell UvsChess that all moves are valid.
@@ -120,7 +134,7 @@ namespace ExampleAI
         /// <returns>A chess move.</returns>
         ChessMove MoveAPawn(ChessBoard currentBoard, ChessColor myColor)
         {
-            Profiler.AddToProfile((int)ExampleAIProfilerMethodKey.MoveAPawn);
+            Profiler.IncrementTagCount((int)ExampleAIProfilerTags.MoveAPawn);
             List<ChessMove> allMyMoves = GetAllMoves(currentBoard, myColor);
             ChessMove myChosenMove = null;
             Random random = new Random();
@@ -151,7 +165,7 @@ namespace ExampleAI
         /// <returns>List of ChessMoves</returns>
         List<ChessMove> GetAllMoves(ChessBoard currentBoard, ChessColor myColor)
         {
-            Profiler.AddToProfile((int)ExampleAIProfilerMethodKey.GetAllMoves);
+            Profiler.IncrementTagCount((int)ExampleAIProfilerTags.GetAllMoves);
             // This method only generates moves for pawns to move one space forward.
             // It does not generate moves for any other pieces.
             List<ChessMove> allMoves = new List<ChessMove>();
@@ -188,7 +202,7 @@ namespace ExampleAI
         public void AddAllPossibleMovesToDecisionTree(List<ChessMove> allMyMoves, ChessMove myChosenMove, 
                                                       ChessBoard currentBoard, ChessColor myColor)
         {
-            Profiler.AddToProfile((int)ExampleAIProfilerMethodKey.AddAllPossibleMovesToDecisionTree);
+            Profiler.IncrementTagCount((int)ExampleAIProfilerTags.AddAllPossibleMovesToDecisionTree);
             Random random = new Random();
 
             // Create the decision tree object
@@ -294,7 +308,7 @@ namespace ExampleAI
         public AISetDecisionTreeCallback SetDecisionTree { get; set; }
         #endregion
 
-        private enum ExampleAIProfilerMethodKey
+        private enum ExampleAIProfilerTags
         {
             AddAllPossibleMovesToDecisionTree,
             GetAllMoves,

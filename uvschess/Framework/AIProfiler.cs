@@ -34,7 +34,7 @@ namespace UvsChess
 {
     public class AIProfiler
     {
-        internal const int MaxMethodsToProfile = 1000;
+        internal const int MaxProfilerTags = 1000;
         private int _numFrameworkMethods;
 
         #region private properties
@@ -59,19 +59,19 @@ namespace UvsChess
         /// <summary>
         /// Use this property to assign names to each of the method key values.
         /// </summary>
-        public string[] KeyNames { private get; set; }
+        public string[] TagNames { private get; set; }
 
         /// <summary>
         /// Use this property to assign the method key number for the AI's Mini method.
         /// This needs to be set in order for the profiler to calculate the AI's nodes/sec value.
         /// </summary>
-        public int MinisMethodKeyNumber { private get; set; }
+        public int MinisProfilerTag { private get; set; }
 
         /// <summary>
         /// Use this property to assign the method key number for the AI's Max method.
         /// This needs to be set in order for the profiler to calculate the AI's nodes/sec value.
         /// </summary>
-        public int MaxsMethodKeyNumber { private get; set; }
+        public int MaxsProfilerTag { private get; set; }
         #endregion
 
 
@@ -83,8 +83,8 @@ namespace UvsChess
         internal AIProfiler(ChessColor myColor)
         {
             NodesPerSecond = -1;
-            MinisMethodKeyNumber = -1;
-            MaxsMethodKeyNumber = -1;
+            MinisProfilerTag = -1;
+            MaxsProfilerTag = -1;
             AIName = string.Empty;
             AIColor = myColor;
             Depth = 0;
@@ -98,10 +98,10 @@ namespace UvsChess
         }
 
         /// <summary>
-        /// This method increments the method call count by 1 for the method with the specified method key.
+        /// This method increments the profiler tag count by 1.
         /// </summary>
-        /// <param name="methodKey">The method key for the method that was called.</param>
-        public void AddToProfile(int methodKey)
+        /// <param name="profilerTag">The profiler tag for the method that was called.</param>
+        public void IncrementTagCount(int profilerTag)
         {
             if (! IsEnabled)
             {
@@ -111,10 +111,10 @@ namespace UvsChess
             if (Profile == null)
             {
                 FxProfile = new int[_numFrameworkMethods];
-                Profile = new int[MaxMethodsToProfile];
+                Profile = new int[MaxProfilerTags];
             }
 
-            ++Profile[methodKey];
+            ++Profile[profilerTag];
         }
 
         /// <summary>
@@ -127,14 +127,14 @@ namespace UvsChess
         }
 
         /// <summary>
-        /// This method is used by the framework to increment the method call count for the framework methods.
+        /// This method is used by the framework to increment the profiler tag for tags defined by the framework.
         /// </summary>
-        /// <param name="methodKey">framework method key for the method that was called.</param>
-        internal void AddToFxProfile(int methodKey)
+        /// <param name="profilerTag">framework profiler tag for the method that was called.</param>
+        internal void AddToFxProfile(int profilerTag)
         {
             if (IsEnabled)
             {
-                ++FxProfile[methodKey];
+                ++FxProfile[profilerTag];
             }
         }
 
@@ -147,7 +147,7 @@ namespace UvsChess
         {
             if (IsEnabled)
             {
-                if ((KeyNames == null) || KeyNames.Length == 0)
+                if ((TagNames == null) || TagNames.Length == 0)
                 {
                     log(this.AIColor.ToString() + ": To use the profiler, you must set Profiler.MethodNames to a list of enum names that you used with the integer keys");
                 }
@@ -162,7 +162,7 @@ namespace UvsChess
                 FxTurns.Add(FxProfile);
 
                 FxProfile = new int[_numFrameworkMethods];
-                Profile = new int[MaxMethodsToProfile];
+                Profile = new int[MaxProfilerTags];
             }
         }
 
@@ -175,7 +175,7 @@ namespace UvsChess
             List<string> output = new List<string>();
             if (IsEnabled)
             {
-                if ((KeyNames == null) || (KeyNames.Length == 0))
+                if ((TagNames == null) || (TagNames.Length == 0))
                 {
                     output.Add(this.AIColor.ToString() + ": To use the profiler, you must set Profiler.MethodNames to a list of enum names that you used with the integer keys");
                 }
@@ -237,15 +237,15 @@ namespace UvsChess
                     output.Add(sb.ToString());
 
                     int totalNodes = 0;
-                    for (int curProfiledMethod = 0; curProfiledMethod < KeyNames.Length; curProfiledMethod++)
+                    for (int curProfiledMethod = 0; curProfiledMethod < TagNames.Length; curProfiledMethod++)
                     {
                         int total = 0;
-                        output.Add(WriteProfileLine("AI", Turns, curProfiledMethod, KeyNames, ref total));
+                        output.Add(WriteProfileLine("AI", Turns, curProfiledMethod, TagNames, ref total));
 
-                        if ((MinisMethodKeyNumber != -1) &&
-                            (MaxsMethodKeyNumber != -1) &&
-                            ((MinisMethodKeyNumber == curProfiledMethod) ||
-                             (MaxsMethodKeyNumber == curProfiledMethod)))
+                        if ((MinisProfilerTag != -1) &&
+                            (MaxsProfilerTag != -1) &&
+                            ((MinisProfilerTag == curProfiledMethod) ||
+                             (MaxsProfilerTag == curProfiledMethod)))
                         {
                             totalNodes += total;
                         }                       
