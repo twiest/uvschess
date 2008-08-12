@@ -6,8 +6,8 @@ Writing a chess AI can be intimidating for many students, especially when they'r
 == Week 1 - Random AI ==
 
  The student should be able to deliver a working and valid AI and the end of week one. The AI must meet the following requirements:
-* Must compile and implement IChessAI interface
-* Must be playable
+ * Must compile and implement IChessAI interface
+ * Must be playable
  * Must validate the opponents moves `IsValidMove()`
  * Must generate a list of all possible valid moves for a given chess board
  * Must return a random move from the list of possible moves `GetNextMove()`
@@ -18,7 +18,10 @@ Writing a chess AI can be intimidating for many students, especially when they'r
 == Week 2 - Greedy AI ==
 
 The student should deliver an AI that meets all of Random AI's requirements, plus the following:
-* Must use heuristics to evaluate a given chess board and assign it a point value.
-* Must evaluated all the possible moves for a given chess board and select the best choice.
+ * Must use heuristics to evaluate a given chess board and assign it a point value.
+ * Must evaluated all the possible moves for a given chess board and select the best choice.
 
 == Week 3 - Mini-Max AI ==
+
+
+
