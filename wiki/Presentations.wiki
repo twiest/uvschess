@@ -1,3 +1,5 @@
+#summary Presentations on UvsChess and chess AI in general
+
 = Introduction =
 
 On this page you will be able to download the presentation materials for UVSChess.

@@ -1,3 +1,5 @@
+#summary Screenshots of UvsChess on XP, openSUSE, and Mac OSX
+
 Here are some screenshots of !UvsChess in action.
 
 !UvsChess running on Windows XP

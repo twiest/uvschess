@@ -11,8 +11,8 @@ The student should be able to deliver a working and valid AI and the end of week
  * Validate the opponents moves `IsValidMove()`
  * Generate a list of all possible valid moves for a given chess board
  * Return a random move from the list of possible moves `GetNextMove()`
- * Implement the Profiler for debugging purposes http://code.google.com/p/uvschess/wiki/ProfilerHowTo
- * Implement the Decision Tree for debugging purposes  (url to wiki howto?)
+ * Implement the Profiler for debugging purposes [http://code.google.com/p/uvschess/wiki/ProfilerHowTo Profiler Tutorial]
+ * Implement the Decision Tree for debugging purposes [http://code.google.com/p/uvschess/wiki/DecisionTreeHowTo Decision Tree Tutorial]
 
 
 == Week 2 - Greedy AI ==
