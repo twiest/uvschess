@@ -107,6 +107,17 @@ The Profiler automatically logs the time (in milliseconds) for each turn. The pr
 }}}
 
 
+== Setting the depth reached ==
+As you keep track of the depth that Mini-Max hits, you will want to set that in the profiler. 
+Set this method as you run through Mini-Max. This data will be output with the rest of the profiler data
+
+{{{
+#if DEBUG
+	Profiler.SetDepthReachedDuringThisTurn(depth);
+#endif
+}}}
+            
+            
 ==Viewing Profiler Results==
 
 The profiler data is output to the main log window when a game is stopped. The data is output in csv format to make it easier to import the data into a spreadsheet. 
