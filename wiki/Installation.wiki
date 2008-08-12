@@ -1,17 +1,17 @@
 #summary How to get UvsChess, and how to compile it on your computer
 
-= Setting up UvsChess =
+= Setting up !UvsChess =
 
-UvsChess was created with [http://www.microsoft.com/express/vcsharp/ Visual C# 2008 Express]. Students using Windows should use Visual Studio 2008 (Express or Professional). Students running Mac OSX and Linux should use [http://www.monodevelop.com/Download MonoDevelop]
+!UvsChess was created with [http://www.microsoft.com/express/vcsharp/ Visual C# 2008 Express]. Students using Windows should use Visual Studio 2008 (Express or Professional). Students running Mac OSX and Linux should use [http://www.monodevelop.com/Download MonoDevelop]
 
-Students should download the zip file of UvsChess and extract it on their local machine. Students should not check out the project via svn, as svn is sometimes unstable and broken. Once the archive is extracted, the student should open `UvsChess.sln` with their IDE (Visual Studio for Windows, MonoDevelop for Linux, Mac).
+Students should download the zip file of UvsChess and extract it on their local machine. Students should not check out the project via svn, as svn is sometimes unstable and broken. Once the archive is extracted, the student should open `UvsChess.sln` with their IDE (Visual Studio for Windows, !MonoDevelop for Linux, Mac).
 
 The project should compile out of the box. 
 
 
 = Contributing =
 
-We welcome suggestions, patches, bug fixes, and the like!  We are always interested in what students think of UvsChess. If you come across any bugs or would like to request a new feature, let us know about them by [http://code.google.com/p/uvschess/issues/entry entering an issue] in googlecode's Issue Tracker.
+We welcome suggestions, patches, bug fixes, and the like!  We are always interested in what students think of !UvsChess. If you come across any bugs or would like to request a new feature, let us know about them by [http://code.google.com/p/uvschess/issues/entry entering an issue] in googlecode's Issue Tracker.
 
 
 If you would like to contribute or compile the latest and greatest revision, see the [http://code.google.com/p/uvschess/source/checkout Source tab] to information on checking out the project.
