@@ -16,4 +16,4 @@ We welcome suggestions, patches, bug fixes, and the like!  We are always interes
 
 If you would like to contribute or compile the latest and greatest revision, see the [http://code.google.com/p/uvschess/source/checkout Source tab] for information on checking out the project.
 
-If you would like to contribute a bug fix or a new feature, feel free to email the [uvschess@googlegroups.com mailing list] with a patch. 
+If you would like to contribute a bug fix or a new feature, feel free to email the [mailto:uvschess@googlegroups.com mailing list] with a patch. 
