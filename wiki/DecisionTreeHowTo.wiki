@@ -1,0 +1,4 @@
+#summary Tutorial on using the Decision Tree in your AI
+
+= Introduction =
+The decision tree is very useful in debugging your AI. Your AI will undoubtedly make decisions that you may think are wrong. Using the decision tree, you can look at the AI's thought process in selecting a chess move. Often times, the horizon effect is the cause of questionable moves.
