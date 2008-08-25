@@ -30,7 +30,7 @@ using System.Text;
 
 namespace UvsChess.Framework
 {
-    public class ChessState
+    internal class ChessState
     {
         #region Members
         public const string FenStartState = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";

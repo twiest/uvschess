@@ -27,7 +27,7 @@
 
 namespace UvsChess.Gui
 {
-    partial class WinGui
+    internal partial class WinGui
     {
         /// <summary>
         /// Required designer variable.
@@ -643,7 +643,7 @@ namespace UvsChess.Gui
         public  System.Windows.Forms.OpenFileDialog openFileDialog1;
         public  System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.SplitContainer splitContainer2;
-        public  GuiChessBoard chessBoardControl;
+        internal GuiChessBoard chessBoardControl;
         private System.Windows.Forms.TabControl tabLogs;
         private System.Windows.Forms.TabPage tabMainLog;
         public  System.Windows.Forms.ListBox lstMainLog;

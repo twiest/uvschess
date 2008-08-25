@@ -27,7 +27,7 @@
 
 namespace UvsChess.Gui
 {
-    partial class AboutUvsChess
+    internal partial class AboutUvsChess
     {
         /// <summary>
         /// Required designer variable.

@@ -5,7 +5,7 @@ using System.Text;
 namespace UvsChess.Framework
 {
     // Students don't need to see this class
-    class AI
+    internal class AI
     {
         public string FullName;
         public string ShortName;

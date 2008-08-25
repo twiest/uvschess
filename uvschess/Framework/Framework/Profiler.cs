@@ -32,7 +32,7 @@ using UvsChess.Gui;
 
 namespace UvsChess.Framework
 {
-    public class Profiler
+    internal class Profiler
     {
         private static ChessColor _currentPlayerColor;
 

@@ -31,7 +31,7 @@ using UvsChess.Gui;
 
 namespace UvsChess.Framework
 {
-    public class Program
+    internal class Program
     {
         [STAThread]
         static void Main(string[] args)

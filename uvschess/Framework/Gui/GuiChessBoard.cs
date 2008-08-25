@@ -34,7 +34,7 @@ using System.Windows.Forms;
 
 namespace UvsChess.Gui
 {
-    public partial class GuiChessBoard : UserControl
+    internal partial class GuiChessBoard : UserControl
     {
         public delegate void PieceMovedByHumanDelegate(ChessMove move);
 

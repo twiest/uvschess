@@ -4,7 +4,7 @@ using System.Text;
 
 namespace UvsChess.Gui
 {
-    public class GuiEvent
+    internal class GuiEvent
     {
         public GuiEventLoop.ObjectParameterCallback EventCallback { get; set; }
         public object[] EventArgs { get; set; }

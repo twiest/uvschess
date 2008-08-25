@@ -27,7 +27,7 @@
 
 namespace UvsChess.Gui
 {
-    partial class GuiChessBoard
+    internal partial class GuiChessBoard
     {
         /// <summary> 
         /// Required designer variable.

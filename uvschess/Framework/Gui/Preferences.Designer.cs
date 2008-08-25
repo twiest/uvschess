@@ -27,7 +27,7 @@
 
 namespace UvsChess.Gui
 {
-    partial class Preferences
+    internal partial class Preferences
     {
         /// <summary>
         /// Required designer variable.

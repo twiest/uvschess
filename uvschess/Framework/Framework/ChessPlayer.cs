@@ -34,7 +34,7 @@ using System.Threading;
 namespace UvsChess.Framework
 {
     // Students don't need to see this class
-    class ChessPlayer
+    internal class ChessPlayer
     {
         public ChessColor Color;
         public string AIName;

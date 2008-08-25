@@ -32,7 +32,7 @@ using System.IO;
 
 namespace UvsChess.Gui
 {
-    public static class GuiEventLoop
+    internal static class GuiEventLoop
     {
         public static WinGui MainForm = null;
 

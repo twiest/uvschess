@@ -1,6 +1,6 @@
 ﻿namespace UvsChess.Gui
 {
-    partial class MessageBox
+    internal partial class MessageBox
     {
         /// <summary>
         /// Required designer variable.

@@ -32,7 +32,7 @@ using System.IO;
 
 namespace UvsChess.Framework
 {
-    class DllLoader
+    internal class DllLoader
     {
         private static List<AI> _availableais = new List<AI>();
         public static List<AI> AvailableAIs

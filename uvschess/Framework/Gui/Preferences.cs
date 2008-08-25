@@ -34,7 +34,7 @@ using System.IO;
 
 namespace UvsChess.Gui
 {
-    public partial class Preferences : Form
+    internal partial class Preferences : Form
     {
         #region Members
 
