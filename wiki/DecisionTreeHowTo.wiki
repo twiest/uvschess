@@ -1,4 +1,73 @@
 #summary Tutorial on using the Decision Tree in your AI
 
 = Introduction =
-The decision tree is very useful in debugging your AI. Your AI will undoubtedly make decisions that you may think are wrong. Using the decision tree, you can look at the AI's thought process in selecting a chess move. Often times, the horizon effect is the cause of questionable moves.
+The decision tree is very useful in debugging your AI. Your AI will undoubtedly make decisions that you may think are wrong. Using the decision tree, you can look at the AI's thought process in selecting a chess move. Often times, the [http://en.wikipedia.org/wiki/Horizon_effect horizon effect] is the cause of questionable moves.
+
+== Using #if ==
+As with the profiler, using the decision tree will add unwanted overhead to your AI. Be sure to wrap all decision tree code in #if statements so you can recompile with out that overhead for the competition.
+
+{{{
+#if DEBUG
+	//Some code that only gets compiled when DEBUG is defined
+#endif
+}}}
+
+
+
+== Initialize the Decision Tree ==
+
+
+In `GetNextMove()` before anything else, set `Profiler.KeyNames` to the tags in your enum.
+{{{
+
+#if DEBUG
+	DecisionTree dt = new DecisionTree(currentBoard);
+
+	// Tell UvsChess about the decision tree object
+	SetDecisionTree(dt);
+#endif
+}}}
+
+== Decision Tree in Mini-Max ==
+
+The Decision Tree class is a tree structure of many Decision Tree objects. As your AI traverses Mini-max, set properties in the Decision Tree. Below is the standard pseudo code for the Mini max algorithm. Decision Tree code has been inserted approximately in the proper places for the tree to work. 
+
+
+{{{
+
+
+function minValue(state,A,B)
+{
+	if (terminal)
+	{
+		return value;
+	}
+
+	for s in succ(state)
+	{
+	    	
+	    	Add s to DT
+		//Set focus on the child and follow that tree.
+		DT = DT.LastChild
+
+		v = min(maxValue(s,A,B), v);
+		
+		Set focue back on parent
+		DT = DT.Parent
+
+		if (v <= A)
+		{
+			return v;
+			DT.BestChildMove = v
+		}
+		
+		
+
+		B = min(B,v);
+	}
+
+	return v;
+}
+         
+
+}}}
