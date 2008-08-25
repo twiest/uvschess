@@ -34,6 +34,11 @@ namespace UvsChess
     public class ChessLocation
     {
         #region Constructors
+        /// <summary>
+        /// Creates a ChessLocation object
+        /// </summary>
+        /// <param name="x">Column number. Ranges 0 - 7</param>
+        /// <param name="y">Row number. Ranges from 0 - 7</param>
         public ChessLocation(int x, int y)
         {
             Profiler.AddToMainProfile((int)ProfilerMethodKey.ChessLocation_ctor_int_int);
