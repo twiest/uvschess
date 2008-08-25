@@ -34,7 +34,7 @@ using System.Windows.Forms;
 
 namespace UvsChess.Gui
 {
-    partial class AboutUvsChess : Form
+    internal partial class AboutUvsChess : Form
     {
         public AboutUvsChess()
         {

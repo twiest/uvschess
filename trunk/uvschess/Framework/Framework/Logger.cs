@@ -32,7 +32,7 @@ using UvsChess.Gui;
 
 namespace UvsChess.Framework
 {
-    public class Logger
+    internal class Logger
     {
         public delegate void LogCallback(string msg);
 

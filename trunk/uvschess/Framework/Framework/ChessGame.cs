@@ -31,7 +31,7 @@ using System.Threading;
 
 namespace UvsChess.Framework
 {
-    public class ChessGame
+    internal class ChessGame
     {
         public delegate void UpdatedStateDelegate(ChessState state);
         public delegate void SetGuiChessBoard_IsLockedDelegate(bool isLocked);

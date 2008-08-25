@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace UvsChess.Gui
 {
-    public partial class GuiDecisionTree : Form
+    internal partial class GuiDecisionTree : Form
     {
         UvsChess.DecisionTree _dt = null;
         List<ListBox> decisionListBoxes = new List<ListBox>();

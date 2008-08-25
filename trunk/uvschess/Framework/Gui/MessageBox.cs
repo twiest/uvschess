@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace UvsChess.Gui
 {
-    public partial class MessageBox : Form
+    internal partial class MessageBox : Form
     {
         public static Form MainForm = null;
 

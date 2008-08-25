@@ -32,7 +32,7 @@ using UvsChess.Framework;
 
 namespace UvsChess.Gui
 {
-    public partial class WinGui : Form
+    internal partial class WinGui : Form
     {
         List<AI> AvailableAIs = new List<AI>();
 

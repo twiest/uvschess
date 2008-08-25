@@ -1,6 +1,6 @@
 ﻿namespace UvsChess.Gui
 {
-    partial class GuiDecisionTree
+    internal partial class GuiDecisionTree
     {
         /// <summary>
         /// Required designer variable.

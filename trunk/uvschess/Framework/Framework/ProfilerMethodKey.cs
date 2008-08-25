@@ -4,7 +4,7 @@ using System.Text;
 
 namespace UvsChess.Framework
 {
-    public enum ProfilerMethodKey:int
+    internal enum ProfilerMethodKey:int
     {
         ChessBoard_ctor,
         ChessBoard_ctor_string,
