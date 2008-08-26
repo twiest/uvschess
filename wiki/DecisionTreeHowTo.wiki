@@ -37,13 +37,13 @@ The !DecisionTree was created specifically for Mini-Max. However, it can still b
 {{{
 function randomAI(board)
 {
-   allMoves = GetAllMoves(board);
-   foreach (curMove in allMoves)
-   {
-      // Add the current move to the decision tree
-      // Make sure to add _all_ moves to the decision tree
-      DT.AddChild(board, curMove);
-   }
+	allMoves = GetAllMoves(board);
+	foreach (curMove in allMoves)
+	{
+		// Add the current move to the decision tree
+		// Make sure to add _all_ moves to the decision tree
+		DT.AddChild(board, curMove);
+	}
 }
 }}}
 
