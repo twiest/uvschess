@@ -1,7 +1,7 @@
 #summary Tutorial on using the Decision Tree in your AI
 
 = Introduction =
-The decision tree is very useful in debugging your AI. Your AI will undoubtedly make decisions that you may think are wrong. Using the decision tree, you can look at the AI's thought process in selecting a chess move. Often times, the [http://en.wikipedia.org/wiki/Horizon_effect horizon effect] is the cause of questionable moves. The decision tree will help you to see if a questionable move is caused by the horizon effect (which is not a bug), or if it is caused by a bug in your code.
+The decision tree is very useful in debugging your AI. Your AI will undoubtedly make decisions that you may think are wrong. Using the decision tree, you can look at the AI's thought process in selecting a chess move. Often times, the [http://en.wikipedia.org/wiki/Horizon_effect horizon effect] is the cause of questionable moves. The decision tree will help you to see if a questionable move is caused by the [http://en.wikipedia.org/wiki/Horizon_effect horizon effect] (which is not a bug), or if it is caused by a bug in your code.
 
 == Using #if ==
 As with the profiler, using the decision tree will add unwanted overhead to your AI. Be sure to wrap all decision tree code in #if statements so you can recompile without that overhead for the competition.
@@ -14,23 +14,40 @@ As with the profiler, using the decision tree will add unwanted overhead to your
 
 
 
-== Initialize the Decision Tree ==
+== Initialize the !DecisionTree ==
 
 
-In `GetNextMove()` before anything else, set `Profiler.KeyNames` to the tags in your enum.
+In `GetNextMove()` create the !DecisionTree object that you will use inside !MiniMax. It's best to do this before your call to the !MiniMax methods.
 {{{
 
 #if DEBUG
+        // Create a new decision tree object using the current board
 	DecisionTree dt = new DecisionTree(currentBoard);
 
 	// Tell UvsChess about the decision tree object
 	SetDecisionTree(dt);
 #endif
+
 }}}
 
-== Decision Tree in Mini-Max ==
+== Adding the !DecisionTree to RandomAI ==
 
-The Decision Tree class is a tree structure of many Decision Tree objects. As your AI traverses Mini-max, set properties in the Decision Tree. Below is the standard pseudo code for the Mini max algorithm. Decision Tree code has been inserted approximately in the proper places for the tree to work. 
+The !DecisionTree was created specifically for Mini-Max. However, it can still be of great use for earlier assignments like !RandomAI. For instance, you can see if your AI is generating all of the possible valid moves given a current board.
+
+{{{
+function randomAI(board)
+{
+   allMoves = GetAllMoves(board);
+   foreach (curMove in allMoves)
+   {
+      DT.AddChild(board, curMove);
+   }
+}
+}}}
+
+== Adding the !DecisionTree to Mini-Max ==
+
+The !DecisionTree class is a tree structure containing other !DecisionTree objects. As your AI traverses Mini-max, add the decisions made by the AI to the !DecisionTree. Below is the standard pseudo code for the Mini max algorithm. Decision Tree code has been inserted approximately in the proper places for the tree to work. 
 
 
 {{{
@@ -44,24 +61,27 @@ function minValue(state,A,B)
 	}
 
 	for s in succ(state)
-	{
-	    	
-	    	Add s to DT
-		//Set focus on the child and follow that tree.
-		DT = DT.LastChild
+	{	    	
+                // Add the current move to the decision tree
+                // Make sure to add _all_ moves to the decision tree
+	    	DT.AddChild(boardBeforeMove, s.Move);
+
+		// Since MiniMax is going to descend into the move, the
+                // decision tree needs to as well.
+		DT = DT.LastChild;
 
 		v = min(maxValue(s,A,B), v);
 		
-		Set focue back on parent
-		DT = DT.Parent
+		// We've investigated that tree, now let's go back to the parent
+		DT = DT.Parent;
 
 		if (v <= A)
 		{
+                        // Here we've decided what the best move is, so set the
+                        // best move in the decision tree.
+                        DT.BestChildMove = v;
 			return v;
-			DT.BestChildMove = v
 		}
-		
-		
 
 		B = min(B,v);
 	}
