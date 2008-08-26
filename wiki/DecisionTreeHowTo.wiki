@@ -8,7 +8,7 @@ As with the profiler, using the decision tree will add unwanted overhead to your
 
 {{{
 #if DEBUG
-	//Some code that only gets compiled when DEBUG is defined
+	// Some code that only gets compiled when DEBUG is defined
 #endif
 }}}
 
