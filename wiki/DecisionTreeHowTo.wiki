@@ -1,7 +1,7 @@
 #summary Tutorial on using the Decision Tree in your AI
 
 = Introduction =
-The decision tree is very useful in debugging your AI. Your AI will undoubtedly make decisions that you may think are wrong. Using the decision tree, you can look at the AI's thought process in selecting a chess move. Often times, the [http://en.wikipedia.org/wiki/Horizon_effect horizon effect] is the cause of questionable moves. The decision tree will help you to see if a questionable is caused by the horizon effect (which is not a bug), or if it is caused by a bug in your code.
+The decision tree is very useful in debugging your AI. Your AI will undoubtedly make decisions that you may think are wrong. Using the decision tree, you can look at the AI's thought process in selecting a chess move. Often times, the [http://en.wikipedia.org/wiki/Horizon_effect horizon effect] is the cause of questionable moves. The decision tree will help you to see if a questionable move is caused by the horizon effect (which is not a bug), or if it is caused by a bug in your code.
 
 == Using #if ==
 As with the profiler, using the decision tree will add unwanted overhead to your AI. Be sure to wrap all decision tree code in #if statements so you can recompile without that overhead for the competition.
