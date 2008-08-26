@@ -32,7 +32,7 @@ In `GetNextMove()` create the !DecisionTree object that you will use inside !Min
 
 == Adding the !DecisionTree to RandomAI ==
 
-The !DecisionTree was created specifically for Mini-Max. However, it can still be of great use for earlier assignments like !RandomAI. For instance, you can see if your AI is generating all of the possible valid moves given a current board.
+The !DecisionTree was created specifically for Mini-Max. However, it can still be of great use for earlier assignments like RandomAI. For instance, you can see if your AI is generating all of the possible valid moves given a current board.
 
 {{{
 function randomAI(board)
