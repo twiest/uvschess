@@ -47,6 +47,27 @@ function randomAI(board)
 }
 }}}
 
+== Adding the !DecisionTree to GreedyAI ==
+
+For GreedyAI, the only change for the !DecisionTree is to show which move has been selected. Do this by setting !DecisionTree.!BestChildMove to the selected move.
+
+{{{
+function greedyAI(board)
+{
+	allMoves = GetAllMoves(board);
+        bestMove = GetBestMove(allMoves);
+        DT.BestChildMove = bestMove;
+
+        // You still need to add all of the moves to the DecisionTree
+	foreach (curMove in allMoves)
+	{
+		// Add the current move to the decision tree
+		// Make sure to add _all_ moves to the decision tree
+		DT.AddChild(board, curMove);
+	}
+}
+}}}
+
 == Adding the !DecisionTree to Mini-Max ==
 
 The !DecisionTree class is a tree structure containing other !DecisionTree objects. As your AI traverses Mini-max, add the decisions made by the AI to the !DecisionTree. Below is the standard pseudo code for the Mini max algorithm. Decision Tree code has been inserted approximately in the proper places for the tree to work. 
