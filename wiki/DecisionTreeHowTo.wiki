@@ -85,7 +85,7 @@ function minValue(state,A,B)
 		{
                         // Here we've decided what the best move is, so set the
                         // best move in the decision tree.
-                        DT.BestChildMove = v;
+                        DT.BestChildMove = s.Move;
 			return v;
 		}
 
