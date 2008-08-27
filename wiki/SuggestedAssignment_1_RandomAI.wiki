@@ -1,4 +1,4 @@
-#summary Suggested Assignment #1
+#summary Suggested Assignment #1 - Random AI
 
 = Introduction =
 
