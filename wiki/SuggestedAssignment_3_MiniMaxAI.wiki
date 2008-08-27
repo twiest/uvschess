@@ -2,12 +2,12 @@
 
 = Introduction =
 
-The purpose of this assignment is for the student to implement MiniMax and add that to their AI.
+The purpose of this assignment is for the student to implement !MiniMax and add that to their AI.
 
-When the student is done with this assignment, the AI will be able to pick the best overall move based on how deep the AI was able to get in the MiniMax tree.
+When the student is done with this assignment, the AI will be able to pick the best overall move based on how deep the AI was able to get in the !MiniMax tree.
 
 
 = Requirements =
 
- * Implement the MiniMax algorithm and add it to your AI.
- * Add the code to make the !DecisionTree have all of the information from MiniMax
+ * Implement the !MiniMax algorithm and add it to your AI.
+ * Add the code to make the !DecisionTree have all of the information from !MiniMax
