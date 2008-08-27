@@ -2,7 +2,9 @@
 
 = Introduction =
 
-The purpose of this assignment is to get the student familiar with the chess AI framework, and to start actually coding the easy parts of the chess AI. When the student is done with this assignment, the AI will be able to generate valid chess moves and also validate the opponent moves.
+The purpose of this assignment is to get the student familiar with the chess AI framework, and to start actually coding the easy parts of the chess AI.
+
+When the student is done with this assignment, the AI will be able to generate valid chess moves, pick one of those moves at random and validate the opponent's moves.
 
 
 = Requirements =
