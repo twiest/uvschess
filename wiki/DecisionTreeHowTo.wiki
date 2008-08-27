@@ -73,6 +73,10 @@ function minValue(state,A,B)
 		DT = DT.LastChild;
 
 		v = min(maxValue(s,A,B), v);
+
+                // This move will eventually be valued at v, so set that
+                // in the decision tree.
+                DT.EventualMoveValue = v.ToString();
 		
 		// We've investigated that tree, now let's go back to the parent
 		DT = DT.Parent;
