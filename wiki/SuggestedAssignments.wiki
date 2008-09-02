@@ -19,6 +19,8 @@ The student should be able to deliver a working and valid AI and the end of week
 
 == Week 2 - Greedy AI ==
 
+See: [SuggestedAssignment_2_GreedyAI Suggested Assignment 2]
+
 The student should deliver an AI that meets all of Random AI's requirements, plus these additional requirements. The AI must:
  * Use heuristics to evaluate a given chess board and assign it a point value.
  * Evaluate all the possible moves for a given chess board and select the best choice.
@@ -37,6 +39,8 @@ The preliminary competition should occur after the students Greedy AI. This shou
 The instructor and students may decide to hold more than one preliminary competition.
 
 == Week 3 - Mini-Max AI ==
+
+See: [SuggestedAssignment_3_MiniMaxAI Suggested Assignment 3]
 
 The student should deliver an AI that meets all of Greedy AI and Random AI's requirements, plus the following additional requirements. The AI must:
  * Generate a tree of future moves and opponents moves.
