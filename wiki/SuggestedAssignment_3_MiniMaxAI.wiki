@@ -11,4 +11,4 @@ When the student is done with this assignment, the AI will be able to pick the b
 
  * Implement the !MiniMax algorithm and add it to your AI.
  * Add the code to make the !DecisionTree have all of the information from !MiniMax
- * Be able to play a full game with RuntAI_!MiniMax
+ * Be able to play a full game with `RuntAI_MiniMax`
