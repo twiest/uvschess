@@ -13,4 +13,7 @@ When the student is done with this assignment, the AI will be able to pick the b
  * *All* chess moves should show up in the !DecisionTree with their values (Nothing extra should need to be done for this to happen).
  * The Chosen move should show up with the "->" next to it in the !DecisionTree. Set *!DecisionTree.!BestChildMove* to the chosen move for this to happen.
  * Rename your AI's DLL to something other than StudentAI.dll. This can be done in Visual Studio under the project's build options.
- * Be able to play a full game with RuntAI_Greedy1
+ * Be able to play a full game with `RuntAI_Greedy1`
+
+= Resources =
+ * !DecisionTree !HowTo: [http://code.google.com/p/uvschess/wiki/DecisionTreeHowTo http://code.google.com/p/uvschess/wiki/DecisionTreeHowTo]
