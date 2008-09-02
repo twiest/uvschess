@@ -4,7 +4,7 @@
 
 !UvsChess was created with [http://www.microsoft.com/express/vcsharp/ Visual C# 2008 Express]. Students using Windows should use Visual Studio 2008 (Express or Professional). Students running Mac OSX and Linux should use [http://www.monodevelop.com/Download MonoDevelop]
 
-Students should download the zip file of UvsChess and extract it on their local machine. Students should not check out the project via svn, as svn is sometimes unstable and broken. Once the archive is extracted, the student should open `UvsChess.sln` with their IDE (Visual Studio for Windows, !MonoDevelop for Linux, Mac).
+Students should download the zip file of !UvsChess and extract it on their local machine. Students should not check out the project via svn, as svn is sometimes unstable and broken. Once the archive is extracted, the student should open `UvsChess.sln` with their IDE (Visual Studio for Windows, !MonoDevelop for Linux, Mac).
 
 The project should compile out of the box. 
 
