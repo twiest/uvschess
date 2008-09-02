@@ -10,7 +10,7 @@ When the student is done with this assignment, the AI will be able to pick the b
 = Requirements =
 
  * Implement the !MiniMax algorithm and add it to your AI.
- * Add the code to make the !DecisionTree have all of the information from !MiniMax. You should be able to step through all of the decisions your AI is making in the !DecisionTree Viewer.
+ * Add the code to make the !DecisionTree have all of the information from !MiniMax. You should be able to step through all of the decisions your AI is making in the !DecisionTree viewer.
  * Be able to play a full game with `RuntAI_MiniMax`
 
 = Resources =
