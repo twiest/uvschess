@@ -7,25 +7,9 @@ Writing a chess AI can be intimidating for many students, especially when they'r
 
 See: [SuggestedAssignment_1_RandomAI Suggested Assignment 1]
 
-The student should be able to deliver a working and valid AI and the end of week one. The AI must meet the following requirements. The AI must:
- * Compile and implement IChessAI interface
- * Be playable
- * Validate the opponents moves `IsValidMove()`
- * Generate a list of all possible valid moves for a given chess board
- * Return a random move from the list of possible moves `GetNextMove()`
- * Implement the Profiler for debugging purposes [http://code.google.com/p/uvschess/wiki/ProfilerHowTo Profiler Tutorial]
- * Implement the Decision Tree for debugging purposes [http://code.google.com/p/uvschess/wiki/DecisionTreeHowTo Decision Tree Tutorial]
-
-
 == Week 2 - Greedy AI ==
 
 See: [SuggestedAssignment_2_GreedyAI Suggested Assignment 2]
-
-The student should deliver an AI that meets all of Random AI's requirements, plus these additional requirements. The AI must:
- * Use heuristics to evaluate a given chess board and assign it a point value.
- * Evaluate all the possible moves for a given chess board and select the best choice.
- 
-Note that the AI does not look ahead at all. At this point, it is still only looking at the current move.
 
 == Preliminary Competition ==
 
@@ -41,11 +25,6 @@ The instructor and students may decide to hold more than one preliminary competi
 == Week 3 - Mini-Max AI ==
 
 See: [SuggestedAssignment_3_MiniMaxAI Suggested Assignment 3]
-
-The student should deliver an AI that meets all of Greedy AI and Random AI's requirements, plus the following additional requirements. The AI must:
- * Generate a tree of future moves and opponents moves.
- * Use the Mini-Max algorithm to select nodes to visit.
- * Use Alpha-Beta pruning to prune unwanted or unnecessary nodes from the tree.
 
 == Final Competition ==
 
