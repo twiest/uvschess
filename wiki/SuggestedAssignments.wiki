@@ -5,6 +5,8 @@ Writing a chess AI can be intimidating for many students, especially when they'r
 
 == Week 1 - Random AI ==
 
+See: [SuggestedAssignment_1_RandomAI Suggested Assignment 1]
+
 The student should be able to deliver a working and valid AI and the end of week one. The AI must meet the following requirements. The AI must:
  * Compile and implement IChessAI interface
  * Be playable
@@ -44,4 +46,3 @@ The student should deliver an AI that meets all of Greedy AI and Random AI's req
 == Final Competition ==
 
 The prelim and final competitions are run exactly the same, with the students compiling their dll and copying it to the host or officiating computer. The final competition should occur after the students have finished implementing Mini-Max. Students should remember to compile their AI in release mode. 
-
