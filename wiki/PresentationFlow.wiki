@@ -1,0 +1,34 @@
+#summary presentation flow
+
+  * Demo ExampleAI
+   * History Pane
+   * AI output window
+   * Start/Stop
+   * Open/Save Fen
+   
+  * Show IChessAI
+   * Show the 3 interface members that must be implemented
+   
+  * Show ExampleAI code
+   * Everything that they'll need from the framework is shown in ExampleAI
+   * Everything they'll need is in the UvsChess namespace and in the top level directory.
+   * Show Logging output to AI tab
+
+  * Show StudenAI project
+
+  * Show UvsChess project site
+   * Show Wiki help pages
+   * show mailing list
+   * Show Downloads
+   * show Issue Tracker   
+
+  * Decision Tree
+   * Show it in viewer (ExampleAI)
+   * Show it in viewer (Runt Mini-Max)
+   * Wiki help page
+   * Required for each assignment
+
+  * Profiler
+   * Show it in ExampleAI
+   * Show output in spreadsheet
+   * Wiki page
