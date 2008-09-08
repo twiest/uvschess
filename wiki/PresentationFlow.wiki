@@ -1,15 +1,15 @@
 #summary presentation flow
 
-  * Demo ExampleAI
+  * Demo ExampleAI  (Rusty)
    * History Pane
    * AI output window
    * Start/Stop
    * Open/Save Fen
    
-  * Show IChessAI
+  * Show IChessAI (Rusty)
    * Show the 3 interface members that must be implemented
    
-  * Show ExampleAI code
+  * Show ExampleAI code (Thomas)
    * Everything that they'll need from the framework is shown in ExampleAI
    * Everything they'll need is in the !UvsChess namespace and in the top level directory.
    * Show Logging output to AI tab
@@ -17,34 +17,34 @@
    * GC.Collect()
    * Static classes are ok, but avoid static variables.
 
-  * Show StudentAI project
+  * Show StudentAI project (Thomas)
 
-  * Show !UvsChess project site
+  * Show !UvsChess project site (Rusty)
    * Show Wiki help pages
    * show mailing list
    * Show Downloads
    * show Issue Tracker   
 
-  * Show them RuntAI
+  * Show them RuntAI (Thomas)
    * Show them errors and error messages that RuntAI displays
 
-  * Decision Tree
+  * Decision Tree (Thomas)
    * Show it in viewer (Runt Mini-Max)
    * show horizon effect in RuntAI-!MiniMax in viewer
    * Wiki help page
    * Required for each assignment
   
-  * Show assignment breakdown
+  * Show assignment breakdown (Rusty)
    * Random
    * Greedy
    * !MiniMax
 
-  * Profiler
+  * Profiler (Rusty)
    * Show it in ExampleAI
    * Show output in spreadsheet
    * Wiki page
 
-  * Other tips
+  * Other tips (Both)
    * Compile in Release mode for competitions
    * Use source code control (svn, git, mercurial)
    * TEST, Re-TEST, and TEST some more!
