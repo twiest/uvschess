@@ -55,6 +55,7 @@ namespace UvsChess.Gui
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WinGui));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -80,6 +81,7 @@ namespace UvsChess.Gui
             this.cmbWhite = new System.Windows.Forms.ComboBox();
             this.lstHistory = new System.Windows.Forms.ListBox();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.chessBoardControl = new UvsChess.Gui.GuiChessBoard();
             this.tabLogs = new System.Windows.Forms.TabControl();
             this.tabMainLog = new System.Windows.Forms.TabPage();
             this.btnSaveMainLog = new System.Windows.Forms.Button();
@@ -98,7 +100,6 @@ namespace UvsChess.Gui
             this.lstBlacksLog = new System.Windows.Forms.ListBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.chessBoardControl = new UvsChess.Gui.GuiChessBoard();
             this.menuStrip1.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -377,6 +378,16 @@ namespace UvsChess.Gui
             this.splitContainer2.SplitterDistance = 333;
             this.splitContainer2.TabIndex = 0;
             // 
+            // chessBoardControl
+            // 
+            this.chessBoardControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.chessBoardControl.IsLocked = false;
+            this.chessBoardControl.Location = new System.Drawing.Point(0, 0);
+            this.chessBoardControl.Name = "chessBoardControl";
+            this.chessBoardControl.Size = new System.Drawing.Size(333, 333);
+            this.chessBoardControl.TabIndex = 0;
+            this.chessBoardControl.TabStop = false;
+            // 
             // tabLogs
             // 
             this.tabLogs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -576,16 +587,6 @@ namespace UvsChess.Gui
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
-            // chessBoardControl
-            // 
-            this.chessBoardControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.chessBoardControl.IsLocked = false;
-            this.chessBoardControl.Location = new System.Drawing.Point(0, 0);
-            this.chessBoardControl.Name = "chessBoardControl";
-            this.chessBoardControl.Size = new System.Drawing.Size(333, 333);
-            this.chessBoardControl.TabIndex = 0;
-            this.chessBoardControl.TabStop = false;
-            // 
             // WinGui
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -593,6 +594,7 @@ namespace UvsChess.Gui
             this.ClientSize = new System.Drawing.Size(1064, 750);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "WinGui";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
