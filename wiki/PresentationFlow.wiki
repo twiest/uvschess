@@ -11,20 +11,23 @@
    
   * Show ExampleAI code
    * Everything that they'll need from the framework is shown in ExampleAI
-   * Everything they'll need is in the UvsChess namespace and in the top level directory.
+   * Everything they'll need is in the !UvsChess namespace and in the top level directory.
    * Show Logging output to AI tab
+   * Time limits, grace period
+   * GC.Collect()
+   * Static classes are ok, but avoid static variables.
 
-  * Show StudenAI project
+  * Show StudentAI project
 
-  * Show UvsChess project site
+  * Show !UvsChess project site
    * Show Wiki help pages
    * show mailing list
    * Show Downloads
    * show Issue Tracker   
 
   * Decision Tree
-   * Show it in viewer (ExampleAI)
    * Show it in viewer (Runt Mini-Max)
+   * show horizon effect in RuntAI-MiniMax in viewer
    * Wiki help page
    * Required for each assignment
 
