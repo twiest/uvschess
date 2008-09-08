@@ -25,13 +25,27 @@
    * Show Downloads
    * show Issue Tracker   
 
+  * Show them RuntAI
+   * Show them errors and error messages that RuntAI displays
+
   * Decision Tree
    * Show it in viewer (Runt Mini-Max)
-   * show horizon effect in RuntAI-MiniMax in viewer
+   * show horizon effect in RuntAI-!MiniMax in viewer
    * Wiki help page
    * Required for each assignment
+  
+  * Show assignment breakdown
+   * Random
+   * Greedy
+   * !MiniMax
 
   * Profiler
    * Show it in ExampleAI
    * Show output in spreadsheet
    * Wiki page
+
+  * Other tips
+   * Compile in Release mode for competitions
+   * Use source code control (svn, git, mercurial)
+   * TEST, Re-TEST, and TEST some more!
+   * Get it working first, THEN optimize
