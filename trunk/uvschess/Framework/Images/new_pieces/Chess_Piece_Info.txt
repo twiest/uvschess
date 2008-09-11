@@ -1,0 +1,12 @@
+All Width: 33px or 40px
+
+Pawn Height: 50px
+
+Rook and Knight Height: 55px
+
+Bishop and Queen Height: 60px
+
+King Height: 65px
+
+
+Bottom of piece floor: 5px
