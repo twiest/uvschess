@@ -16,6 +16,7 @@
    * Time limits, grace period
    * GC.Collect()
    * Static classes are ok, but avoid static variables.
+   * Make sure to tell them to do a full build each time, otherwise their dlls won't get copied.
 
   * Show StudentAI project (Thomas)
 
