@@ -1,6 +1,6 @@
 #summary presentation flow
 
-  * Demo ExampleAI  (Rusty)
+  * Demo UvsChess using ExampleAI  (Rusty)
    * History Pane
    * AI output window
    * Start/Stop
