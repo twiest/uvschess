@@ -67,6 +67,13 @@ namespace UvsChess.Gui
         Bitmap _lightTile;
         Bitmap[] _tileHighlightBitmaps = new Bitmap[10];
 
+        ComboBox cmbchessflags = null;
+
+        public void SetChessFlagCombo(ComboBox chessflags_gui)
+        {
+            this.cmbchessflags = chessflags_gui;
+        }
+
         public GuiChessBoard()
         {
             InitializeComponent();            
@@ -477,6 +484,9 @@ namespace UvsChess.Gui
                         // responsibility to call my ResetBoard methods to update the board
                         // Fire the event, and forget
                         ChessMove humanMove = new ChessMove(_pieceBeingMovedLocation, newLoc);
+
+                        //Set the chess flag from the cmbChessFlag
+                        humanMove.Flag = (ChessFlag) cmbchessflags.SelectedItem;
 
                         PieceMovedByHuman(humanMove);
                     }
