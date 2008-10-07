@@ -487,6 +487,7 @@ namespace UvsChess.Gui
 
                         //Set the chess flag from the cmbChessFlag
                         humanMove.Flag = (ChessFlag) cmbchessflags.SelectedItem;
+                        cmbchessflags.SelectedIndex = 0; //reset flag to NoFlag
 
                         PieceMovedByHuman(humanMove);
                     }
