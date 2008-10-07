@@ -8,6 +8,12 @@ Students should download the zip file of !UvsChess and extract it on their local
 
 The project should compile out of the box. 
 
+You will need to rename your assembly. Every student with have a project name StudentAI.dll even though the AI inside the dlls will have different names. There is a known bug with renaming assembly names in Visual Studio. You will need to do this manually. In StudentAI.csproj, change the value of the following xml element.
+`
+<AssemblyName>StudentAI</AssemblyName>
+`
+The AssemblyName element occurs three times in StudentAI.csproj. Be sure to tell them all.
+
 
 = Contributing =
 
