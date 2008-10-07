@@ -12,7 +12,7 @@ You will need to rename your assembly. Every student with have a project name St
 {{{
 <AssemblyName>StudentAI</AssemblyName>
 }}}
-The AssemblyName element occurs three times in StudentAI.csproj. Be sure to tell them all.
+The !AssemblyName element occurs three times in StudentAI.csproj. Be sure to change them all.
 
 
 = Contributing =
