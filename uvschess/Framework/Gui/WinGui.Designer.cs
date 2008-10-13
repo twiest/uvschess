@@ -71,6 +71,8 @@ namespace UvsChess.Gui
             this.preferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutUvsChessToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.label3 = new System.Windows.Forms.Label();
+            this.cmbChessFlags = new System.Windows.Forms.ComboBox();
             this.numHalfMoves = new System.Windows.Forms.NumericUpDown();
             this.numFullMoves = new System.Windows.Forms.NumericUpDown();
             this.cmbBlack = new System.Windows.Forms.ComboBox();
@@ -243,6 +245,8 @@ namespace UvsChess.Gui
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.label3);
+            this.splitContainer1.Panel1.Controls.Add(this.cmbChessFlags);
             this.splitContainer1.Panel1.Controls.Add(this.numHalfMoves);
             this.splitContainer1.Panel1.Controls.Add(this.numFullMoves);
             this.splitContainer1.Panel1.Controls.Add(this.cmbBlack);
@@ -259,6 +263,24 @@ namespace UvsChess.Gui
             this.splitContainer1.Size = new System.Drawing.Size(1064, 726);
             this.splitContainer1.SplitterDistance = 262;
             this.splitContainer1.TabIndex = 1;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(16, 105);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(59, 13);
+            this.label3.TabIndex = 8;
+            this.label3.Text = "Chess Flag";
+            this.label3.Click += new System.EventHandler(this.label3_Click);
+            // 
+            // cmbChessFlags
+            // 
+            this.cmbChessFlags.FormattingEnabled = true;
+            this.cmbChessFlags.Location = new System.Drawing.Point(79, 104);
+            this.cmbChessFlags.Name = "cmbChessFlags";
+            this.cmbChessFlags.Size = new System.Drawing.Size(94, 21);
+            this.cmbChessFlags.TabIndex = 7;
             // 
             // numHalfMoves
             // 
@@ -351,9 +373,9 @@ namespace UvsChess.Gui
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.lstHistory.FormattingEnabled = true;
-            this.lstHistory.Location = new System.Drawing.Point(3, 104);
+            this.lstHistory.Location = new System.Drawing.Point(3, 143);
             this.lstHistory.Name = "lstHistory";
-            this.lstHistory.Size = new System.Drawing.Size(256, 615);
+            this.lstHistory.Size = new System.Drawing.Size(256, 576);
             this.lstHistory.TabIndex = 6;
             this.lstHistory.SelectedIndexChanged += new System.EventHandler(this.lstHistory_SelectedIndexChanged);
             // 
@@ -671,5 +693,7 @@ namespace UvsChess.Gui
         public  System.Windows.Forms.NumericUpDown numHalfMoves;
         public  System.Windows.Forms.NumericUpDown numFullMoves;
         private System.Windows.Forms.ToolStripMenuItem viewDecisionTreeToolStripMenuItem;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ComboBox cmbChessFlags;
     }
 }

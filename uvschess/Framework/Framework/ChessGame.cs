@@ -249,7 +249,7 @@ namespace UvsChess.Framework
             {
                 this.SetGuiChessBoard_IsLocked(false);
 
-                nextMove = player.GetNextMove(_mainChessState.CurrentBoard);
+                nextMove = player.GetNextMove(_mainChessState.CurrentBoard);                
 
                 if (!IsGameRunning)
                 {
