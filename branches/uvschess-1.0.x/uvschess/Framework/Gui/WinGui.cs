@@ -35,6 +35,10 @@ namespace UvsChess.Gui
     internal partial class WinGui : Form
     {
         List<AI> AvailableAIs = new List<AI>();
+        public ChessFlag HumanFlag
+        {
+            get { return (ChessFlag) cmbChessFlags.SelectedItem; }
+        }
 
         #region Constructors
         public WinGui()
@@ -49,6 +53,7 @@ namespace UvsChess.Gui
             GuiEventLoop.PollGuiOnce();
 
             chessBoardControl.PieceMovedByHuman += PieceMovedByHuman_Changed;
+            chessBoardControl.SetChessFlagCombo(this.cmbChessFlags);
         }
 
         private void WinGui_Load(object sender, EventArgs e)
@@ -62,6 +67,14 @@ namespace UvsChess.Gui
             }
             cmbBlack.SelectedIndex = 0;
             cmbWhite.SelectedIndex = 0;
+
+            // Set values in Chess Flag drop down
+            foreach(ChessFlag flag in Enum.GetValues(typeof(ChessFlag)))
+            {
+                cmbChessFlags.Items.Add(flag);
+            }
+            cmbChessFlags.SelectedIndex = 0;
+
         }
         #endregion    
         
@@ -182,6 +195,11 @@ namespace UvsChess.Gui
         private void viewDecisionTreeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             GuiEventLoop.ShowDecisionTree();
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
