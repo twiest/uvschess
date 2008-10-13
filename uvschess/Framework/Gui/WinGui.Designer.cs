@@ -276,6 +276,7 @@ namespace UvsChess.Gui
             // 
             // cmbChessFlags
             // 
+            this.cmbChessFlags.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbChessFlags.FormattingEnabled = true;
             this.cmbChessFlags.Location = new System.Drawing.Point(79, 104);
             this.cmbChessFlags.Name = "cmbChessFlags";
