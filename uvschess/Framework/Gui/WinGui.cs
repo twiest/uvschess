@@ -71,7 +71,10 @@ namespace UvsChess.Gui
             // Set values in Chess Flag drop down
             foreach(ChessFlag flag in Enum.GetValues(typeof(ChessFlag)))
             {
-                cmbChessFlags.Items.Add(flag);
+                if (flag != ChessFlag.AIWentOverTime)
+                {
+                    cmbChessFlags.Items.Add(flag);
+                }
             }
             cmbChessFlags.SelectedIndex = 0;
 
