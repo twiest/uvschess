@@ -240,15 +240,31 @@ namespace UvsChess.Framework
             this._isTurnOver = false;
             _hasAIEndedTurn = false;
 
+
             if (_isGetNextMoveCall)
             {
-                _moveToReturn = this.AI.GetNextMove(_currentBoard, this.Color);
+                try
+                {
+                    _moveToReturn = this.AI.GetNextMove(_currentBoard, this.Color);
+                }
+                catch (Exception e)
+                {
+                    throw (new Exception("StudentAI.GetNextMove() threw exception: " + e.Message));
+                }
             }
             else
             {
-                _isValidMove = this.AI.IsValidMove(_currentBoard, _moveToCheck, 
-                    (this.Color == ChessColor.White ? ChessColor.Black : ChessColor.White));
+                try
+                {
+                    _isValidMove = this.AI.IsValidMove(_currentBoard, _moveToCheck,
+                        (this.Color == ChessColor.White ? ChessColor.Black : ChessColor.White));
+                }
+                catch (Exception e)
+                {
+                    throw (new Exception("StudentAI.IsValidMove() threw exception: " + e.Message));
+                }
             }
+
 
             _hasAIEndedTurn = true;
         }
