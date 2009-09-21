@@ -1,5 +1,6 @@
 #summary presentation flow
-
+  * What is UVSChess? (Thomas)
+   
   * Demo !UvsChess using ExampleAI  (Rusty)
    * History Pane
    * AI output window
