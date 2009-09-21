@@ -26,6 +26,14 @@ The instructor and students may decide to hold more than one preliminary competi
 
 See: [SuggestedAssignment_3_MiniMaxAI Suggested Assignment 3]
 
+== Semi-Final Competition ==
+
+The Semi-Final competition is to test your AIs Mini-Max against others and to find out what areas need to be optimized.
+
+== Week 4 - Optimization ==
+
+Final optimizations. Everything should already be working and debugged. This week is for optimization only.
+
 == Final Competition ==
 
 The prelim and final competitions are run exactly the same, with the students compiling their dll and copying it to the host or officiating computer. The final competition should occur after the students have finished implementing Mini-Max. Students should remember to compile their AI in release mode. 
