@@ -43,13 +43,13 @@
    * Greedy
    * !MiniMax
 
-  * Profiler (Rusty)
-   * Show it in ExampleAI
-   * Show output in spreadsheet
-   * Wiki page
-
   * Other tips (Both)
    * TEST, Re-TEST, and TEST some more!
    * Get it working first, THEN optimize
    * Compile in Release mode for competitions
    * Use source code control (svn, git, mercurial)
+
+  * Profiler (Rusty)
+   * Show it in ExampleAI
+   * Show output in spreadsheet
+   * Wiki page
