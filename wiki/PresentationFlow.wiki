@@ -2,9 +2,9 @@
   * What is UVSChess? (Thomas)
    
   * Demo !UvsChess using ExampleAI  (Rusty)
+   * Start/Stop
    * History Pane
    * AI output window
-   * Start/Stop
    * Open/Save Fen
    
   * Show IChessAI (Rusty)
@@ -21,6 +21,7 @@
    * !UvsChess requires Visual Studio 2008
 
   * Show StudentAI project (Thomas)
+   * Rename the project and your output dll name so they don't conflict.
 
   * Show !UvsChess project site (Rusty)
    * Show Wiki help pages
@@ -48,7 +49,7 @@
    * Wiki page
 
   * Other tips (Both)
-   * Compile in Release mode for competitions
-   * Use source code control (svn, git, mercurial)
    * TEST, Re-TEST, and TEST some more!
    * Get it working first, THEN optimize
+   * Compile in Release mode for competitions
+   * Use source code control (svn, git, mercurial)
