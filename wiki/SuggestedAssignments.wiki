@@ -34,6 +34,8 @@ The Semi-Final competition is to test your AIs Mini-Max against others and to fi
 
 Final optimizations. Everything should already be working and debugged. This week is for optimization only.
 
+Tip: Use the built-in profiler to find out what methods you are executing the most, and optimize those.
+
 == Final Competition ==
 
 The prelim and final competitions are run exactly the same, with the students compiling their dll and copying it to the host or officiating computer. The final competition should occur after the students have finished implementing Mini-Max. Students should remember to compile their AI in release mode. 
