@@ -88,21 +88,21 @@ namespace UvsChess.Gui
             this.txtTime.Location = new System.Drawing.Point(199, 27);
             this.txtTime.Name = "txtTime";
             this.txtTime.Size = new System.Drawing.Size(100, 20);
-            this.txtTime.TabIndex = 5;
+            this.txtTime.TabIndex = 1;
             // 
             // txtGrace
             // 
             this.txtGrace.Location = new System.Drawing.Point(199, 79);
             this.txtGrace.Name = "txtGrace";
             this.txtGrace.Size = new System.Drawing.Size(100, 20);
-            this.txtGrace.TabIndex = 6;
+            this.txtGrace.TabIndex = 3;
             // 
             // btnSavePrefs
             // 
             this.btnSavePrefs.Location = new System.Drawing.Point(128, 119);
             this.btnSavePrefs.Name = "btnSavePrefs";
             this.btnSavePrefs.Size = new System.Drawing.Size(94, 23);
-            this.btnSavePrefs.TabIndex = 7;
+            this.btnSavePrefs.TabIndex = 4;
             this.btnSavePrefs.Text = "&Save";
             this.btnSavePrefs.UseVisualStyleBackColor = true;
             this.btnSavePrefs.Click += new System.EventHandler(this.btnSavePrefs_Click);
@@ -112,7 +112,7 @@ namespace UvsChess.Gui
             this.txtCheckMove.Location = new System.Drawing.Point(199, 53);
             this.txtCheckMove.Name = "txtCheckMove";
             this.txtCheckMove.Size = new System.Drawing.Size(100, 20);
-            this.txtCheckMove.TabIndex = 8;
+            this.txtCheckMove.TabIndex = 2;
             // 
             // label3
             // 
@@ -129,7 +129,7 @@ namespace UvsChess.Gui
             this.btnCancelPrefs.Location = new System.Drawing.Point(228, 119);
             this.btnCancelPrefs.Name = "btnCancelPrefs";
             this.btnCancelPrefs.Size = new System.Drawing.Size(75, 23);
-            this.btnCancelPrefs.TabIndex = 10;
+            this.btnCancelPrefs.TabIndex = 5;
             this.btnCancelPrefs.Text = "&Cancel";
             this.btnCancelPrefs.UseVisualStyleBackColor = true;
             // 
