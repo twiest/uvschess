@@ -1,0 +1,5 @@
+C:\src\UVU\cs4470\ChessFramework\uvschess\Framework\bin\Release\ExampleAI.dll
+C:\src\UVU\cs4470\ChessFramework\uvschess\Framework\bin\Release\ExampleAI.pdb
+C:\src\UVU\cs4470\ChessFramework\uvschess\ExampleAI\obj\Release\ExampleAI.csprojResolveAssemblyReference.cache
+C:\src\UVU\cs4470\ChessFramework\uvschess\ExampleAI\obj\Release\ExampleAI.dll
+C:\src\UVU\cs4470\ChessFramework\uvschess\ExampleAI\obj\Release\ExampleAI.pdb

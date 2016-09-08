@@ -1,0 +1,5 @@
+C:\src\UVU\cs4470\ChessFramework\uvschess\Framework\bin\Debug\StudentAI.dll
+C:\src\UVU\cs4470\ChessFramework\uvschess\Framework\bin\Debug\StudentAI.pdb
+C:\src\UVU\cs4470\ChessFramework\uvschess\StudentAI\obj\Debug\StudentAI.2010.csprojResolveAssemblyReference.cache
+C:\src\UVU\cs4470\ChessFramework\uvschess\StudentAI\obj\Debug\StudentAI.dll
+C:\src\UVU\cs4470\ChessFramework\uvschess\StudentAI\obj\Debug\StudentAI.pdb
