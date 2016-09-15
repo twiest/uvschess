@@ -1,5 +1,0 @@
-C:\src\UVU\cs4470\ChessFramework\uvschess\Framework\bin\Release\StudentAI.dll
-C:\src\UVU\cs4470\ChessFramework\uvschess\Framework\bin\Release\StudentAI.pdb
-C:\src\UVU\cs4470\ChessFramework\uvschess\StudentAI\obj\Release\StudentAI.csprojResolveAssemblyReference.cache
-C:\src\UVU\cs4470\ChessFramework\uvschess\StudentAI\obj\Release\StudentAI.dll
-C:\src\UVU\cs4470\ChessFramework\uvschess\StudentAI\obj\Release\StudentAI.pdb
